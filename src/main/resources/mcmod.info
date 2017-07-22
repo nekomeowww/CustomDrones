@@ -1,15 +1,15 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "",
-  "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
-  "logoFile": "",
+  "modid": "drones",
+  "name": "CustomDrones",
+  "description": "Add customizable and fully functioning drones into the game",
+  "version": "",
+  "mcversion": "1.10.2",
+  "url": "http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2705301-customdrones-",
+  "updateUrl": "http://minecraft.curseforge.com/projects/customdrones",
+  "authorList": ["WilliamEze"],
+  "credits": "The Forge and FML guys, for making this possible",
+  "logoFile": "assets/drones/textures/modlogo.png",
   "screenshots": [],
   "dependencies": []
 }
