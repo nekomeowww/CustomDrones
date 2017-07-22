@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "CustomDrones",
+  "name": "CustomDrones",
+  "description": "This mod aims to add fully functioning drones to aid the lovely players (that's you) with all kinds of stuffs.",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "",
-  "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "url": "https://github.com/nekomeowww/CustomDrones/",
+  "updateUrl": "https://github.com/nekomeowww/CustomDrones/releases",
+  "authorList": ["nekomeowww","WilliamEz"],
+  "credits": "FML-Dev, NekoMeowww, WilliamEz",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
