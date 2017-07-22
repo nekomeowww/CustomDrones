@@ -6,7 +6,7 @@ The CustomDrones mod of Minecraft that @WilliamEz has made before. (Original For
 
 I am not here to steal his work. I want to help him to maintain the project. I will abusolutely keep HIS NAME inside the repo and the mod info, and HIS COMPLETED WORK (I will change some if I find bugs or so).
 If he finally come back and wish to work the project alone continually, WilliamEz is welcome to do.
-As an user or as a programmer, feel free to  provide the idea you have and point my mistake.
+Whether you are a user or a programmer, feel free to  provide the idea you have and point my mistake.
 
 ## Development
 
