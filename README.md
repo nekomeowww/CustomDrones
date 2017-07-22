@@ -21,6 +21,7 @@ This is the CustomDrones mod of Minecraft that @WilliamEz has made before.
 ## Progress Update
 
 ##### 2017-07-23
+- Added the CustomDrones.java (MainModClass)
 - README.md updated in ```dev-1.10.2``` branch
 - README.md updated in ```master``` branch
 - README.md updated in ```williamez-src``` branch
