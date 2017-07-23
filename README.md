@@ -11,8 +11,8 @@ This is the CustomDrones mod of Minecraft that @WilliamEz has made before.
 4. Open you IDE and code!
 
 ## Todo List
-
-- [ ] Code migration for com.github.nekomeowww.\*   
+- [ ] ```func``` and ```field``` to actuall func name and field name
+- [x] Code migration for com.github.nekomeowww.\*   
 - [ ] Re-organize the ```williamez-src``` branch
 - [ ] Wiki translation
 - [ ] Plan for 1.11.\*
@@ -21,6 +21,8 @@ This is the CustomDrones mod of Minecraft that @WilliamEz has made before.
 ## Progress Update
 
 ##### 2017-07-23
+- Committed to 276 files changes. [Find them here](https://github.com/nekomeowww/CustomDrones/commits/dev-1.10.2)
+
 - Added the CustomDrones.java (MainModClass)
 - README.md updated in ```dev-1.10.2``` branch
 - README.md updated in ```master``` branch
