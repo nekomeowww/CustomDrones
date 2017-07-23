@@ -1,0 +1,6 @@
+{
+    "variants": {
+        "normal": { "model": "drones:crafter" },
+		"inventory": { "model": "drones:crafter" }
+    }
+}
