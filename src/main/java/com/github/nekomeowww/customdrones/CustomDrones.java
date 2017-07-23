@@ -1,4 +1,4 @@
-package com.github.nekomeowww;
+package com.github.nekomeowww.customdrones;
 
 import com.google.common.collect.Lists;
 import java.util.LinkedHashMap;
@@ -49,13 +49,13 @@ import com.github.nekomeowww.customdrones.item.ItemPlasmaGun;
 import com.github.nekomeowww.customdrones.network.PacketDispatcher;
 
 @Mod(name="Custom Drones", modid="drones", version="1.10.2-1.5.0", guiFactory="com.github.nekomeowww.customdrones.GuiFactory", acceptedMinecraftVersions="[1.10.2]")
-public class DronesMod
+public class CustomDrones
 {
   public static final String MODNAME = "Custom Drones";
   public static final String MODID = "drones";
   public static final String VERSION = "1.10.2-1.5.0";
   @Mod.Instance("drones")
-  public static DronesMod instance;
+  public static CustomDrones instance;
   @SidedProxy(clientSide="com.github.nekomeowww.customdrones.ClientProxy", serverSide="com.github.nekomeowww.customdrones.CommonProxy")
   public static CommonProxy proxy;
   public static ConfigControl configControl;
@@ -96,7 +96,7 @@ public class DronesMod
 
     public Item func_78016_d()
     {
-      return DronesMod.droneSpawn;
+      return CustomDrones.droneSpawn;
     }
   };
 
