@@ -45,3 +45,10 @@ if you wish to work on wiki, your title should be:
 __[Ducth] Wiki Localization__.   
 
 If you are interested in building a new Wiki Page project, we may need to discuss it for detailed info(I had some ideas before).
+
+## Credit
+
+### Translation
+
+#### 繁體中文 Traditional Chinese
+- @AileRozy
