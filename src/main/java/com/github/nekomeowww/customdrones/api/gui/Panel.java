@@ -26,7 +26,7 @@ public class Panel
     public Panel(GuiContainerPanel g, int x, int y, int width, int height)
     {
         this.parent = g;
-        this.mc = g.field_146297_k;
+        this.mc = g.mc;
         this.px = x;
         this.py = y;
         this.pw = width;
@@ -169,10 +169,10 @@ public class Panel
         if (Mouse.isCreated())
         {
             ScaledResolution sr = new ScaledResolution(this.mc);
-            int w = this.mc.field_71443_c;
-            int h = this.mc.field_71440_d;
-            int mxlocal = Mouse.getX() * sr.func_78326_a() / w;
-            int mylocal = (h - Mouse.getY()) * sr.func_78328_b() / h;
+            int w = this.mc.displayWidth;
+            int h = this.mc.displayHeight;
+            int mxlocal = Mouse.getX() * sr.getScaledWidth() / w;
+            int mylocal = (h - Mouse.getY()) * sr.getScaledHeight() / h;
             return (mxlocal >= this.px) && (mxlocal <= this.px + this.pw) && (mylocal >= this.py) && (mylocal <= this.py + this.ph);
         }
         return false;
@@ -183,10 +183,10 @@ public class Panel
         if ((Mouse.isCreated()) && (isMouseOnPanel()))
         {
             ScaledResolution sr = new ScaledResolution(this.mc);
-            int w = this.mc.field_71443_c;
-            int h = this.mc.field_71440_d;
-            int mxlocal = Mouse.getX() * sr.func_78326_a() / w - this.px;
-            int mylocal = (h - Mouse.getY()) * sr.func_78328_b() / h - this.py + this.scroll;
+            int w = this.mc.displayWidth;
+            int h = this.mc.displayHeight;
+            int mxlocal = Mouse.getX() * sr.getScaledWidth() / w - this.px;
+            int mylocal = (h - Mouse.getY()) * sr.getScaledHeight() / h - this.py + this.scroll;
             int curScrollItem = 0;
             for (int a = 0; a < this.items.size(); a++)
             {
@@ -205,13 +205,13 @@ public class Panel
     public void drawPanel()
     {
         ScaledResolution sr = new ScaledResolution(this.mc);
-        int sclh = sr.func_78328_b();
-        int sclw = sr.func_78326_a();
+        int sclh = sr.getScaledHeight();
+        int sclw = sr.getScaledWidth();
         DrawHelper.drawRect(this.px, this.py, this.px + this.pw, this.py + this.ph, this.bgColor == null ? 0L : this.bgColor.toLong());
         GL11.glPushMatrix();
         GL11.glColor3d(1.0D, 1.0D, 1.0D);
         GL11.glEnable(3089);
-        GL11.glScissor(this.px * this.mc.field_71443_c / sclw, (sclh - this.py - this.ph) * this.mc.field_71440_d / sclh, this.pw * this.mc.field_71443_c / sclw, this.ph * this.mc.field_71440_d / sclh);
+        GL11.glScissor(this.px * this.mc.displayWidth / sclw, (sclh - this.py - this.ph) * this.mc.displayHeight / sclh, this.pw * this.mc.displayWidth / sclw, this.ph * this.mc.displayHeight / sclh);
 
         GL11.glTranslated(this.px, this.py - this.scroll, 0.0D);
         drawInPanel();

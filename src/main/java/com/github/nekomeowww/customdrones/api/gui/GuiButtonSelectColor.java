@@ -22,21 +22,21 @@ extends GuiButton
         this.color2 = c2;
     }
 
-    public boolean func_146116_c(Minecraft mc, int mouseX, int mouseY)
+    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
     {
-        if ((this.field_146124_l) && (this.field_146125_m) && (mouseX >= this.field_146128_h) && (mouseY >= this.field_146129_i) && (mouseX <= this.field_146128_h + this.field_146120_f) && (mouseY <= this.field_146129_i + this.field_146121_g))
+        if ((this.enabled) && (this.visible) && (mouseX >= this.xPosition) && (mouseY >= this.yPosition) && (mouseX <= this.xPosition + this.width) && (mouseY <= this.yPosition + this.height))
         {
-            this.selectedIndex = ((mouseX - this.field_146128_h) / this.field_146120_f);
+            this.selectedIndex = ((mouseX - this.xPosition) / this.width);
             return true;
         }
         return false;
     }
 
-    protected void func_146119_b(Minecraft mc, int mouseX, int mouseY)
+    protected void mouseDragged(Minecraft mc, int mouseX, int mouseY)
     {
-        super.func_146119_b(mc, mouseX, mouseY);
-        if ((this.field_146124_l) && (this.field_146125_m) && (mouseX >= this.field_146128_h) && (mouseY >= this.field_146129_i) && (mouseX <= this.field_146128_h + this.field_146120_f) && (mouseY <= this.field_146129_i + this.field_146121_g)) {
-            this.selectedIndex = ((mouseX - this.field_146128_h) / this.field_146120_f);
+        super.mouseDragged(mc, mouseX, mouseY);
+        if ((this.enabled) && (this.visible) && (mouseX >= this.xPosition) && (mouseY >= this.yPosition) && (mouseX <= this.xPosition + this.width) && (mouseY <= this.yPosition + this.height)) {
+            this.selectedIndex = ((mouseX - this.xPosition) / this.width);
         }
     }
 
@@ -59,9 +59,9 @@ extends GuiButton
         return c;
     }
 
-    public void func_146112_a(Minecraft mc, int mouseX, int mouseY)
+    public void drawButton(Minecraft mc, int mouseX, int mouseY)
     {
-        if (this.field_146125_m)
+        if (this.visible)
         {
             GL11.glPushMatrix();
             GL11.glDisable(3553);
@@ -70,22 +70,22 @@ extends GuiButton
             GL11.glBlendFunc(770, 771);
             GL11.glBegin(7);
             GL11.glColor4d(this.color1.red, this.color1.green, this.color1.blue, this.color1.alpha);
-            GL11.glVertex2d(this.field_146128_h, this.field_146129_i);
+            GL11.glVertex2d(this.xPosition, this.yPosition);
             GL11.glColor4d(this.color1.red, this.color1.green, this.color1.blue, this.color1.alpha);
-            GL11.glVertex2d(this.field_146128_h, this.field_146129_i + this.field_146121_g);
+            GL11.glVertex2d(this.xPosition, this.yPosition + this.height);
             GL11.glColor4d(this.color2.red, this.color2.green, this.color2.blue, this.color2.alpha);
-            GL11.glVertex2d(this.field_146128_h + this.field_146120_f, this.field_146129_i + this.field_146121_g);
+            GL11.glVertex2d(this.xPosition + this.width, this.yPosition + this.height);
             GL11.glColor4d(this.color2.red, this.color2.green, this.color2.blue, this.color2.alpha);
-            GL11.glVertex2d(this.field_146128_h + this.field_146120_f, this.field_146129_i);
+            GL11.glVertex2d(this.xPosition + this.width, this.yPosition);
             GL11.glEnd();
             GL11.glEnable(3553);
             GL11.glShadeModel(7424);
             GL11.glPopMatrix();
             if ((Mouse.isCreated()) && (Mouse.isButtonDown(0))) {
-                func_146119_b(mc, mouseX, mouseY);
+                mouseDragged(mc, mouseX, mouseY);
             }
-            double lineX = this.field_146128_h + this.field_146120_f * this.selectedIndex;
-            DrawHelper.drawLine(lineX, this.field_146129_i - this.pointerOuter, lineX, this.field_146129_i + this.field_146121_g + this.pointerOuter,
+            double lineX = this.xPosition + this.width * this.selectedIndex;
+            DrawHelper.drawLine(lineX, this.yPosition - this.pointerOuter, lineX, this.yPosition + this.height + this.pointerOuter,
                     getReverseOutputColor(), this.pointWidth);
         }
     }

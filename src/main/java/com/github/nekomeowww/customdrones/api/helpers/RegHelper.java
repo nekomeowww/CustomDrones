@@ -10,13 +10,13 @@ public class RegHelper
 {
     public static void registerBlock(Block block)
     {
-        GameRegistry.register(block.setRegistryName("drones", block.func_149739_a().substring(5)));
+        GameRegistry.register(block.setRegistryName("drones", block.getUnlocalizedName().substring(5)));
         GameRegistry.register(new ItemBlock(block).setRegistryName(block.getRegistryName()));
     }
 
     public static void registerItem(Item item)
     {
-        GameRegistry.register(item.setRegistryName("drones", item.func_77658_a().substring(5)));
+        GameRegistry.register(item.setRegistryName("drones", item.getUnlocalizedName().substring(5)));
     }
 
     public static void registerEntity(Class entityClass, String entityName, int id, Object mod, int range, int freq, boolean velo, int... egg)

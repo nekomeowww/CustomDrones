@@ -18,14 +18,14 @@ public class WorldHelper
 {
     public static BlockPos getLowestAir(World world, BlockPos bp)
     {
-        for (int a = 0; a < world.func_72940_L(); a++)
+        for (int a = 0; a < world.getActualHeight(); a++)
         {
-            BlockPos bp0 = new BlockPos(bp.func_177958_n(), a, bp.func_177952_p());
-            if (world.func_175623_d(bp0)) {
+            BlockPos bp0 = new BlockPos(bp.getX(), a, bp.getZ());
+            if (world.isAirBlock(bp0)) {
                 return bp0;
             }
         }
-        return bp.func_185334_h();
+        return bp.toImmutable();
     }
 
     public static RayTraceResult fullRayTrace(World world, Vec3d start, Vec3d end, Predicate entityFilter)
@@ -35,22 +35,22 @@ public class WorldHelper
 
     public static RayTraceResult fullRayTrace(World world, Vec3d start, Vec3d end, boolean liquid, boolean ignoreNonBound, Predicate entityFilter)
     {
-        RayTraceResult mop = world.func_147447_a(start, end, liquid, ignoreNonBound, false);
+        RayTraceResult mop = world.rayTraceBlocks(start, end, liquid, ignoreNonBound, false);
         Vec3d destination = end;
         if (mop != null) {
-            destination = mop.field_72307_f;
+            destination = mop.hitVec;
         }
-        List<Entity> list = world.func_175647_a(Entity.class, new AxisAlignedBB(start.field_72450_a, start.field_72448_b, start.field_72449_c, destination.field_72450_a, destination.field_72448_b, destination.field_72449_c), entityFilter == null ? EntitySelectors.field_94557_a : entityFilter);
+        List<Entity> list = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(start.xCoord, start.yCoord, start.zCoord, destination.xCoord, destination.yCoord, destination.zCoord), entityFilter == null ? EntitySelectors.IS_ALIVE : entityFilter);
         double nearestIntercept;
         if ((list != null) && (!list.isEmpty()))
         {
             nearestIntercept = -1.0D;
             for (Entity e : list)
             {
-                RayTraceResult mop1 = e.func_174813_aQ().func_72327_a(start, destination);
+                RayTraceResult mop1 = e.getEntityBoundingBox().calculateIntercept(start, destination);
                 if ((mop1 != null) && (
-                        (mop1.field_72307_f.func_178788_d(start).func_72433_c() < nearestIntercept) || (nearestIntercept < 0.0D))) {
-                    mop = new RayTraceResult(e, mop1.field_72307_f);
+                        (mop1.hitVec.subtract(start).lengthVector() < nearestIntercept) || (nearestIntercept < 0.0D))) {
+                    mop = new RayTraceResult(e, mop1.hitVec);
                 }
             }
         }
@@ -63,18 +63,18 @@ public class WorldHelper
         if ((cuts[1] != null) || (cuts[0] != null))
         {
             RayTraceResult firstRtr = fullRayTrace(world, ori, cuts[1] != null ? cuts[1] : cuts[0], false, true, filter);
-            if ((firstRtr != null) && (firstRtr.field_72308_g != null)) {
-                return firstRtr.field_72308_g;
+            if ((firstRtr != null) && (firstRtr.entityHit != null)) {
+                return firstRtr.entityHit;
             }
         }
         Entity target = null;
         double angle = maxAngle;
-        List<Entity> entities = world.func_175674_a(exclude, area, filter);
+        List<Entity> entities = world.getEntitiesInAABBexcluding(exclude, area, filter);
         for (Entity e : entities)
         {
             Vec3d eEye = EntityHelper.getEyeVec(e);
             RayTraceResult rtr = fullRayTrace(world, ori, eEye, false, true, filter);
-            if ((rtr == null) || (rtr.field_72313_a == RayTraceResult.Type.MISS) || (rtr.field_72308_g == e))
+            if ((rtr == null) || (rtr.typeOfHit == RayTraceResult.Type.MISS) || (rtr.entityHit == e))
             {
                 Vec3d toEye = VecHelper.fromTo(ori, eEye);
                 double thisAngle = VecHelper.getAngleBetween(toEye, dir) / 3.141592653589793D * 180.0D;
@@ -90,7 +90,7 @@ public class WorldHelper
 
     public static Entity getEntityByPersistentUUID(World world, UUID uuid)
     {
-        List<Entity> list = world.func_72910_y();
+        List<Entity> list = world.getLoadedEntityList();
         for (Entity e : list) {
             if (uuid.equals(e.getPersistentID())) {
                 return e;

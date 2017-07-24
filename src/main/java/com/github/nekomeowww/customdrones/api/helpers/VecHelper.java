@@ -41,7 +41,7 @@ public class VecHelper
         for (int a = 0; a < ori.length; a++)
         {
             Vec3d oriVec = ori[a];
-            newA[a] = oriVec.func_178787_e(translate);
+            newA[a] = oriVec.add(translate);
         }
         return newA;
     }
@@ -52,7 +52,7 @@ public class VecHelper
         for (int a = 0; a < ori.length; a++)
         {
             Vec3d oriVec = ori[a];
-            newA[a] = oriVec.func_178788_d(center).func_186678_a(d).func_178787_e(center);
+            newA[a] = oriVec.subtract(center).scale(d).add(center);
         }
         return newA;
     }
@@ -63,9 +63,9 @@ public class VecHelper
         for (int a = 0; a < ori.length; a++)
         {
             Vec3d oriVec = ori[a];
-            Vec3d oriDelta = oriVec.func_178788_d(center);
-            double deltaLength = oriDelta.func_72433_c();
-            newA[a] = oriDelta.func_186678_a((deltaLength - d) / deltaLength).func_178787_e(center);
+            Vec3d oriDelta = oriVec.subtract(center);
+            double deltaLength = oriDelta.lengthVector();
+            newA[a] = oriDelta.scale((deltaLength - d) / deltaLength).add(center);
         }
         return newA;
     }
@@ -96,7 +96,7 @@ public class VecHelper
         for (int a = 0; a < newA.length; a++)
         {
             Vec3d oriVec = ori[a];
-            Vec3d newVec = new Vec3d(oriVec.field_72450_a * (x ? -1 : 1), oriVec.field_72448_b * (y ? -1 : 1), oriVec.field_72449_c * (z ? -1 : 1));
+            Vec3d newVec = new Vec3d(oriVec.xCoord * (x ? -1 : 1), oriVec.yCoord * (y ? -1 : 1), oriVec.zCoord * (z ? -1 : 1));
 
             newA[a] = newVec;
         }
@@ -117,13 +117,13 @@ public class VecHelper
         if (vecs.length > 0)
         {
             Vec3d v0 = vecs[0];
-            double distSqr = v0 != null ? ori.func_72436_e(v0) : Double.MAX_VALUE;
+            double distSqr = v0 != null ? ori.squareDistanceTo(v0) : Double.MAX_VALUE;
             for (int a = 0; a < vecs.length; a++)
             {
                 Vec3d v1 = vecs[a];
                 if (v1 != null)
                 {
-                    double thisDistSqr = ori.func_72436_e(v1);
+                    double thisDistSqr = ori.squareDistanceTo(v1);
                     if (thisDistSqr <= distSqr)
                     {
                         v0 = v1;
@@ -141,13 +141,13 @@ public class VecHelper
         if (vecs.length > 0)
         {
             Vec3d v0 = vecs[0];
-            double distSqr = v0 != null ? ori.func_72436_e(v0) : 0.0D;
+            double distSqr = v0 != null ? ori.squareDistanceTo(v0) : 0.0D;
             for (int a = 0; a < vecs.length; a++)
             {
                 Vec3d v1 = vecs[a];
                 if (v1 != null)
                 {
-                    double thisDistSqr = ori.func_72436_e(v1);
+                    double thisDistSqr = ori.squareDistanceTo(v1);
                     if (thisDistSqr >= distSqr)
                     {
                         v0 = v1;
@@ -167,7 +167,7 @@ public class VecHelper
             return total;
         }
         for (Vec3d vec : vecs) {
-            total = total.func_178787_e(vec);
+            total = total.add(vec);
         }
         return scale(total, 1.0D / vecs.size());
     }
@@ -179,19 +179,19 @@ public class VecHelper
             return total;
         }
         for (Vec3d vec : vecs) {
-            total = total.func_178787_e(vec);
+            total = total.add(vec);
         }
         return scale(total, 1.0D / vecs.length);
     }
 
     public static Vec3d getPerpendicularVec(Vec3d vec1, Vec3d vec2)
     {
-        Vec3d perp = vec1.func_72431_c(vec2);
+        Vec3d perp = vec1.crossProduct(vec2);
         if (isZeroVec(perp)) {
-            if ((vec1.field_72450_a == 0.0D) && (vec1.field_72449_c == 0.0D)) {
-                perp = vec1.func_72431_c(vec(1.0D, 0.0D, 0.0D));
+            if ((vec1.xCoord == 0.0D) && (vec1.zCoord == 0.0D)) {
+                perp = vec1.crossProduct(vec(1.0D, 0.0D, 0.0D));
             } else {
-                perp = vec1.func_72431_c(vec(0.0D, 1.0D, 0.0D));
+                perp = vec1.crossProduct(vec(0.0D, 1.0D, 0.0D));
             }
         }
         return perp;
@@ -202,7 +202,7 @@ public class VecHelper
         if ((isZeroVec(vec1)) || (isZeroVec(vec2))) {
             return 0.0D;
         }
-        return Math.acos(Math.min(1.0D, vec1.func_72430_b(vec2) / (vec1.func_72433_c() * vec2.func_72433_c())));
+        return Math.acos(Math.min(1.0D, vec1.dotProduct(vec2) / (vec1.lengthVector() * vec2.lengthVector())));
     }
 
     public static boolean isParallel(Vec3d vec1, Vec3d vec2)
@@ -219,28 +219,28 @@ public class VecHelper
 
     public static Vec3d fromTo(Vec3d vec1, Vec3d vec2)
     {
-        return vec2.func_178788_d(vec1);
+        return vec2.subtract(vec1);
     }
 
     public static Vec3d rotateAround(Vec3d init, Vec3d axis, double angleRad)
     {
-        Vec3d axisN = axis.func_72432_b();
+        Vec3d axisN = axis.normalize();
         Vec3d initN = init;
-        Vec3d v1 = initN.func_72431_c(axisN);
-        Vec3d v2 = axisN.func_72431_c(v1);
+        Vec3d v1 = initN.crossProduct(axisN);
+        Vec3d v2 = axisN.crossProduct(v1);
         v1 = scale(v1, Math.sin(angleRad));
         v2 = scale(v2, Math.cos(angleRad));
-        Vec3d shadowRotated = v1.func_178787_e(v2);
-        double dotProduct = axisN.func_72430_b(initN);
-        return setLength(scale(axisN, dotProduct).func_178787_e(shadowRotated), init.func_72433_c());
+        Vec3d shadowRotated = v1.add(v2);
+        double dotProduct = axisN.dotProduct(initN);
+        return setLength(scale(axisN, dotProduct).add(shadowRotated), init.lengthVector());
     }
 
     public static Vec3d getVectorForRotation(float pitch, float yaw)
     {
-        float f = MathHelper.func_76134_b(-yaw * 0.017453292F - 3.1415927F);
-        float f1 = MathHelper.func_76126_a(-yaw * 0.017453292F - 3.1415927F);
-        float f2 = -MathHelper.func_76134_b(-pitch * 0.017453292F);
-        float f3 = MathHelper.func_76126_a(-pitch * 0.017453292F);
+        float f = MathHelper.cos(-yaw * 0.017453292F - 3.1415927F);
+        float f1 = MathHelper.sin(-yaw * 0.017453292F - 3.1415927F);
+        float f2 = -MathHelper.cos(-pitch * 0.017453292F);
+        float f3 = MathHelper.sin(-pitch * 0.017453292F);
         return new Vec3d(f1 * f2, f3, f * f2);
     }
 
@@ -251,32 +251,32 @@ public class VecHelper
 
     public static Vec3d scale(Vec3d vec, double d)
     {
-        return vec(vec.field_72450_a * d, vec.field_72448_b * d, vec.field_72449_c * d);
+        return vec(vec.xCoord * d, vec.yCoord * d, vec.zCoord * d);
     }
 
     public static Vec3d setLength(Vec3d vec, double l)
     {
-        return scale(vec, l / vec.func_72433_c());
+        return scale(vec, l / vec.lengthVector());
     }
 
     public static boolean isZeroVec(Vec3d vec)
     {
-        return (vec.field_72450_a == 0.0D) && (vec.field_72448_b == 0.0D) && (vec.field_72449_c == 0.0D);
+        return (vec.xCoord == 0.0D) && (vec.yCoord == 0.0D) && (vec.zCoord == 0.0D);
     }
 
     public static Vec3d jitter(Vec3d ori, double angleRad)
     {
         Random rnd = new Random();
-        double oriLength = ori.func_72433_c();
+        double oriLength = ori.lengthVector();
 
         Plane3d plane = new Plane3d(ori, ori);
         double planeVecLength = Math.tan(angleRad) * oriLength * rnd.nextDouble();
 
-        Vec3d fixPlaneVec = plane.getAVecOnPlane().func_72432_b().func_186678_a(planeVecLength);
+        Vec3d fixPlaneVec = plane.getAVecOnPlane().normalize().scale(planeVecLength);
 
-        Vec3d varPlaneVec = isZeroVec(fixPlaneVec) ? Vec3d.field_186680_a : rotateAround(fixPlaneVec, ori, rnd.nextDouble() * 3.141592653589793D * 2.0D);
+        Vec3d varPlaneVec = isZeroVec(fixPlaneVec) ? Vec3d.ZERO : rotateAround(fixPlaneVec, ori, rnd.nextDouble() * 3.141592653589793D * 2.0D);
 
-        Vec3d newDir = ori.func_178787_e(varPlaneVec);
-        return newDir.func_72432_b().func_186678_a(oriLength);
+        Vec3d newDir = ori.add(varPlaneVec);
+        return newDir.normalize().scale(oriLength);
     }
 }

@@ -16,16 +16,16 @@ extends GuiContainer
         super(inventorySlotsIn);
     }
 
-    public void func_73866_w_()
+    public void initGui()
     {
-        super.func_73866_w_();
+        super.initGui();
         this.panels.clear();
     }
 
-    protected void func_73864_a(int mouseX, int mouseY, int mouseButton)
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
             throws IOException
     {
-        super.func_73864_a(mouseX, mouseY, mouseButton);
+        super.mouseClicked(mouseX, mouseY, mouseButton);
         for (int a = 0; a < this.panels.size(); a++)
         {
             Panel p = (Panel)this.panels.get(a);
@@ -33,9 +33,9 @@ extends GuiContainer
         }
     }
 
-    protected void func_146273_a(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
+    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
     {
-        super.func_146273_a(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
         for (int a = 0; a < this.panels.size(); a++)
         {
             Panel p = (Panel)this.panels.get(a);
@@ -43,10 +43,10 @@ extends GuiContainer
         }
     }
 
-    protected void func_73869_a(char typedChar, int keyCode)
+    protected void keyTyped(char typedChar, int keyCode)
             throws IOException
     {
-        super.func_73869_a(typedChar, keyCode);
+        super.keyTyped(typedChar, keyCode);
         for (int a = 0; a < this.panels.size(); a++)
         {
             Panel p = (Panel)this.panels.get(a);
@@ -62,13 +62,13 @@ extends GuiContainer
 
     public void itemEnabled(Panel panel, PI pi) {}
 
-    public void func_146276_q_() {}
+    public void drawDefaultBackground() {}
 
-    protected void func_146976_a(float partialTicks, int mouseX, int mouseY) {}
+    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {}
 
-    public void func_73876_c()
+    public void updateScreen()
     {
-        super.func_73876_c();
+        super.updateScreen();
         for (int a = 0; a < this.panels.size(); a++)
         {
             Panel p = (Panel)this.panels.get(a);
@@ -76,13 +76,13 @@ extends GuiContainer
         }
     }
 
-    public void func_73863_a(int mouseX, int mouseY, float partialTicks)
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         for (int a = 0; a < this.panels.size(); a++)
         {
             Panel p = (Panel)this.panels.get(a);
             p.drawPanel();
         }
-        super.func_73863_a(mouseX, mouseY, partialTicks);
+        super.drawScreen(mouseX, mouseY, partialTicks);
     }
 }
