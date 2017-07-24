@@ -71,13 +71,13 @@ public class ModelDroneWildItem
         addModel(this.fullDrone);
     }
 
-    public void doRender(EntityDrone d, float yaw, float partialTicks, Object... params)
+    public void doRender(EntityDrone d, float yaw, float partialTicks, Object... names)
     {
         if (this.itemModel != null) {
             if (((d instanceof EntityDroneWildItem)) && (((EntityDroneWildItem)d).holding != null))
             {
                 this.itemModel.is = ((EntityDroneWildItem)d).holding;
-                this.itemModel.world = d.field_70170_p;
+                this.itemModel.world = d.worldObj; //worldObj used to be world
             }
             else
             {
@@ -85,7 +85,7 @@ public class ModelDroneWildItem
                 this.itemModel.world = null;
             }
         }
-        super.doRender(d, yaw, partialTicks, params);
+        super.doRender(d, yaw, partialTicks, names);
     }
 
     public double getLeanAngle()

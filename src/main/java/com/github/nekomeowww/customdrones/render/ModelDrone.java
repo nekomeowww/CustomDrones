@@ -53,9 +53,9 @@ public class ModelDrone
                 .setInitSpin(0.7853981633974483D).setScale(1.0D, 0.2D, 1.0D).setName("Propeller4").setPaletteIndexes(new String[] { "Wing" }));
     }
 
-    public void doRender(EntityDrone drone, float yaw, float partialTicks, Object... params)
+    public void doRender(EntityDrone drone, float yaw, float partialTicks, Object... names)
     {
-        applyAppearances(drone, yaw, partialTicks, params);
+        applyAppearances(drone, yaw, partialTicks, names);
         applyRotation(drone, yaw, partialTicks);
         for (CMBase cm : this.models.values()) {
             cm.fullRender();
@@ -69,12 +69,12 @@ public class ModelDrone
         if (drone != null)
         {
             di = drone.droneInfo;
-            double mx = drone.field_70159_w;
-            double my = drone.field_70181_x;
-            double mz = drone.field_70179_y;
-            Vec3d look = drone.func_70676_i(partialTick);
+            double mx = drone.motionX;
+            double my = drone.motionY;
+            double mz = drone.motionZ;
+            Vec3d look = drone.getLook(partialTick);
             double horzSpeed = Math.sqrt(mx * mx + mz * mz);
-            double angleDif = Math.atan2(mx, mz) - Math.atan2(look.field_72450_a, look.field_72449_c);
+            double angleDif = Math.atan2(mx, mz) - Math.atan2(look.xCoord, look.zCoord);
             double vertTakeover = Math.cos(Math.atan2(my, horzSpeed));
             double rotatePercentage = Math.min(horzSpeed / di.getMaxSpeed() * 8.0D * vertTakeover, 2.0D);
             double pitch = getLeanAngle() * Math.cos(angleDif) * rotatePercentage;
@@ -123,7 +123,7 @@ public class ModelDrone
         return set;
     }
 
-    public void applyAppearances(EntityDrone drone, float yaw, float partialTicks, Object... params)
+    public void applyAppearances(EntityDrone drone, float yaw, float partialTicks, Object... names)
     {
         applyDefaultAppearance();
         if (drone != null)

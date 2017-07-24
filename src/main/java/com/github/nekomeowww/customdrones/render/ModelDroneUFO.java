@@ -62,7 +62,7 @@ public class ModelDroneUFO
         {
             Vec3d vecCoreBall = vec((topRa1 + topRa2) / 2.0D, 0.0D, 0.0D);
             this.wingsFull.addChild(new CMSphere(vecCoreBall
-                    .func_178785_b((float)(a * 3.141592653589793D * 2.0D / ballCount)), ballRa, ballDiv)
+                    .rotateYaw((float)(a * 3.141592653589793D * 2.0D / ballCount)), ballRa, ballDiv)
                     .setPaletteIndexes(new String[] { "Wing" }));
         }
         this.wingsFull.addChild(
