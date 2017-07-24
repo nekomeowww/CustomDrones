@@ -15,6 +15,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import com.github.nekomeowww.customdrones.CustomDrones;
 import com.github.nekomeowww.customdrones.api.helpers.EntityHelper;
 import com.github.nekomeowww.customdrones.api.helpers.VecHelper;
 import com.github.nekomeowww.customdrones.drone.DroneInfo;
@@ -41,8 +42,8 @@ public class ModuleDe
         double strength;
         if (projectile)
         {
-            List<Entity> projectiles = drone.field_70170_p.func_175647_a(Entity.class, drone
-                    .func_174813_aQ().func_186662_g(range), new Predicate()
+            List<Entity> projectiles = drone.getEntityWorld().getEntitiesWithinAABB(Entity.class, drone
+                    .getEntityBoundingBox().expandXyz(range), new Predicate()
             {
                 public boolean apply(Entity input)
                 {
@@ -53,26 +54,26 @@ public class ModuleDe
             strength = getStrength(drone);
             for (Entity e : projectiles)
             {
-                double dist = Math.pow(e.func_70032_d(drone), 1.4D);
-                Vec3d deflectVec = EntityHelper.getCenterVec(e).func_178788_d(deflectMid).func_72432_b();
+                double dist = Math.pow(e.getDistanceToEntity(drone), 1.4D);
+                Vec3d deflectVec = EntityHelper.getCenterVec(e).subtract(deflectMid).normalize();
                 deflectVec = VecHelper.scale(deflectVec, strength / dist);
-                e.func_70024_g(deflectVec.field_72450_a, deflectVec.field_72448_b, deflectVec.field_72449_c);
+                e.addVelocity(deflectVec.xCoord, deflectVec.yCoord, deflectVec.zCoord);
                 count++;
             }
         }
-        if ((fire) && (drone.field_70173_aa % 20 == 0))
+        if ((fire) && (drone.ticksExisted % 20 == 0))
         {
             int maxFire = getFirePerSec(drone);
             int fireCount = 0;
             EntityPlayer player = drone.getControllingPlayer() != null ? drone.getControllingPlayer() : null;
             for (int i = 0; i < range; i++)
             {
-                int xmin = (int)Math.floor(drone.field_70165_t - i);
-                int xmax = (int)Math.floor(drone.field_70165_t + i);
-                int ymin = (int)Math.floor(drone.field_70163_u - i);
-                int ymax = (int)Math.floor(drone.field_70163_u + i);
-                int zmin = (int)Math.floor(drone.field_70161_v - i);
-                int zmax = (int)Math.floor(drone.field_70161_v + i);
+                int xmin = (int)Math.floor(drone.posX - i);
+                int xmax = (int)Math.floor(drone.posX + i);
+                int ymin = (int)Math.floor(drone.posY - i);
+                int ymax = (int)Math.floor(drone.posY + i);
+                int zmin = (int)Math.floor(drone.posZ - i);
+                int zmax = (int)Math.floor(drone.posZ + i);
                 for (int x = xmin; x <= xmax; x++)
                 {
                     if (fireCount == maxFire) {
@@ -91,14 +92,14 @@ public class ModuleDe
                             if ((x == xmin) || (x == xmax) || (z == zmin) || (z == zmax) || (y == ymin) || (y == ymax))
                             {
                                 BlockPos bp = new BlockPos(x, y, z);
-                                IBlockState bs = drone.field_70170_p.func_180495_p(bp);
-                                Block b = bs.func_177230_c();
-                                if (b == Blocks.field_150480_ab)
+                                IBlockState bs = drone.getEntityWorld().getBlockState(bp);
+                                Block b = bs.getBlock();
+                                if (b == Blocks.FIRE)
                                 {
                                     fireCount++;
                                     count++;
-                                    drone.field_70170_p.func_180498_a(player, 1009, bp, 0);
-                                    drone.field_70170_p.func_175698_g(bp);
+                                    drone.getEntityWorld().playEvent(player, 1009, bp, 0);
+                                    drone.getEntityWorld().setBlockToAir(bp);
                                 }
                             }
                         }

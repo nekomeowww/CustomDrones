@@ -69,16 +69,16 @@ public class ModuleScan
             this.range = ((this.parent.drone.droneInfo.chip + mod.level) * 2);
         }
 
-        public void func_73866_w_()
+        public void initGui()
         {
-            super.func_73866_w_();
-            this.field_146292_n.add(new GuiButton(1, this.field_146294_l / 2 - 34, this.field_146295_m / 2 + 70, 80, 20, "Change range"));
+            super.initGui();
+            this.buttonList.add(new GuiButton(1, this.width / 2 - 34, this.height / 2 + 70, 80, 20, "Change range"));
         }
 
         public void buttonClickedOnEnabledGui(GuiButton button)
         {
             super.buttonClickedOnEnabledGui(button);
-            if (button.field_146127_k == 1)
+            if (button.id == 1)
             {
                 int maxsteps = 5;
                 double maxRange = (this.parent.drone.droneInfo.chip + this.mod.level) * 2;
@@ -93,18 +93,18 @@ public class ModuleScan
             }
         }
 
-        public void func_73876_c()
+        public void updateScreen()
         {
-            super.func_73876_c();
+            super.updateScreen();
             if (!this.parent.drone.droneInfo.isEnabled(this.mod)) {
                 return;
             }
-            World world = this.parent.drone.field_70170_p;
-            AxisAlignedBB aabb = this.parent.drone.func_174813_aQ().func_72314_b(this.range, this.range, this.range);
-            if ((this.mob) && ((this.parent.drone.field_70173_aa % 20 == 0) || (this.entitiesScan.isEmpty())))
+            World world = this.parent.drone.getEntityWorld();
+            AxisAlignedBB aabb = this.parent.drone.getEntityBoundingBox().expand(this.range, this.range, this.range);
+            if ((this.mob) && ((this.parent.drone.ticksExisted % 20 == 0) || (this.entitiesScan.isEmpty())))
             {
                 this.entitiesScan.clear();
-                List<Entity> entities = world.func_175647_a(this.mod == Module.mobScan1 ? EntityAnimal.class : Entity.class, aabb, EntitySelectors.field_94557_a);
+                List<Entity> entities = world.getEntitiesWithinAABB(this.mod == Module.mobScan1 ? EntityAnimal.class : Entity.class, aabb, EntitySelectors.IS_ALIVE);
 
                 entities.remove(this.parent.drone);
                 for (int a = 0; a < entities.size(); a++)
@@ -116,16 +116,16 @@ public class ModuleScan
                     this.entitiesScan.put(entityName, Integer.valueOf(count));
                 }
             }
-            if ((this.ore) && ((this.parent.drone.field_70173_aa % 100 == 0) || (this.oresScan.isEmpty())))
+            if ((this.ore) && ((this.parent.drone.ticksExisted % 100 == 0) || (this.oresScan.isEmpty())))
             {
                 this.oresScan.clear();
-                for (int x = (int)Math.floor(this.parent.drone.field_70165_t - this.range); x <= this.parent.drone.field_70165_t + this.range; x++) {
-                    for (int y = (int)Math.floor(this.parent.drone.field_70163_u - this.range); y <= this.parent.drone.field_70163_u + this.range; y++) {
-                        for (int z = (int)Math.floor(this.parent.drone.field_70161_v - this.range); z <= this.parent.drone.field_70161_v + this.range; z++)
+                for (int x = (int)Math.floor(this.parent.drone.posX - this.range); x <= this.parent.drone.posX + this.range; x++) {
+                    for (int y = (int)Math.floor(this.parent.drone.posY - this.range); y <= this.parent.drone.posY + this.range; y++) {
+                        for (int z = (int)Math.floor(this.parent.drone.posZ - this.range); z <= this.parent.drone.posZ + this.range; z++)
                         {
                             BlockPos bp = new BlockPos(x, y, z);
-                            IBlockState bs = world.func_180495_p(bp);
-                            Block b = bs.func_177230_c();
+                            IBlockState bs = world.getBlockState(bp);
+                            Block b = bs.getBlock();
                             if ((b instanceof BlockOre))
                             {
                                 String oreName = oreName(b);
@@ -200,12 +200,12 @@ public class ModuleScan
             if ((e instanceof EntityItem)) {
                 return "Dropped item";
             }
-            return e.func_70005_c_();
+            return e.getName();
         }
 
         public String oreName(Block b)
         {
-            String s = b.func_149732_F();
+            String s = b.getLocalizedName();
             if ((s.endsWith("Ore")) || (s.endsWith("ore"))) {
                 s = s.substring(0, s.length() - 4);
             }

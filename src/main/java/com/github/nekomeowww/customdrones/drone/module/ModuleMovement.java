@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import com.github.nekomeowww.customdrones.CustomDrones;
-import com.github.nekomeowww.customdrones.api.Filters.FilterExcepts;
+import com.github.nekomeowww.customdrones.api.Filters;
 import com.github.nekomeowww.customdrones.api.helpers.EntityHelper;
 import com.github.nekomeowww.customdrones.api.helpers.VecHelper;
 import com.github.nekomeowww.customdrones.api.helpers.WorldHelper;
@@ -40,37 +40,37 @@ public class ModuleMovement
         int mode = drone.getFlyingMode();
         if ((mode == 2) || ((mode == 3) && (drone.recordingPath != null)))
         {
-            EntityPlayer p = drone.field_70170_p.func_72890_a(drone, 64 * drone.droneInfo.chip);
-            if ((p != null) && (p.func_184614_ca() != null) &&
-                    (DronesMod.droneFlyer.isControllingDrone(p.func_184614_ca(), drone)))
+            EntityPlayer p = drone.getEntityWorld().getClosestPlayerToEntity(drone, 64 * drone.droneInfo.chip);
+            if ((p != null) && (p.getHeldItemMainhand() != null) &&
+                    (CustomDrones.droneFlyer.isControllingDrone(p.getHeldItemMainhand(), drone)))
             {
                 drone.idle = false;
-                int flyMode = DronesMod.droneFlyer.getFlyMode(p.func_184614_ca());
+                int flyMode = CustomDrones.droneFlyer.getFlyMode(p.getHeldItemMainhand());
                 if (flyMode == 1)
                 {
-                    Vec3d maxTarget = EntityHelper.getEyeVec(p).func_178787_e(VecHelper.setLength(p.func_70040_Z(), 32.0D));
-                    RayTraceResult mop = WorldHelper.fullRayTrace(drone.field_70170_p, EntityHelper.getEyeVec(p), maxTarget,
-                            !p.func_70090_H(), false, new Filters.FilterExcepts(new Object[] { drone, p, drone.getRider(), EntityXPOrb.class }));
+                    Vec3d maxTarget = EntityHelper.getEyeVec(p).add(VecHelper.setLength(p.getLookVec(), 32.0D));
+                    RayTraceResult mop = WorldHelper.fullRayTrace(drone.getEntityWorld(), EntityHelper.getEyeVec(p), maxTarget,
+                            !p.isInWater(), false, new Filters.FilterExcepts(new Object[] { drone, p, drone.getRider(), EntityXPOrb.class }));
                     Vec3d dest = maxTarget;
                     if (mop != null) {
-                        if (mop.field_72308_g != null) {
-                            dest = EntityHelper.getEyeVec(mop.field_72308_g);
-                        } else if (mop.field_72307_f != null) {
-                            dest = mop.field_72307_f;
+                        if (mop.entityHit != null) {
+                            dest = EntityHelper.getEyeVec(mop.entityHit);
+                        } else if (mop.hitVec != null) {
+                            dest = mop.hitVec;
                         }
                     }
-                    dest = dest.func_72441_c(0.0D, drone.getRiderHeight(), 0.0D);
+                    dest = dest.addVector(0.0D, drone.getRiderHeight(), 0.0D);
                     Vec3d dirNorm = VecHelper.fromTo(EntityHelper.getEyeVec(drone), dest);
                     drone.flyNormalAlong(dirNorm, 0.6D, 1.0D);
                 }
                 else if (flyMode == 2)
                 {
-                    drone.flyNormalAlong(p.func_70040_Z(), 0.0D, 1.0D);
+                    drone.flyNormalAlong(p.getLookVec(), 0.0D, 1.0D);
                 }
                 if (drone.recordingPath != null) {
-                    if ((drone.prevMotionX != drone.field_70159_w) || (drone.prevMotionY != drone.field_70181_x) || (drone.prevMotionZ != drone.field_70179_y))
+                    if ((drone.prevMotionX != drone.motionX) || (drone.prevMotionY != drone.motionY) || (drone.prevMotionZ != drone.motionZ))
                     {
-                        Node n = new Node(drone.field_70165_t, drone.field_70163_u, drone.field_70161_v);
+                        Node n = new Node(drone.posX, drone.posY, drone.posZ);
                         drone.recordingPath.addNode(n);
                     }
                 }
@@ -87,18 +87,18 @@ public class ModuleMovement
             {
                 Node nowNode = drone.automatedPath.getCurrentNode();
                 Vec3d nowNodeVec = nowNode.toVec();
-                Vec3d pos = drone.func_174791_d();
+                Vec3d pos = drone.getPositionVector();
                 Vec3d flyVec = null;
                 flyVec = VecHelper.fromTo(pos, nowNodeVec);
                 if (flyVec != null)
                 {
                     double speedMult = drone.getSpeedMultiplication();
                     double minDist = speedMult * 20.0D;
-                    flyVec = flyVec.func_72432_b();
-                    drone.field_70159_w += flyVec.field_72450_a * speedMult;
-                    drone.field_70181_x += flyVec.field_72448_b * speedMult;
-                    drone.field_70179_y += flyVec.field_72449_c * speedMult;
-                    if (pos.func_72441_c(drone.field_70159_w, drone.field_70181_x, drone.field_70179_y).func_72436_e(nowNodeVec) < minDist * minDist) {
+                    flyVec = flyVec.normalize();
+                    drone.motionX += flyVec.xCoord * speedMult;
+                    drone.motionY += flyVec.yCoord * speedMult;
+                    drone.motionZ += flyVec.zCoord * speedMult;
+                    if (pos.addVector(drone.motionX, drone.motionY, drone.motionZ).squareDistanceTo(nowNodeVec) < minDist * minDist) {
                         if (drone.automatedPath.goToNextNode() == null) {
                             drone.automatedPath.resetPathIndex();
                         }
@@ -112,9 +112,9 @@ public class ModuleMovement
             EntityPlayer toFollow = drone.getControllingPlayer();
             if (toFollow != null)
             {
-                Vec3d vecTo = new Vec3d(toFollow.field_70165_t, toFollow.field_70163_u + toFollow.func_70047_e(), toFollow.field_70161_v);
-                Vec3d vecFrom = drone.func_174791_d();
-                double dist = vecFrom.func_72438_d(vecTo);
+                Vec3d vecTo = new Vec3d(toFollow.posX, toFollow.posY + toFollow.getEyeHeight(), toFollow.posZ);
+                Vec3d vecFrom = drone.getPositionVector();
+                double dist = vecFrom.distanceTo(vecTo);
                 double minDist = Math.pow(drone.droneInfo.engine, 0.35D) * 2.5D;
                 if (dist > minDist)
                 {
@@ -174,7 +174,7 @@ public class ModuleMovement
         {
             super.addDescText(l);
             if (this.parent.drone.getControllingPlayer() != null) {
-                l.add("Controlled by " + TextFormatting.GREEN + this.parent.drone.getControllingPlayer().func_70005_c_());
+                l.add("Controlled by " + TextFormatting.GREEN + this.parent.drone.getControllingPlayer().getName());
             }
         }
     }

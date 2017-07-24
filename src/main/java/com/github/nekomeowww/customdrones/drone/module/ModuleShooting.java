@@ -38,29 +38,29 @@ public class ModuleShooting
         List<EntityLivingBase> targets;
         if (p != null)
         {
-            Entity lae = p.func_110144_aD();
-            if ((lae != null) && (lae.func_70089_S()))
+            Entity lae = p.getLastAttacker();
+            if ((lae != null) && (lae.isEntityAlive()))
             {
                 drone.setDroneAttackTarget(lae, false);
             }
             else
             {
-                targets = drone.field_70170_p.func_72872_a(EntityLivingBase.class, p
-                        .func_174813_aQ().func_72314_b(range, range, range));
-                targets.addAll(drone.field_70170_p.func_72872_a(EntityLivingBase.class, drone
-                        .func_174813_aQ().func_72314_b(range, range, range)));
+                targets = drone.getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class, p
+                        .getEntityBoundingBox().expand(range, range, range));
+                targets.addAll(drone.getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class, drone
+                        .getEntityBoundingBox().expand(range, range, range)));
                 for (int a = 0; a < targets.size(); a++)
                 {
                     EntityLivingBase e = (EntityLivingBase)targets.get(a);
-                    if ((e != null) && (e.func_70089_S()))
+                    if ((e != null) && (e.isEntityAlive()))
                     {
                         Entity targetee = null;
                         if ((e instanceof EntityLiving)) {
-                            targetee = ((EntityLiving)e).func_70638_az();
-                        } else if (e.func_110144_aD() != null) {
-                            targetee = e.func_110144_aD();
-                        } else if (e.func_70643_av() != null) {
-                            targetee = e.func_70643_av();
+                            targetee = ((EntityLiving)e).getAttackTarget();
+                        } else if (e.getLastAttacker() != null) {
+                            targetee = e.getLastAttacker();
+                        } else if (e.getAITarget() != null) {
+                            targetee = e.getAITarget();
                         }
                         if (targetee != null) {
                             if ((targetee == p) || (targetee == drone)) {
@@ -73,14 +73,14 @@ public class ModuleShooting
         }
         if (drone.getDroneAttackTarget() == null)
         {
-            List<Entity> targets = drone.field_70170_p.func_175674_a(drone.getRider(), drone
-                    .func_174813_aQ().func_72314_b(range, range, range), IMob.field_82192_a);
+            List<Entity> targets = drone.getEntityWorld().getEntitiesInAABBexcluding(drone.getRider(), drone
+                    .getEntityBoundingBox().expand(range, range, range), IMob.MOB_SELECTOR);
             for (Entity e : targets) {
                 drone.setDroneAttackTarget(e, false);
             }
         }
         if (drone.getDroneAttackTarget() != null) {
-            if (drone.func_70032_d(drone.getDroneAttackTarget()) > getShootingRange(drone) * 2.0D) {
+            if (drone.getDistanceToEntity(drone.getDroneAttackTarget()) > getShootingRange(drone) * 2.0D) {
                 drone.setDroneAttackTarget(null, true);
             } else {
                 shootAt(drone, drone.getDroneAttackTarget());
@@ -95,15 +95,15 @@ public class ModuleShooting
         double rate = getShootingRate(drone);
         Vec3d mid = EntityHelper.getCenterVec(drone);
         Vec3d eMid = EntityHelper.getCenterVec(e);
-        double dist = mid.func_72438_d(eMid);
+        double dist = mid.distanceTo(eMid);
         if (dist <= range) {
             if (drone.attackDelay <= 0)
             {
                 drone.attackDelay = ((int)(20.0D / rate));
-                if (!drone.field_70170_p.field_72995_K)
+                if (!drone.getEntityWorld().isRemote)
                 {
-                    Vec3d startShootVec = VecHelper.fromTo(mid, eMid).func_72432_b();
-                    EntityPlasmaShot bullet = new EntityPlasmaShot(drone.field_70170_p);
+                    Vec3d startShootVec = VecHelper.fromTo(mid, eMid).normalize();
+                    EntityPlasmaShot bullet = new EntityPlasmaShot(drone.getEntityWorld());
                     if (canFunctionAs(shootingHoming))
                     {
                         bullet.homing = true;
@@ -111,11 +111,11 @@ public class ModuleShooting
                     }
                     bullet.shooter = drone;
                     bullet.damage = drone.droneInfo.getAttackPower(drone);
-                    bullet.func_70107_b(mid.field_72450_a, mid.field_72448_b, mid.field_72449_c);
-                    Vec3d dir = VecHelper.setLength(VecHelper.fromTo(bullet.func_174791_d(), eMid), speed);
-                    bullet.field_70159_w = dir.field_72450_a;
-                    bullet.field_70181_x = dir.field_72448_b;
-                    bullet.field_70179_y = dir.field_72449_c;
+                    bullet.setPosition(mid.xCoord, mid.yCoord, mid.zCoord);
+                    Vec3d dir = VecHelper.setLength(VecHelper.fromTo(bullet.getPositionVector(), eMid), speed);
+                    bullet.motionX = dir.xCoord;
+                    bullet.motionY = dir.yCoord;
+                    bullet.motionZ = dir.zCoord;
 
                     Color c = new Color(1, 1, 1, 1);
                     switch (drone.droneInfo.core)
@@ -130,8 +130,8 @@ public class ModuleShooting
                             c = new Color(0.6D, 1.0D, 0.6D, 1.0D);
                     }
                     bullet.color = c;
-                    drone.field_70170_p.func_72838_d(bullet);
-                    drone.func_184185_a(SoundEvents.field_187853_gC, 0.4F, 1.2F + new Random().nextFloat() * 0.8F);
+                    drone.getEntityWorld().spawnEntityInWorld(bullet);
+                    drone.playSound(SoundEvents.ENTITY_WITHER_SHOOT, 0.4F, 1.2F + new Random().nextFloat() * 0.8F);
                     drone.droneInfo.reduceBattery(getShootingCost(drone));
                 }
             }
@@ -153,20 +153,20 @@ public class ModuleShooting
         Vec3d eMid = EntityHelper.getCenterVec(e);
         double speed = getShootingSpeed(drone);
         double rate = getShootingRate(drone);
-        double dist = mid.func_72438_d(eMid);
+        double dist = mid.distanceTo(eMid);
         double range = getShootingRange(drone);
         if (dist > range) {
             if ((mode != 2) && (mode != 3))
             {
-                Vec3d followDir = VecHelper.setLength(VecHelper.fromTo(drone.func_174791_d(), eMid), dist - range);
-                if (followDir.func_72433_c() > 0.6D)
+                Vec3d followDir = VecHelper.setLength(VecHelper.fromTo(drone.getPositionVector(), eMid), dist - range);
+                if (followDir.lengthVector() > 0.6D)
                 {
-                    if (followDir.func_72433_c() > 1.0D) {
-                        followDir = followDir.func_72432_b();
+                    if (followDir.lengthVector() > 1.0D) {
+                        followDir = followDir.normalize();
                     }
-                    drone.field_70181_x += followDir.field_72448_b * speedMult;
-                    drone.field_70159_w += followDir.field_72450_a * speedMult;
-                    drone.field_70179_y += followDir.field_72449_c * speedMult;
+                    drone.motionY += followDir.yCoord * speedMult;
+                    drone.motionX += followDir.xCoord * speedMult;
+                    drone.motionZ += followDir.zCoord * speedMult;
                 }
             }
         }
@@ -176,7 +176,7 @@ public class ModuleShooting
     {
         int mode = drone.getFlyingMode();
 
-        return (drone.getDroneAttackTarget() != null) && (mode != 2) && (drone.func_70068_e(drone.getDroneAttackTarget()) > Math.pow(getShootingRange(drone), 2.0D));
+        return (drone.getDroneAttackTarget() != null) && (mode != 2) && (drone.getDistanceSqToEntity(drone.getDroneAttackTarget()) > Math.pow(getShootingRange(drone), 2.0D));
     }
 
     public double getShootingSpeed(EntityDrone e)

@@ -1,14 +1,10 @@
 package com.github.nekomeowww.customdrones.drone.module;
 
 import java.io.IOException;
+import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.FontRenderer;
@@ -40,24 +36,24 @@ public class ModuleMine
 
     static
     {
-        addBlockToMap(Blocks.field_150346_d, 1);
-        addBlockToMap(Blocks.field_150349_c, 1);
-        addBlockToMap(Blocks.field_150351_n, 1);
-        addBlockToMap(Blocks.field_150354_m, 1);
-        addBlockToMap(Blocks.field_150322_A, 2);
-        addBlockToMap(Blocks.field_150348_b, 2);
-        addBlockToMap(Blocks.field_150365_q, 3);
-        addBlockToMap(Blocks.field_150366_p, 4);
-        addBlockToMap(Blocks.field_150424_aL, 5);
-        addBlockToMap(Blocks.field_150425_aM, 5);
-        addBlockToMap(Blocks.field_150426_aN, 6);
-        addBlockToMap(Blocks.field_150369_x, 7);
-        addBlockToMap(Blocks.field_150449_bY, 7);
-        addBlockToMap(Blocks.field_150450_ax, 8);
-        addBlockToMap(Blocks.field_150352_o, 9);
-        addBlockToMap(Blocks.field_150343_Z, 10);
-        addBlockToMap(Blocks.field_150482_ag, 11);
-        addBlockToMap(Blocks.field_150412_bA, 11);
+        addBlockToMap(Blocks.DIRT, 1);
+        addBlockToMap(Blocks.GRASS, 1);
+        addBlockToMap(Blocks.GRAVEL, 1);
+        addBlockToMap(Blocks.SAND, 1);
+        addBlockToMap(Blocks.SANDSTONE, 2);
+        addBlockToMap(Blocks.STONE, 2);
+        addBlockToMap(Blocks.COAL_ORE, 3);
+        addBlockToMap(Blocks.IRON_ORE, 4);
+        addBlockToMap(Blocks.NETHERRACK, 5);
+        addBlockToMap(Blocks.SOUL_SAND, 5);
+        addBlockToMap(Blocks.GLOWSTONE, 6);
+        addBlockToMap(Blocks.LAPIS_ORE, 7);
+        addBlockToMap(Blocks.QUARTZ_ORE, 7);
+        addBlockToMap(Blocks.REDSTONE_ORE, 8);
+        addBlockToMap(Blocks.GOLD_ORE, 9);
+        addBlockToMap(Blocks.OBSIDIAN, 10);
+        addBlockToMap(Blocks.DIAMOND_ORE, 11);
+        addBlockToMap(Blocks.EMERALD_ORE, 11);
     }
 
     public static void addBlockToMap(Block block, int weight)
@@ -93,7 +89,7 @@ public class ModuleMine
                 for (int z = -1; z <= 1; z++) {
                     if (((x == 0) && (y == 0)) || ((x == 0) && (z == 0)) || ((y == 0) && (z == 0)))
                     {
-                        BlockPos bp = bp0.func_177982_a(x, y, z);
+                        BlockPos bp = bp0.add(x, y, z);
                         boolean limited = false;
                         if (limits != null)
                         {
@@ -103,13 +99,13 @@ public class ModuleMine
                             int maxy = Math.max(limits[1].intValue(), limits[4].intValue());
                             int minz = Math.min(limits[2].intValue(), limits[5].intValue());
                             int maxz = Math.max(limits[2].intValue(), limits[5].intValue());
-                            if ((bp.func_177958_n() < minx) || (bp.func_177958_n() > maxx) || (bp.func_177956_o() < miny) || (bp.func_177956_o() > maxy) ||
-                                    (bp.func_177952_p() < minz) || (bp.func_177952_p() > maxz)) {
+                            if ((bp.getX() < minx) || (bp.getX() > maxx) || (bp.getY() < miny) || (bp.getY() > maxy) ||
+                                    (bp.getZ() < minz) || (bp.getZ() > maxz)) {
                                 limited = true;
                             }
                         }
-                        IBlockState bs = drone.field_70170_p.func_180495_p(bp);
-                        if ((!limited) && (canMine(drone, bs.func_177230_c()))) {
+                        IBlockState bs = drone.getEntityWorld().getBlockState(bp);
+                        if ((!limited) && (canMine(drone, bs.getBlock()))) {
                             minables.add(new AbstractMap.SimpleEntry(bp, bs));
                         }
                     }
@@ -118,24 +114,24 @@ public class ModuleMine
         }
         if (minables.isEmpty())
         {
-            getModNBT(drone.droneInfo).func_74757_a("Stay to mine", false);
+            getModNBT(drone.droneInfo).setBoolean("Stay to mine", false);
         }
         else
         {
-            getModNBT(drone.droneInfo).func_74757_a("Stay to mine", true);
+            getModNBT(drone.droneInfo).setBoolean("Stay to mine", true);
             for (Map.Entry<BlockPos, IBlockState> entry : minables)
             {
                 BlockPos bpMine = (BlockPos)entry.getKey();
                 IBlockState bsMine = (IBlockState)entry.getValue();
-                Block b = bsMine.func_177230_c();
-                int hardness = (int)Math.ceil(bsMine.func_185887_b(drone.field_70170_p, bpMine)) * 20 + 1;
-                if (drone.field_70173_aa % hardness == 0)
+                Block b = bsMine.getBlock();
+                int hardness = (int)Math.ceil(bsMine.getBlockHardness(drone.getEntityWorld(), bpMine)) * 20 + 1;
+                if (drone.ticksExisted % hardness == 0)
                 {
-                    if (!drone.field_70170_p.field_72995_K)
+                    if (!drone.getEntityWorld().isRemote)
                     {
-                        b.func_180637_b(drone.field_70170_p, bpMine, b.getExpDrop(bsMine, drone.field_70170_p, bpMine, 0));
-                        b.func_176226_b(drone.field_70170_p, bpMine, bsMine, 0);
-                        drone.field_70170_p.func_175698_g(bpMine);
+                        b.dropXpOnBlockBreak(drone.getEntityWorld(), bpMine, b.getExpDrop(bsMine, drone.getEntityWorld(), bpMine, 0));
+                        b.dropBlockAsItem(drone.getEntityWorld(), bpMine, bsMine, 0);
+                        drone.getEntityWorld().setBlockToAir(bpMine);
                     }
                     drone.droneInfo.reduceBattery(hardness / 10 * drone.droneInfo.getBatteryConsumptionRate(drone));
                 }
@@ -168,30 +164,30 @@ public class ModuleMine
         int range = getRange(drone);
         for (int ax = 0 - range; ax <= range; ax++)
         {
-            int x = (int)Math.floor(mid.field_72450_a) + ax;
+            int x = (int)Math.floor(mid.xCoord) + ax;
             if ((limits == null) || ((x >= Math.min(limits[0].intValue(), limits[3].intValue())) && (x <= Math.max(limits[0].intValue(), limits[3].intValue())))) {
                 for (int az = 0 - range; az <= range; az++)
                 {
-                    int z = (int)Math.floor(mid.field_72449_c) + az;
+                    int z = (int)Math.floor(mid.zCoord) + az;
                     if ((limits == null) || ((z >= Math.min(limits[2].intValue(), limits[5].intValue())) && (z <= Math.max(limits[2].intValue(), limits[5].intValue())))) {
                         for (int ay = 0 - range; ay <= range; ay++)
                         {
-                            int y = (int)Math.floor(mid.field_72448_b) + ay;
+                            int y = (int)Math.floor(mid.yCoord) + ay;
                             if ((limits == null) || ((y >= Math.min(limits[1].intValue(), limits[4].intValue())) && (y <= Math.max(limits[1].intValue(), limits[4].intValue()))))
                             {
                                 BlockPos bp = new BlockPos(x, y, z);
-                                IBlockState bs = drone.field_70170_p.func_180495_p(bp);
-                                if (canMine(drone, bs.func_177230_c()))
+                                IBlockState bs = drone.getEntityWorld().getBlockState(bp);
+                                if (canMine(drone, bs.getBlock()))
                                 {
-                                    int weight = ((Integer)blockToWeightMap.getOrDefault(bs.func_177230_c(), Integer.valueOf(0))).intValue();
-                                    double d1 = mid.func_186679_c(x + 0.5D, y + 0.5D, z + 0.5D);
+                                    int weight = ((Integer)blockToWeightMap.getOrDefault(bs.getBlock(), Integer.valueOf(0))).intValue();
+                                    double d1 = mid.squareDistanceTo(x + 0.5D, y + 0.5D, z + 0.5D);
                                     Vec3d vec = new Vec3d(x, y, z);
                                     boolean weightGood = weight > oreWeight;
 
                                     boolean distGood = (d0 == -1.0D) || (d1 < d0) || ((Math.floor(d1) == Math.floor(d0)) && (rnd.nextInt(range) == 0));
-                                    RayTraceResult rtr = drone.field_70170_p.func_147447_a(mid, vec.func_72441_c(0.5D, 0.5D, 0.5D), false, true, false);
+                                    RayTraceResult rtr = drone.getEntityWorld().rayTraceBlocks(mid, vec.addVector(0.5D, 0.5D, 0.5D), false, true, false);
 
-                                    boolean visible = (rtr == null) || (rtr.func_178782_a().equals(bp));
+                                    boolean visible = (rtr == null) || (rtr.getBlockPos().equals(bp));
                                     if ((visible) && ((weightGood) || ((weight == oreWeight) && (distGood))))
                                     {
                                         d0 = d1;
@@ -207,7 +203,7 @@ public class ModuleMine
         }
         if ((oreWeight > 0) && (orePos != null))
         {
-            Vec3d dir = orePos.func_72441_c(0.5D, 0.5D, 0.5D).func_178788_d(mid);
+            Vec3d dir = orePos.addVector(0.5D, 0.5D, 0.5D).subtract(mid);
             drone.flyNormalAlong(dir, 0.1D, 1.0D);
         }
     }
@@ -229,11 +225,11 @@ public class ModuleMine
             int maxy = Math.max(limits[1].intValue(), limits[4].intValue()) + range;
             int minz = Math.min(limits[2].intValue(), limits[5].intValue()) - range;
             int maxz = Math.max(limits[2].intValue(), limits[5].intValue()) + range;
-            if ((drone.field_70165_t < minx) || (drone.field_70165_t > maxx) || (drone.field_70163_u < miny) || (drone.field_70163_u > maxy) || (drone.field_70161_v < minz) || (drone.field_70161_v > maxz)) {
+            if ((drone.posX < minx) || (drone.posX > maxx) || (drone.posY < miny) || (drone.posY > maxy) || (drone.posZ < minz) || (drone.posZ > maxz)) {
                 return false;
             }
         }
-        return (drone.getFlyingMode() != 2) && (!getModNBT(drone.droneInfo).func_74767_n("Stay to mine"));
+        return (drone.getFlyingMode() != 2) && (!getModNBT(drone.droneInfo).getBoolean("Stay to mine"));
     }
 
     public int getRange(EntityDrone drone)
@@ -273,7 +269,7 @@ public class ModuleMine
 
     public String oreName(Block b)
     {
-        String s = b.func_149732_F();
+        String s = b.getLocalizedName();
         if ((s.endsWith("Ore")) || (s.endsWith("ore"))) {
             s = s.substring(0, s.length() - 4);
         }
@@ -288,12 +284,12 @@ public class ModuleMine
         NBTTagCompound tag = getModNBT(di);
         if (tag != null)
         {
-            Integer x0 = tag.func_74764_b("x0") ? Integer.valueOf(tag.func_74762_e("x0")) : null;
-            Integer y0 = tag.func_74764_b("y0") ? Integer.valueOf(tag.func_74762_e("y0")) : null;
-            Integer z0 = tag.func_74764_b("z0") ? Integer.valueOf(tag.func_74762_e("z0")) : null;
-            Integer x1 = tag.func_74764_b("x1") ? Integer.valueOf(tag.func_74762_e("x1")) : null;
-            Integer y1 = tag.func_74764_b("y1") ? Integer.valueOf(tag.func_74762_e("y1")) : null;
-            Integer z1 = tag.func_74764_b("z1") ? Integer.valueOf(tag.func_74762_e("z1")) : null;
+            Integer x0 = tag.hasKey("x0") ? Integer.valueOf(tag.getInteger("x0")) : null;
+            Integer y0 = tag.hasKey("y0") ? Integer.valueOf(tag.getInteger("y0")) : null;
+            Integer z0 = tag.hasKey("z0") ? Integer.valueOf(tag.getInteger("z0")) : null;
+            Integer x1 = tag.hasKey("x1") ? Integer.valueOf(tag.getInteger("x1")) : null;
+            Integer y1 = tag.hasKey("y1") ? Integer.valueOf(tag.getInteger("y1")) : null;
+            Integer z1 = tag.hasKey("z1") ? Integer.valueOf(tag.getInteger("z1")) : null;
             if ((x0 != null) && (y0 != null) && (z0 != null) && (x1 != null) && (y1 != null) && (z1 != null)) {
                 return new Integer[] { x0, y0, z0, x1, y1, z1 };
             }
@@ -306,12 +302,12 @@ public class ModuleMine
         NBTTagCompound tag = getModNBT(di);
         if (tag != null)
         {
-            tag.func_74768_a("x0", x0);
-            tag.func_74768_a("y0", y0);
-            tag.func_74768_a("z0", z0);
-            tag.func_74768_a("x1", x1);
-            tag.func_74768_a("y1", y1);
-            tag.func_74768_a("z1", z1);
+            tag.setInteger("x0", x0);
+            tag.setInteger("y0", y0);
+            tag.setInteger("z0", z0);
+            tag.setInteger("x1", x1);
+            tag.setInteger("y1", y1);
+            tag.setInteger("z1", z1);
         }
     }
 
@@ -320,12 +316,12 @@ public class ModuleMine
         NBTTagCompound tag = getModNBT(di);
         if (tag != null)
         {
-            tag.func_82580_o("x0");
-            tag.func_82580_o("y0");
-            tag.func_82580_o("z0");
-            tag.func_82580_o("x1");
-            tag.func_82580_o("y1");
-            tag.func_82580_o("z1");
+            tag.removeTag("x0");
+            tag.removeTag("y0");
+            tag.removeTag("z0");
+            tag.removeTag("x1");
+            tag.removeTag("y1");
+            tag.removeTag("z1");
         }
     }
 
@@ -340,27 +336,27 @@ public class ModuleMine
             super(mod);
         }
 
-        public void func_73866_w_()
+        public void initGui()
         {
-            super.func_73866_w_();
+            super.initGui();
             int tx0 = 80;
             int tw = 45;
             int ty0 = 37;
             int ty1 = 52;
             int th = 12;
-            this.textFields[0] = new GuiTextField(1, this.field_146289_q, this.field_146294_l / 2 - tx0, this.field_146295_m / 2 + ty0, tw, th);
-            this.textFields[1] = new GuiTextField(2, this.field_146289_q, this.field_146294_l / 2 - tx0 + tw + 5, this.field_146295_m / 2 + ty0, tw, th);
-            this.textFields[2] = new GuiTextField(3, this.field_146289_q, this.field_146294_l / 2 - tx0 + tw * 2 + 10, this.field_146295_m / 2 + ty0, tw, th);
+            this.textFields[0] = new GuiTextField(1, this.fontRendererObj, this.width / 2 - tx0, this.height / 2 + ty0, tw, th);
+            this.textFields[1] = new GuiTextField(2, this.fontRendererObj, this.width / 2 - tx0 + tw + 5, this.height / 2 + ty0, tw, th);
+            this.textFields[2] = new GuiTextField(3, this.fontRendererObj, this.width / 2 - tx0 + tw * 2 + 10, this.height / 2 + ty0, tw, th);
 
-            this.textFields[3] = new GuiTextField(4, this.field_146289_q, this.field_146294_l / 2 - tx0, this.field_146295_m / 2 + ty1, tw, th);
-            this.textFields[4] = new GuiTextField(5, this.field_146289_q, this.field_146294_l / 2 - tx0 + tw + 5, this.field_146295_m / 2 + ty1, tw, th);
-            this.textFields[5] = new GuiTextField(6, this.field_146289_q, this.field_146294_l / 2 - tx0 + tw * 2 + 10, this.field_146295_m / 2 + ty1, tw, th);
+            this.textFields[3] = new GuiTextField(4, this.fontRendererObj, this.width / 2 - tx0, this.height / 2 + ty1, tw, th);
+            this.textFields[4] = new GuiTextField(5, this.fontRendererObj, this.width / 2 - tx0 + tw + 5, this.height / 2 + ty1, tw, th);
+            this.textFields[5] = new GuiTextField(6, this.fontRendererObj, this.width / 2 - tx0 + tw * 2 + 10, this.height / 2 + ty1, tw, th);
             for (GuiTextField txtf : this.textFields) {
-                txtf.func_146203_f(6);
+                txtf.setMaxStringLength(6);
             }
-            this.field_146292_n.add(new GuiButtonExt(1, this.field_146294_l / 2 + 70, this.field_146295_m / 2 + 35, 60, 30, "Set limits"));
-            this.field_146292_n.add(new GuiButtonExt(2, this.field_146294_l / 2 - 35, this.field_146295_m / 2 + 70, 80, 20, "Remove limits"));
-            this.field_146292_n.add(new GuiButtonExt(3, this.field_146294_l / 2 - 98, this.field_146295_m / 2 + 70, 60, 20, "Auto limits"));
+            this.buttonList.add(new GuiButtonExt(1, this.width / 2 + 70, this.height / 2 + 35, 60, 30, "Set limits"));
+            this.buttonList.add(new GuiButtonExt(2, this.width / 2 - 35, this.height / 2 + 70, 80, 20, "Remove limits"));
+            this.buttonList.add(new GuiButtonExt(3, this.width / 2 - 98, this.height / 2 + 70, 60, 20, "Auto limits"));
             setLimitTexts();
         }
 
@@ -369,29 +365,29 @@ public class ModuleMine
             Integer[] ints = ((ModuleMine)this.mod).getLimits(this.parent.drone.droneInfo);
             if (ints != null) {
                 for (int a = 0; a < 6; a++) {
-                    this.textFields[a].func_146180_a(String.valueOf(ints[a]));
+                    this.textFields[a].setText(String.valueOf(ints[a]));
                 }
             }
         }
 
-        protected void func_73864_a(int mouseX, int mouseY, int mouseButton)
+        protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
                 throws IOException
         {
-            super.func_73864_a(mouseX, mouseY, mouseButton);
+            super.mouseClicked(mouseX, mouseY, mouseButton);
             for (GuiTextField txtf : this.textFields) {
-                txtf.func_146192_a(mouseX, mouseY, mouseButton);
+                txtf.mouseClicked(mouseX, mouseY, mouseButton);
             }
         }
 
-        protected void func_73869_a(char typedChar, int keyCode)
+        protected void keyTyped(char typedChar, int keyCode)
                 throws IOException
         {
-            super.func_73869_a(typedChar, keyCode);
+            super.keyTyped(typedChar, keyCode);
             if ((Character.isDigit(typedChar)) || (keyCode == 14) || (keyCode == 211) || (keyCode == 12) || (keyCode == 74)) {
                 for (GuiTextField txtf : this.textFields) {
-                    if ((txtf != null) && (txtf.func_146206_l())) {
-                        if (((keyCode != 12) && (keyCode != 74)) || (txtf.func_146198_h() == 0)) {
-                            txtf.func_146201_a(typedChar, keyCode);
+                    if ((txtf != null) && (txtf.isFocused())) {
+                        if (((keyCode != 12) && (keyCode != 74)) || (txtf.getCursorPosition() == 0)) {
+                            txtf.textboxKeyTyped(typedChar, keyCode);
                         }
                     }
                 }
@@ -404,12 +400,12 @@ public class ModuleMine
             Integer[] ints;
             int a;
             String s;
-            if (button.field_146127_k == 1)
+            if (button.id == 1)
             {
                 ints = new Integer[6];
                 for (a = 0; a < 6; a++)
                 {
-                    s = this.textFields[a].func_146179_b();
+                    s = this.textFields[a].getText();
                     if ((s.length() > 0) && (!s.equals("-")))
                     {
                         ints[a] = Integer.valueOf(s);
@@ -428,7 +424,7 @@ public class ModuleMine
                     setLimitTexts();
                 }
             }
-            else if (button.field_146127_k == 2)
+            else if (button.id == 2)
             {
                 PacketDispatcher.sendToServer(new PacketDroneSetMineLimits(this.parent.drone, true, 0, 0, 0, 0, 0, 0));
                 ((ModuleMine)this.mod).removeLimits(this.parent.drone.droneInfo);
@@ -437,18 +433,18 @@ public class ModuleMine
                 {
                     GuiTextField txtf = ints[s];
 
-                    txtf.func_146180_a("");
+                    txtf.setText("");
                 }
             }
-            else if (button.field_146127_k == 3)
+            else if (button.id == 3)
             {
                 int limitRange = ModuleMine.this.getRange(this.parent.drone);
-                int minX = (int)(this.parent.drone.field_70165_t - limitRange);
-                int minY = (int)Math.max(this.parent.drone.field_70163_u - limitRange, 0.0D);
-                int minZ = (int)(this.parent.drone.field_70161_v - limitRange);
-                int maxX = (int)(this.parent.drone.field_70165_t + limitRange);
-                int maxY = (int)Math.max(this.parent.drone.field_70163_u, 0.0D);
-                int maxZ = (int)(this.parent.drone.field_70161_v + limitRange);
+                int minX = (int)(this.parent.drone.posX - limitRange);
+                int minY = (int)Math.max(this.parent.drone.posY - limitRange, 0.0D);
+                int minZ = (int)(this.parent.drone.posZ - limitRange);
+                int maxX = (int)(this.parent.drone.posX + limitRange);
+                int maxY = (int)Math.max(this.parent.drone.posY, 0.0D);
+                int maxZ = (int)(this.parent.drone.posZ + limitRange);
                 PacketDispatcher.sendToServer(new PacketDroneSetMineLimits(this.parent.drone, false, minX, minY, minZ, maxX, maxY, maxZ));
 
                 ((ModuleMine)this.mod).setLimits(this.parent.drone.droneInfo, minX, minY, minZ, maxX, maxY, maxZ);
@@ -456,20 +452,20 @@ public class ModuleMine
             }
         }
 
-        public void func_73863_a(int mouseX, int mouseY, float partialTicks)
+        public void drawScreen(int mouseX, int mouseY, float partialTicks)
         {
-            ScaledResolution sr = new ScaledResolution(this.field_146297_k);
-            int sclW = sr.func_78326_a();
-            int sclH = sr.func_78328_b();
+            ScaledResolution sr = new ScaledResolution(this.mc);
+            int sclW = sr.getScaledWidth();
+            int sclH = sr.getScaledHeight();
             for (GuiTextField txtf : this.textFields) {
-                txtf.func_146194_f();
+                txtf.drawTextBox();
             }
-            super.func_73863_a(mouseX, mouseY, partialTicks);
-            this.field_146289_q.func_175065_a("X", sclW / 2 - 60, sclH / 2 + 28, 16777215, true);
-            this.field_146289_q.func_175065_a("Y", sclW / 2 - 10, sclH / 2 + 28, 16777215, true);
-            this.field_146289_q.func_175065_a("Z", sclW / 2 + 40, sclH / 2 + 28, 16777215, true);
-            this.field_146289_q.func_175065_a("Corner A:", sclW / 2 - 135, sclH / 2 + 40, 16777215, true);
-            this.field_146289_q.func_175065_a("Corner B:", sclW / 2 - 135, sclH / 2 + 55, 16777215, true);
+            super.drawScreen(mouseX, mouseY, partialTicks);
+            this.fontRendererObj.drawString("X", sclW / 2 - 60, sclH / 2 + 28, 16777215, true);
+            this.fontRendererObj.drawString("Y", sclW / 2 - 10, sclH / 2 + 28, 16777215, true);
+            this.fontRendererObj.drawString("Z", sclW / 2 + 40, sclH / 2 + 28, 16777215, true);
+            this.fontRendererObj.drawString("Corner A:", sclW / 2 - 135, sclH / 2 + 40, 16777215, true);
+            this.fontRendererObj.drawString("Corner B:", sclW / 2 - 135, sclH / 2 + 55, 16777215, true);
         }
     }
 }

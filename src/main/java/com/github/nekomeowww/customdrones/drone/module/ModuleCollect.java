@@ -31,51 +31,51 @@ public class ModuleCollect
     public void updateModule(EntityDrone drone)
     {
         super.updateModule(drone);
-        World world = drone.field_70170_p;
+        World world = drone.getEntityWorld();
 
-        AxisAlignedBB aabb = new AxisAlignedBB(drone.field_70165_t, drone.field_70163_u, drone.field_70161_v, drone.field_70165_t, drone.field_70163_u, drone.field_70161_v).func_72314_b(2 * drone.droneInfo.chip, 2 * drone.droneInfo.chip, 2 * drone.droneInfo.chip).func_72317_d(0.0D, -drone.droneInfo.chip * 0.5D, 0.0D).func_72321_a(0.0D, 0.25D, 0.0D);
+        AxisAlignedBB aabb = new AxisAlignedBB(drone.posX, drone.posY, drone.posZ, drone.posX, drone.posY, drone.posZ).expand(2 * drone.droneInfo.chip, 2 * drone.droneInfo.chip, 2 * drone.droneInfo.chip).offset(0.0D, -drone.droneInfo.chip * 0.5D, 0.0D).addCoord(0.0D, 0.25D, 0.0D);
         if ((drone.droneInfo.hasInventory()) && (canFunctionAs(Module.itemCollect)))
         {
-            List<EntityItem> eis = world.func_72872_a(EntityItem.class, aabb);
+            List<EntityItem> eis = world.getEntitiesWithinAABB(EntityItem.class, aabb);
             for (EntityItem ei : eis)
             {
-                ItemStack is = ei.func_92059_d();
+                ItemStack is = ei.getEntityItem();
                 if (drone.droneInfo.inventory.canAddToInv(is, false)) {
-                    if ((!ei.func_174874_s()) && (ei.func_70068_e(drone) <= 1.0D))
+                    if ((!ei.cannotPickup()) && (ei.getDistanceSqToEntity(drone) <= 1.0D))
                     {
                         if (is != null)
                         {
                             ItemStack is0 = drone.droneInfo.inventory.addToInv(is);
-                            if ((is0 == null) || (is0.field_77994_a == 0)) {
-                                ei.func_70106_y();
+                            if ((is0 == null) || (is0.stackSize == 0)) {
+                                ei.setDead();
                             } else {
-                                ei.func_92058_a(is0);
+                                ei.setEntityItemStack(is0);
                             }
                         }
                     }
                     else
                     {
-                        Vec3d vec = VecHelper.fromTo(ei.func_174791_d(), drone.func_174791_d());
+                        Vec3d vec = VecHelper.fromTo(ei.getPositionVector(), drone.getPositionVector());
                         vec = VecHelper.setLength(vec, 0.03D * drone.droneInfo.chip);
-                        ei.func_70024_g(vec.field_72450_a, vec.field_72448_b, vec.field_72449_c);
+                        ei.addVelocity(vec.xCoord, vec.yCoord, vec.zCoord);
                     }
                 }
             }
         }
         if (canFunctionAs(Module.xpCollect))
         {
-            List<EntityXPOrb> xpos = world.func_72872_a(EntityXPOrb.class, aabb);
+            List<EntityXPOrb> xpos = world.getEntitiesWithinAABB(EntityXPOrb.class, aabb);
             for (EntityXPOrb xpo : xpos) {
-                if ((xpo.field_70532_c == 0) && (xpo.func_70068_e(drone) <= 1.0D))
+                if ((xpo.delayBeforeCanPickup == 0) && (xpo.getDistanceSqToEntity(drone) <= 1.0D))
                 {
-                    setCollectedXP(drone, getCollectedXP(drone) + xpo.func_70526_d());
-                    xpo.func_70106_y();
+                    setCollectedXP(drone, getCollectedXP(drone) + xpo.getXpValue());
+                    xpo.setDead();
                 }
                 else
                 {
-                    Vec3d vec = VecHelper.fromTo(xpo.func_174791_d(), drone.func_174791_d());
+                    Vec3d vec = VecHelper.fromTo(xpo.getPositionVector(), drone.getPositionVector());
                     vec = VecHelper.setLength(vec, 0.03D * drone.droneInfo.chip);
-                    xpo.func_70024_g(vec.field_72450_a, vec.field_72448_b, vec.field_72449_c);
+                    xpo.addVelocity(vec.xCoord, vec.yCoord, vec.zCoord);
                 }
             }
         }
@@ -83,14 +83,14 @@ public class ModuleCollect
 
     public int getCollectedXP(EntityDrone drone)
     {
-        return getModNBT(drone.droneInfo).func_74762_e("Collected XP");
+        return getModNBT(drone.droneInfo).getInteger("Collected XP");
     }
 
     public void setCollectedXP(EntityDrone drone, int i)
     {
         NBTTagCompound tag = getModNBT(drone.droneInfo);
         if (tag != null) {
-            tag.func_74768_a("Collected XP", i);
+            tag.setInteger("Collected XP", i);
         }
     }
 
@@ -119,31 +119,31 @@ public class ModuleCollect
             super(mod);
         }
 
-        public void func_73866_w_()
+        public void initGui()
         {
-            super.func_73866_w_();
+            super.initGui();
             boolean xp = ModuleCollect.this.canFunctionAs(Module.xpCollect);
             if (xp) {
-                this.field_146292_n.add(this.buttonTransfer = new GuiButton(1, this.field_146294_l / 2 - 24, this.field_146295_m / 2 + 70, 70, 20, "Transfer XP"));
+                this.buttonList.add(this.buttonTransfer = new GuiButton(1, this.width / 2 - 24, this.height / 2 + 70, 70, 20, "Transfer XP"));
             }
         }
 
-        public void func_73876_c()
+        public void updateScreen()
         {
-            super.func_73876_c();
+            super.updateScreen();
             boolean xp = this.mod.canFunctionAs(Module.xpCollect);
             if (xp)
             {
                 int range = 4 * this.parent.drone.droneInfo.chip;
-                if (this.parent.drone.func_70068_e(this.parent.player) <= range * range)
+                if (this.parent.drone.getDistanceSqToEntity(this.parent.player) <= range * range)
                 {
-                    this.buttonTransfer.field_146124_l = true;
-                    this.buttonTransfer.field_146126_j = "Transfer XP";
+                    this.buttonTransfer.enabled = true;
+                    this.buttonTransfer.displayString = "Transfer XP";
                 }
                 else
                 {
-                    this.buttonTransfer.field_146124_l = false;
-                    this.buttonTransfer.field_146126_j = "Out of range";
+                    this.buttonTransfer.enabled = false;
+                    this.buttonTransfer.displayString = "Out of range";
                 }
             }
         }
