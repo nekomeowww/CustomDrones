@@ -38,7 +38,7 @@ public class PacketDroneRequireUpdate
     {
         public IMessage handleServerMessage(EntityPlayer player, PacketDroneRequireUpdate message, MessageContext ctx)
         {
-            World world = player.field_70170_p;
+            World world = player.getEntityWorld();
             if (world != null)
             {
                 EntityDrone drone = EntityDrone.getDroneFromID(world, message.droneID);

@@ -34,7 +34,7 @@ public class PacketCrafter
     {
         this.reduceIndexes = new ArrayList();
         this.output = ByteBufUtils.readItemStack(buffer);
-        this.output.field_77994_a = buffer.readInt();
+        this.output.stackSize = buffer.readInt();
         int indexesCount = buffer.readInt();
         for (int a = 0; a < indexesCount; a++)
         {
@@ -46,8 +46,8 @@ public class PacketCrafter
 
     public void toBytes(ByteBuf buffer)
     {
-        int stackSize = this.output.field_77994_a;
-        this.output.field_77994_a = 1;
+        int stackSize = this.output.stackSize;
+        this.output.stackSize = 1;
         ByteBufUtils.writeItemStack(buffer, this.output);
         buffer.writeInt(stackSize);
         buffer.writeInt(this.reduceIndexes.size());
@@ -67,19 +67,19 @@ public class PacketCrafter
     {
         public IMessage handleServerMessage(EntityPlayer player, PacketCrafter message, MessageContext ctx)
         {
-            InventoryPlayer invp = player.field_71071_by;
-            if (!player.field_71075_bZ.field_75098_d) {
+            InventoryPlayer invp = player.inventory;
+            if (!player.capabilities.isCreativeMode) {
                 for (Map.Entry<Byte, Byte> entry : message.reduceIndexes) {
-                    invp.func_70298_a(((Byte)entry.getKey()).byteValue(), ((Byte)entry.getValue()).byteValue());
+                    invp.decrStackSize(((Byte)entry.getKey()).byteValue(), ((Byte)entry.getValue()).byteValue());
                 }
             }
             ItemStack remain = EntityHelper.addItemStackToInv(invp, message.output);
             if (remain != null)
             {
-                EntityItem ei = new EntityItem(player.field_70170_p, player.field_70165_t, player.field_70163_u, player.field_70161_v, remain);
-                player.field_70170_p.func_72838_d(ei);
+                EntityItem ei = new EntityItem(player.getEntityWorld(), player.posX, player.posY, player.posZ, remain);
+                player.getEntityWorld().spawnEntityInWorld(ei);
             }
-            invp.func_70296_d();
+            invp.markDirty();
             return null;
         }
     }

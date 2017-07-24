@@ -1,5 +1,6 @@
 package com.github.nekomeowww.customdrones.network;
 
+import akka.routing.CustomRouterConfig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -13,15 +14,15 @@ public abstract class AbstractMessageHandler<T extends IMessage>
         implements IMessageHandler<T, IMessage>
 {
     @SideOnly(Side.CLIENT)
-    public abstract IMessage handleClientMessage(EntityPlayer paramEntityPlayer, T paramT, MessageContext paramMessageContext);
+    public abstract IMessage handleClientMessage(EntityPlayer nameEntityPlayer, T nameT, MessageContext nameMessageContext);
 
-    public abstract IMessage handleServerMessage(EntityPlayer paramEntityPlayer, T paramT, MessageContext paramMessageContext);
+    public abstract IMessage handleServerMessage(EntityPlayer nameEntityPlayer, T nameT, MessageContext nameMessageContext);
 
     public IMessage onMessage(T message, MessageContext ctx)
     {
         if (ctx.side.isClient()) {
-            return handleClientMessage(DronesMod.proxy.getPlayerEntity(ctx), message, ctx);
+            return handleClientMessage(CustomDrones.proxy.getPlayerEntity(ctx), message, ctx);
         }
-        return handleServerMessage(DronesMod.proxy.getPlayerEntity(ctx), message, ctx);
+        return handleServerMessage(CustomDrones.proxy.getPlayerEntity(ctx), message, ctx);
     }
 }

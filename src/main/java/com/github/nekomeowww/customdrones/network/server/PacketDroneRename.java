@@ -23,7 +23,7 @@ public class PacketDroneRename
 
     public PacketDroneRename(EntityDrone drone, String name)
     {
-        this.dim = drone.field_70170_p.field_73011_w.getDimension();
+        this.dim = drone.getEntityWorld().provider.getDimension();
         this.droneID = drone.getDroneID();
         this.newName = name;
     }
@@ -47,7 +47,7 @@ public class PacketDroneRename
     {
         public IMessage handleServerMessage(EntityPlayer player, PacketDroneRename message, MessageContext ctx)
         {
-            World world = FMLCommonHandler.instance().getMinecraftServerInstance().func_71218_a(message.dim);
+            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.dim);
             if (world != null)
             {
                 EntityDrone drone = EntityDrone.getDroneFromID(world, message.droneID);

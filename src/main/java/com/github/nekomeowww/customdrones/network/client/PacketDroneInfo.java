@@ -39,7 +39,7 @@ public class PacketDroneInfo
     {
         public IMessage handleClientMessage(EntityPlayer player, PacketDroneInfo message, MessageContext ctx)
         {
-            EntityDrone drone = EntityDrone.getDroneFromID(player.field_70170_p, message.droneInfo.id);
+            EntityDrone drone = EntityDrone.getDroneFromID(player.getEntityWorld(), message.droneInfo.id); //getEntityWorld() used to be world
             if (drone != null) {
                 drone.setDroneInfo(message.droneInfo);
             }

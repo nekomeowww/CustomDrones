@@ -41,18 +41,18 @@ public class PacketDroneItemize
         {
             if (player != null)
             {
-                World world = player.field_70170_p;
+                World world = player.getEntityWorld();
                 if (world != null)
                 {
                     EntityDrone drone = EntityDrone.getDroneFromID(world, message.droneID);
                     if (drone != null)
                     {
                         DroneInfo di = drone.droneInfo;
-                        ItemStack is = new ItemStack(DronesMod.droneSpawn);
-                        DronesMod.droneSpawn.setDroneInfo(is, di);
-                        drone.func_70106_y();
-                        EntityItem ei = new EntityItem(drone.field_70170_p, drone.field_70165_t, drone.field_70163_u, drone.field_70161_v, is);
-                        drone.field_70170_p.func_72838_d(ei);
+                        ItemStack is = new ItemStack(CustomDrones.droneSpawn);
+                        CustomDrones.droneSpawn.setDroneInfo(is, di);
+                        drone.setDead();
+                        EntityItem ei = new EntityItem(drone.getEntityWorld(), drone.posX, drone.posY, drone.posZ, is);
+                        drone.getEntityWorld().spawnEntityInWorld(ei);
                     }
                 }
             }

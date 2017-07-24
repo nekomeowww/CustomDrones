@@ -46,19 +46,19 @@ public class PacketDroneUninstallMod
         {
             if (player != null)
             {
-                World world = player.field_70170_p;
+                World world = player.getEntityWorld();
                 if (world != null)
                 {
                     EntityDrone drone = EntityDrone.getDroneFromID(world, message.droneID);
                     if (drone != null)
                     {
                         if (drone.droneInfo.modsNBT != null) {
-                            drone.droneInfo.modsNBT.func_82580_o("MNBT" + message.mod.getID());
+                            drone.droneInfo.modsNBT.removeTag("MNBT" + message.mod.getID());
                         }
                         drone.droneInfo.disabledMods.remove(message.mod);
                         drone.droneInfo.mods.remove(message.mod);
                         drone.droneInfo.updateDroneInfoToClient(player);
-                        drone.func_70099_a(ItemDroneModule.itemModule(message.mod), 0.0F);
+                        drone.entityDropItem(ItemDroneModule.itemModule(message.mod), 0.0F);
                     }
                 }
             }

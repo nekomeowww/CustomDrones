@@ -36,8 +36,8 @@ public class PacketDroneButtonControl
     {
         public IMessage handleServerMessage(EntityPlayer player, PacketDroneButtonControl message, MessageContext ctx)
         {
-            if (DronesMod.droneFlyer.getFlyMode(player.func_184614_ca()) == 3) {
-                DronesMod.droneFlyer.flyDroneWithButton(player, message.buttonCombination);
+            if (CustomDrones.droneFlyer.getFlyMode(player.getHeldItemMainhand()) == 3) {
+                CustomDrones.droneFlyer.flyDroneWithButton(player, message.buttonCombination);
             }
             return null;
         }

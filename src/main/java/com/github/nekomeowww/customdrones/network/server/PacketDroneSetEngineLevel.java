@@ -22,7 +22,7 @@ public class PacketDroneSetEngineLevel
 
     public PacketDroneSetEngineLevel(EntityDrone drone, double el)
     {
-        this.dim = drone.field_70170_p.field_73011_w.getDimension();
+        this.dim = drone.getEntityWorld().provider.getDimension();
         this.droneID = drone.getDroneID();
         this.engineLevel = el;
     }
@@ -46,7 +46,7 @@ public class PacketDroneSetEngineLevel
     {
         public IMessage handleServerMessage(EntityPlayer player, PacketDroneSetEngineLevel message, MessageContext ctx)
         {
-            World world = FMLCommonHandler.instance().getMinecraftServerInstance().func_71218_a(message.dim);
+            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.dim);
             if (world != null)
             {
                 EntityDrone drone = EntityDrone.getDroneFromID(world, message.droneID);
