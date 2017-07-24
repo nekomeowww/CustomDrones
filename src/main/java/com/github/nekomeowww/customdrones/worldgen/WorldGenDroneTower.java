@@ -73,14 +73,14 @@ public class WorldGenDroneTower
                     world.setBlockState(bp(posX, tY, tmaxZ), blocks.decor2);
                     if (bulge == maxBulge)
                     {
-                        world.setBlockState(bp(tminX + 1, tY, tminZ + 1), Blocks.TORCH.getStateForPlacement(world,
-                                bp(tminX + 1, tY, tminZ + 1), EnumFacing.UP, 0.0F, 0.0F, 0.0F, 0, null));
-                        world.setBlockState(bp(tmaxX - 1, tY, tminZ + 1), Blocks.TORCH.getStateForPlacement(world,
-                                bp(tmaxX - 1, tY, tminZ + 1), EnumFacing.UP, 0.0F, 0.0F, 0.0F, 0, null));
-                        world.setBlockState(bp(tmaxX - 1, tY, tmaxZ - 1), Blocks.TORCH.getStateForPlacement(world,
-                                bp(tmaxX - 1, tY, tmaxZ - 1), EnumFacing.UP, 0.0F, 0.0F, 0.0F, 0, null));
-                        world.setBlockState(bp(tminX + 1, tY, tmaxZ - 1), Blocks.TORCH.getStateForPlacement(world,
-                                bp(tminX + 1, tY, tmaxZ - 1), EnumFacing.UP, 0.0F, 0.0F, 0.0F, 0, null));
+                        world.setBlockState(bp(tminX + 1, tY, tminZ + 1),
+                                Blocks.TORCH.getStateForPlacement(world, bp(tminX + 1, tY, tminZ + 1), EnumFacing.UP, 0.0F, 0.0F, 0.0F, 0, null));
+                        world.setBlockState(bp(tmaxX - 1, tY, tminZ + 1),
+                                Blocks.TORCH.getStateForPlacement(world, bp(tmaxX - 1, tY, tminZ + 1), EnumFacing.UP, 0.0F, 0.0F, 0.0F, 0, null));
+                        world.setBlockState(bp(tmaxX - 1, tY, tmaxZ - 1),
+                                Blocks.TORCH.getStateForPlacement(world, bp(tmaxX - 1, tY, tmaxZ - 1), EnumFacing.UP, 0.0F, 0.0F, 0.0F, 0, null));
+                        world.setBlockState(bp(tminX + 1, tY, tmaxZ - 1),
+                                Blocks.TORCH.getStateForPlacement(world, bp(tminX + 1, tY, tmaxZ - 1), EnumFacing.UP, 0.0F, 0.0F, 0.0F, 0, null));
                     }
                 }
                 genBox(world, bp(minX, fminY, minZ), bp(maxX, fminY, maxZ), blocks.secondary, new Filters.FilterReplaceable(true));
@@ -93,8 +93,8 @@ public class WorldGenDroneTower
                 world.setBlockState(bp(posX, fminY + 1, posZ + 1), torch);
                 world.setBlockState(bp(posX, fminY + 1, posZ - 1), torch);
             }
-            for (int a = 0; a < topDecorHeight; a++) {
-                genBoxMargin(world, bp(minX - a, maxY + a, minZ - a), bp(maxX + a, maxY + a, maxZ + a), blocks.secondary, air, 1, 0, 1, null, new Filters.FilterReplaceable(true));
+            for (int g = 0; g < topDecorHeight; g++) {
+                genBoxMargin(world, bp(minX - g, maxY + g, minZ - g), bp(maxX + g, maxY + g, maxZ + g), blocks.secondary, air, 1, 0, 1, null, new Filters.FilterReplaceable(true));
             }
         }
     }
@@ -168,7 +168,7 @@ public class WorldGenDroneTower
             bigBaby.shouldDespawn = false;
             bigBaby.forceSpawn = true;
             bigBaby.onInitSpawn();
-            world.spawnEntity(bigBaby);
+            world.spawnEntityInWorld(bigBaby);
             return true;
         }
         int babyCount = 2 + rnd.nextInt(3 + floorLevel * 2);
@@ -182,7 +182,7 @@ public class WorldGenDroneTower
             baby.shouldDespawn = false;
             baby.forceSpawn = true;
             baby.onInitSpawn();
-            world.spawnEntity(baby);
+            world.spawnEntityInWorld(baby);
         }
         return false;
     }
