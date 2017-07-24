@@ -16,7 +16,7 @@ public class RenderDroneMob<T extends EntityDroneMob>
 
     public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
-        super.func_76986_a(entity, x, y, z, entityYaw, partialTicks);
+        super.doRender(entity, x, y, z, entityYaw, partialTicks);
         GL11.glPushMatrix();
         GL11.glTranslated(x, y, z);
         double d = entity.modelScale;

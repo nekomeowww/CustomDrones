@@ -23,31 +23,31 @@ public class RenderHomingBox<T extends EntityHomingBox>
 
     public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
-        super.func_76986_a(entity, x, y, z, entityYaw, partialTicks);
+        super.doRender(entity, x, y, z, entityYaw, partialTicks);
         GL11.glPushMatrix();
         GL11.glTranslated(x, y, z);
         if ((entity != null) && (entity.target != null))
         {
-            AxisAlignedBB aabb = entity.target.func_174813_aQ();
+            AxisAlignedBB aabb = entity.target.getEntityBoundingBox();
             if (aabb == null)
             {
                 Vec3d vec = EntityHelper.getCenterVec(entity.target);
                 aabb = new AxisAlignedBB(vec, vec);
-                aabb.func_72314_b(entity.target.field_70130_N / 2.0F, entity.target.field_70131_O / 2.0F, entity.target.field_70130_N / 2.0F);
+                aabb.expand(entity.target.width / 2.0F, entity.target.height / 2.0F, entity.target.width / 2.0F);
             }
-            double expand = aabb.func_72320_b() / 4.0D;
-            aabb = aabb.func_186662_g(expand);
+            double expand = aabb.getAverageEdgeLength() / 4.0D;
+            aabb = aabb.expandXyz(expand);
 
             double thickness = Math.sqrt(x * x + y * y + z * z) / 100.0D;
-            double xWidth = aabb.field_72336_d - aabb.field_72340_a;
-            double yWidth = aabb.field_72337_e - aabb.field_72338_b;
-            double zWidth = aabb.field_72334_f - aabb.field_72339_c;
+            double xWidth = aabb.maxX - aabb.minX;
+            double yWidth = aabb.maxY - aabb.minY;
+            double zWidth = aabb.maxZ - aabb.minZ;
             Color c = new Color(1.0D, 0.3D, 0.3D, 1.0D);
             CMBase bX = new CMBox(xWidth, thickness, thickness).setColor(c);
             CMBase bY = new CMBox(thickness, yWidth, thickness).setColor(c);
             CMBase bZ = new CMBox(thickness, thickness, zWidth).setColor(c);
             GL11.glPushMatrix();
-            GL11.glTranslated(entity.target.field_70165_t - entity.field_70165_t, entity.target.field_70163_u - entity.field_70163_u - expand, entity.target.field_70161_v - entity.field_70161_v);
+            GL11.glTranslated(entity.target.posX - entity.posX, entity.target.posY - entity.posY - expand, entity.target.posZ - entity.posZ);
 
             GL11.glPushMatrix();
             GL11.glTranslated(xWidth / 2.0D, 0.0D, 0.0D);
