@@ -14,7 +14,7 @@ This is the CustomDrones mod of Minecraft that @WilliamEz has made before.
 - [x] ```func``` and ```field``` to actuall func name and field name
 - [x] Code migration for com.github.nekomeowww.\*   
 - [x] Re-organize the ```williamez-src``` branch
-- [x]
+- [x] Code correction
 - [ ] Wiki translation
 - [ ] Plan for 1.11.\*
 - [ ] Plan for 1.12.\*
