@@ -32,9 +32,9 @@ public class CommonProxy
                 DroneAppearance.loadPaletteFile(file);
             }
         }
-        for (??? = DroneAppearance.presetPalettes.iterator(); ((Iterator)???).hasNext();)
+        for (Iterator iter = DroneAppearance.presetPalettes.iterator(); iter.hasNext();)
         {
-            DroneAppearance.ColorPalette palette = (DroneAppearance.ColorPalette)((Iterator)???).next();
+            DroneAppearance.ColorPalette palette = (DroneAppearance.ColorPalette) iter.next();
 
             File paletteFile = new File(modFolder, palette.paletteName + ".palette");
             palette.savePaletteFile(paletteFile);
@@ -63,7 +63,7 @@ public class CommonProxy
 
     public EntityPlayer getPlayerEntity(MessageContext ctx)
     {
-        return ctx.getServerHandler().field_147369_b;
+        return ctx.getServerHandler().playerEntity;
     }
 
     public EntityPlayer getClientPlayer()

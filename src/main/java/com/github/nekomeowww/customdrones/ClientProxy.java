@@ -80,44 +80,44 @@ public class ClientProxy
 
     public void registerStuffRenders()
     {
-        registerItemRender(DronesMod.droneSpawn, 0);
-        registerItemRender(DronesMod.droneFlyer, 0);
-        registerItemRender(DronesMod.dronePainter, 0);
-        registerItemRender(DronesMod.droneScrew, 0);
+        registerItemRender(CustomDrones.droneSpawn, 0);
+        registerItemRender(CustomDrones.droneFlyer, 0);
+        registerItemRender(CustomDrones.dronePainter, 0);
+        registerItemRender(CustomDrones.droneScrew, 0);
         for (int a = 0; a < 16; a++) {
-            registerItemRender(DronesMod.droneBit, a);
+            registerItemRender(CustomDrones.droneBit, a);
         }
-        registerItemRender(DronesMod.cfPlate1, 0);
-        registerItemRender(DronesMod.cfPlate2, 0);
-        registerItemRender(DronesMod.cfPlate3, 0);
-        registerItemRender(DronesMod.cfPlate4, 0);
-        registerItemRender(DronesMod.chip1, 0);
-        registerItemRender(DronesMod.chip2, 0);
-        registerItemRender(DronesMod.chip3, 0);
-        registerItemRender(DronesMod.chip4, 0);
-        registerItemRender(DronesMod.core1, 0);
-        registerItemRender(DronesMod.core2, 0);
-        registerItemRender(DronesMod.core3, 0);
-        registerItemRender(DronesMod.core4, 0);
-        registerItemRender(DronesMod.engine1, 0);
-        registerItemRender(DronesMod.engine2, 0);
-        registerItemRender(DronesMod.engine3, 0);
-        registerItemRender(DronesMod.engine4, 0);
-        registerItemRender(DronesMod.case1, 0);
-        registerItemRender(DronesMod.case2, 0);
-        registerItemRender(DronesMod.case3, 0);
-        registerItemRender(DronesMod.case4, 0);
+        registerItemRender(CustomDrones.cfPlate1, 0);
+        registerItemRender(CustomDrones.cfPlate2, 0);
+        registerItemRender(CustomDrones.cfPlate3, 0);
+        registerItemRender(CustomDrones.cfPlate4, 0);
+        registerItemRender(CustomDrones.chip1, 0);
+        registerItemRender(CustomDrones.chip2, 0);
+        registerItemRender(CustomDrones.chip3, 0);
+        registerItemRender(CustomDrones.chip4, 0);
+        registerItemRender(CustomDrones.core1, 0);
+        registerItemRender(CustomDrones.core2, 0);
+        registerItemRender(CustomDrones.core3, 0);
+        registerItemRender(CustomDrones.core4, 0);
+        registerItemRender(CustomDrones.engine1, 0);
+        registerItemRender(CustomDrones.engine2, 0);
+        registerItemRender(CustomDrones.engine3, 0);
+        registerItemRender(CustomDrones.engine4, 0);
+        registerItemRender(CustomDrones.case1, 0);
+        registerItemRender(CustomDrones.case2, 0);
+        registerItemRender(CustomDrones.case3, 0);
+        registerItemRender(CustomDrones.case4, 0);
         for (int a = 0; a < 4; a++)
         {
             ModelResourceLocation mrl;
-            Minecraft.func_71410_x().func_175599_af().func_175037_a().func_178086_a(DronesMod.droneModule, a,
-                    mrl = itemModelResLoc(DronesMod.droneModule, a + 1 + ""));
-            ModelLoader.setCustomModelResourceLocation(DronesMod.droneModule, a, mrl);
+            Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(CustomDrones.droneModule, a,
+                    mrl = itemModelResLoc(CustomDrones.droneModule, a + 1 + ""));
+            ModelLoader.setCustomModelResourceLocation(CustomDrones.droneModule, a, mrl);
         }
-        registerBlockRender(DronesMod.crafter);
-        registerItemRender(DronesMod.plasmaGun, 0);
-        registerItemRender(DronesMod.plasmaGunHoming, 0);
-        registerItemRender(DronesMod.gunUpgrade, 0);
+        registerBlockRender(CustomDrones.crafter);
+        registerItemRender(CustomDrones.plasmaGun, 0);
+        registerItemRender(CustomDrones.plasmaGunHoming, 0);
+        registerItemRender(CustomDrones.gunUpgrade, 0);
     }
 
     public void registerHandlers()
@@ -128,15 +128,15 @@ public class ClientProxy
 
     public void registerItemRender(Item item, int meta)
     {
-        RenderItem ri = Minecraft.func_71410_x().func_175599_af();
-        ri.func_175037_a().func_178086_a(item, meta, itemModelResLoc(item, ""));
+        RenderItem ri = Minecraft.getMinecraft().getRenderItem();
+        ri.getItemModelMesher().register(item, meta, itemModelResLoc(item, ""));
     }
 
     public void registerBlockRender(Block block)
     {
-        Item itemBlockSimple = ItemBlock.func_150898_a(block);
-        RenderItem ri = Minecraft.func_71410_x().func_175599_af();
-        ri.func_175037_a().func_178086_a(itemBlockSimple, 0, itemModelResLoc(itemBlockSimple, ""));
+        Item itemBlockSimple = ItemBlock.getItemFromBlock(block);
+        RenderItem ri = Minecraft.getMinecraft().getRenderItem();
+        ri.getItemModelMesher().register(itemBlockSimple, 0, itemModelResLoc(itemBlockSimple, ""));
     }
 
     public ModelResourceLocation itemModelResLoc(Item item, String add)
@@ -151,11 +151,11 @@ public class ClientProxy
 
     public EntityPlayer getPlayerEntity(MessageContext ctx)
     {
-        return ctx.side.isClient() ? Minecraft.func_71410_x().field_71439_g : super.getPlayerEntity(ctx);
+        return ctx.side.isClient() ? Minecraft.getMinecraft().thePlayer : super.getPlayerEntity(ctx);
     }
 
     public EntityPlayer getClientPlayer()
     {
-        return Minecraft.func_71410_x().field_71439_g;
+        return Minecraft.getMinecraft().thePlayer;
     }
 }

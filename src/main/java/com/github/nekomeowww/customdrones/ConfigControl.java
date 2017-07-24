@@ -22,7 +22,7 @@ public class ConfigControl
     static
     {
         List<Biome> biomes = new ArrayList();
-        Iterator<Biome> ite = Biome.field_185377_q.iterator();
+        Iterator<Biome> ite = Biome.REGISTRY.iterator();
         while (ite.hasNext()) {
             biomes.add(ite.next());
         }

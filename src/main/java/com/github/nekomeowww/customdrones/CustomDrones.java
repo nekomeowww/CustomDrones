@@ -94,7 +94,7 @@ public class CustomDrones
   public static CreativeTabs droneTab = new CreativeTabs("Drones")
   {
 
-    public Item func_78016_d()
+    public Item getTabIconItem()
     {
       return CustomDrones.droneSpawn;
     }
@@ -102,63 +102,63 @@ public class CustomDrones
 
   public static AchievementPage achievementPage;
 
-  public static ItemDroneSpawn droneSpawn = (ItemDroneSpawn)new ItemDroneSpawn().func_77637_a(droneTab).func_77655_b("droneSpawn");
+  public static ItemDroneSpawn droneSpawn = (ItemDroneSpawn)new ItemDroneSpawn().setCreativeTab(droneTab).setUnlocalizedName("droneSpawn");
 
-  public static ItemDroneFlyer droneFlyer = (ItemDroneFlyer)new ItemDroneFlyer().func_77637_a(droneTab).func_77655_b("droneFlyer");
+  public static ItemDroneFlyer droneFlyer = (ItemDroneFlyer)new ItemDroneFlyer().setCreativeTab(droneTab).setUnlocalizedName("droneFlyer");
 
-  public static ItemDronePainter dronePainter = (ItemDronePainter)new ItemDronePainter().func_77637_a(droneTab).func_77655_b("dronePainter");
+  public static ItemDronePainter dronePainter = (ItemDronePainter)new ItemDronePainter().setCreativeTab(droneTab).setUnlocalizedName("dronePainter");
 
-  public static ItemDroneScrew droneScrew = (ItemDroneScrew)new ItemDroneScrew().func_77637_a(droneTab).func_77655_b("droneScrew");
+  public static ItemDroneScrew droneScrew = (ItemDroneScrew)new ItemDroneScrew().setCreativeTab(droneTab).setUnlocalizedName("droneScrew");
 
-  public static ItemDroneBit droneBit = (ItemDroneBit)new ItemDroneBit().func_77637_a(droneTab).func_77655_b("droneBit");
+  public static ItemDroneBit droneBit = (ItemDroneBit)new ItemDroneBit().setCreativeTab(droneTab).setUnlocalizedName("droneBit");
 
-  public static ItemDronePart cfPlate1 = (ItemDronePart)new ItemDronePart(56, 1).func_77637_a(droneTab).func_77655_b("cfPlate1");
+  public static ItemDronePart cfPlate1 = (ItemDronePart)new ItemDronePart(56, 1).setCreativeTab(droneTab).setUnlocalizedName("cfPlate1");
 
-  public static ItemDronePart cfPlate2 = (ItemDronePart)new ItemDronePart(56, 2).func_77637_a(droneTab).func_77655_b("cfPlate2");
+  public static ItemDronePart cfPlate2 = (ItemDronePart)new ItemDronePart(56, 2).setCreativeTab(droneTab).setUnlocalizedName("cfPlate2");
 
-  public static ItemDronePart cfPlate3 = (ItemDronePart)new ItemDronePart(56, 3).func_77637_a(droneTab).func_77655_b("cfPlate3");
+  public static ItemDronePart cfPlate3 = (ItemDronePart)new ItemDronePart(56, 3).setCreativeTab(droneTab).setUnlocalizedName("cfPlate3");
 
-  public static ItemDronePart cfPlate4 = (ItemDronePart)new ItemDronePart(56, 4).func_77637_a(droneTab).func_77655_b("cfPlate4");
+  public static ItemDronePart cfPlate4 = (ItemDronePart)new ItemDronePart(56, 4).setCreativeTab(droneTab).setUnlocalizedName("cfPlate4");
 
-  public static ItemDronePart case1 = (ItemDronePart)new ItemDronePart(1).func_77637_a(droneTab).func_77655_b("case1");
+  public static ItemDronePart case1 = (ItemDronePart)new ItemDronePart(1).setCreativeTab(droneTab).setUnlocalizedName("case1");
 
-  public static ItemDronePart case2 = (ItemDronePart)new ItemDronePart(2).func_77637_a(droneTab).func_77655_b("case2");
+  public static ItemDronePart case2 = (ItemDronePart)new ItemDronePart(2).setCreativeTab(droneTab).setUnlocalizedName("case2");
 
-  public static ItemDronePart case3 = (ItemDronePart)new ItemDronePart(3).func_77637_a(droneTab).func_77655_b("case3");
+  public static ItemDronePart case3 = (ItemDronePart)new ItemDronePart(3).setCreativeTab(droneTab).setUnlocalizedName("case3");
 
-  public static ItemDronePart case4 = (ItemDronePart)new ItemDronePart(4).func_77637_a(droneTab).func_77655_b("case4");
+  public static ItemDronePart case4 = (ItemDronePart)new ItemDronePart(4).setCreativeTab(droneTab).setUnlocalizedName("case4");
 
-  public static ItemDronePart chip1 = (ItemDronePart)new ItemDronePart(1).func_77637_a(droneTab).func_77655_b("chip1");
+  public static ItemDronePart chip1 = (ItemDronePart)new ItemDronePart(1).setCreativeTab(droneTab).setUnlocalizedName("chip1");
 
-  public static ItemDronePart chip2 = (ItemDronePart)new ItemDronePart(2).func_77637_a(droneTab).func_77655_b("chip2");
+  public static ItemDronePart chip2 = (ItemDronePart)new ItemDronePart(2).setCreativeTab(droneTab).setUnlocalizedName("chip2");
 
-  public static ItemDronePart chip3 = (ItemDronePart)new ItemDronePart(3).func_77637_a(droneTab).func_77655_b("chip3");
+  public static ItemDronePart chip3 = (ItemDronePart)new ItemDronePart(3).setCreativeTab(droneTab).setUnlocalizedName("chip3");
 
-  public static ItemDronePart chip4 = (ItemDronePart)new ItemDronePart(4).func_77637_a(droneTab).func_77655_b("chip4");
+  public static ItemDronePart chip4 = (ItemDronePart)new ItemDronePart(4).setCreativeTab(droneTab).setUnlocalizedName("chip4");
 
-  public static ItemDronePart core1 = (ItemDronePart)new ItemDronePart(1).func_77637_a(droneTab).func_77655_b("core1");
+  public static ItemDronePart core1 = (ItemDronePart)new ItemDronePart(1).setCreativeTab(droneTab).setUnlocalizedName("core1");
 
-  public static ItemDronePart core2 = (ItemDronePart)new ItemDronePart(2).func_77637_a(droneTab).func_77655_b("core2");
+  public static ItemDronePart core2 = (ItemDronePart)new ItemDronePart(2).setCreativeTab(droneTab).setUnlocalizedName("core2");
 
-  public static ItemDronePart core3 = (ItemDronePart)new ItemDronePart(3).func_77637_a(droneTab).func_77655_b("core3");
+  public static ItemDronePart core3 = (ItemDronePart)new ItemDronePart(3).setCreativeTab(droneTab).setUnlocalizedName("core3");
 
-  public static ItemDronePart core4 = (ItemDronePart)new ItemDronePart(4).func_77637_a(droneTab).func_77655_b("core4");
+  public static ItemDronePart core4 = (ItemDronePart)new ItemDronePart(4).setCreativeTab(droneTab).setUnlocalizedName("core4");
 
-  public static ItemDronePart engine1 = (ItemDronePart)new ItemDronePart(1).func_77637_a(droneTab).func_77655_b("engine1");
+  public static ItemDronePart engine1 = (ItemDronePart)new ItemDronePart(1).setCreativeTab(droneTab).setUnlocalizedName("engine1");
 
-  public static ItemDronePart engine2 = (ItemDronePart)new ItemDronePart(2).func_77637_a(droneTab).func_77655_b("engine2");
+  public static ItemDronePart engine2 = (ItemDronePart)new ItemDronePart(2).setCreativeTab(droneTab).setUnlocalizedName("engine2");
 
-  public static ItemDronePart engine3 = (ItemDronePart)new ItemDronePart(3).func_77637_a(droneTab).func_77655_b("engine3");
+  public static ItemDronePart engine3 = (ItemDronePart)new ItemDronePart(3).setCreativeTab(droneTab).setUnlocalizedName("engine3");
 
-  public static ItemDronePart engine4 = (ItemDronePart)new ItemDronePart(4).func_77637_a(droneTab).func_77655_b("engine4");
+  public static ItemDronePart engine4 = (ItemDronePart)new ItemDronePart(4).setCreativeTab(droneTab).setUnlocalizedName("engine4");
 
-  public static ItemDroneModule droneModule = (ItemDroneModule)new ItemDroneModule().func_77637_a(droneTab).func_77655_b("droneModule");
-  public static Block crafter = new BlockCrafter().func_149647_a(droneTab).func_149663_c("crafter");
+  public static ItemDroneModule droneModule = (ItemDroneModule)new ItemDroneModule().setCreativeTab(droneTab).setUnlocalizedName("droneModule");
+  public static Block crafter = new BlockCrafter().setCreativeTab(droneTab).setUnlocalizedName("crafter");
 
-  public static Item plasmaGun = new ItemPlasmaGun(false).func_77637_a(droneTab).func_77655_b("plasmaGun");
-  public static Item plasmaGunHoming = new ItemPlasmaGun(true).func_77637_a(droneTab)
-  .func_77655_b("plasmaGunHoming");
-  public static Item gunUpgrade = new ItemGunUpgrade().func_77637_a(droneTab).func_77655_b("gunUpgrade");
+  public static Item plasmaGun = new ItemPlasmaGun(false).setCreativeTab(droneTab).setUnlocalizedName("plasmaGun");
+  public static Item plasmaGunHoming = new ItemPlasmaGun(true).setCreativeTab(droneTab)
+  .setUnlocalizedName("plasmaGunHoming");
+  public static Item gunUpgrade = new ItemGunUpgrade().setCreativeTab(droneTab).setUnlocalizedName("gunUpgrade");
 
   public void registerEntities()
   {
@@ -207,35 +207,35 @@ public class CustomDrones
 
   public void registerRecipes()
   {
-    addRecipe(new ItemStack(cfPlate1, 7), new Object[] { "IDI", "IEI", "III", Character.valueOf('E'), Items.field_151042_j, Character.valueOf('I'), droneBit, Character.valueOf('D'), Items.field_151045_i });
+    addRecipe(new ItemStack(cfPlate1, 7), new Object[] { "IDI", "IEI", "III", Character.valueOf('E'), Items.IRON_INGOT, Character.valueOf('I'), droneBit, Character.valueOf('D'), Items.DIAMOND });
 
-    addRecipe(new ItemStack(cfPlate2, 7), new Object[] { "IDI", "IEI", "III", Character.valueOf('E'), Items.field_151043_k, Character.valueOf('D'), droneBit, Character.valueOf('I'), cfPlate1 });
-    addRecipe(new ItemStack(cfPlate3, 7), new Object[] { "IDI", "IEI", "III", Character.valueOf('E'), Items.field_151045_i, Character.valueOf('D'), droneBit, Character.valueOf('I'), cfPlate2 });
-    addRecipe(new ItemStack(cfPlate4, 7), new Object[] { "IDI", "IEI", "III", Character.valueOf('E'), Items.field_151166_bC, Character.valueOf('D'), droneBit, Character.valueOf('I'), cfPlate3 });
+    addRecipe(new ItemStack(cfPlate2, 7), new Object[] { "IDI", "IEI", "III", Character.valueOf('E'), Items.GOLD_INGOT, Character.valueOf('D'), droneBit, Character.valueOf('I'), cfPlate1 });
+    addRecipe(new ItemStack(cfPlate3, 7), new Object[] { "IDI", "IEI", "III", Character.valueOf('E'), Items.DIAMOND, Character.valueOf('D'), droneBit, Character.valueOf('I'), cfPlate2 });
+    addRecipe(new ItemStack(cfPlate4, 7), new Object[] { "IDI", "IEI", "III", Character.valueOf('E'), Items.EMERALD, Character.valueOf('D'), droneBit, Character.valueOf('I'), cfPlate3 });
 
     addRecipe(new ItemStack(case1), new Object[] { "PPP", "PPP", "PPP", Character.valueOf('P'), cfPlate1 });
     addRecipe(new ItemStack(case2), new Object[] { "PPP", "PPP", "PPP", Character.valueOf('P'), cfPlate2 });
     addRecipe(new ItemStack(case3), new Object[] { "PPP", "PPP", "PPP", Character.valueOf('P'), cfPlate3 });
     addRecipe(new ItemStack(case4), new Object[] { "PPP", "PPP", "PPP", Character.valueOf('P'), cfPlate4 });
-    addRecipe(new ItemStack(chip1), new Object[] { "P", "R", "P", Character.valueOf('P'), cfPlate1, Character.valueOf('R'), Items.field_151137_ax });
-    addRecipe(new ItemStack(chip2), new Object[] { "P", "R", "P", Character.valueOf('P'), cfPlate2, Character.valueOf('R'), Items.field_151137_ax });
-    addRecipe(new ItemStack(chip3), new Object[] { "P", "R", "P", Character.valueOf('P'), cfPlate3, Character.valueOf('R'), Items.field_151137_ax });
-    addRecipe(new ItemStack(chip4), new Object[] { "P", "R", "P", Character.valueOf('P'), cfPlate4, Character.valueOf('R'), Items.field_151137_ax });
-    addRecipe(new ItemStack(core1), new Object[] { " P ", "PRP", " P ", Character.valueOf('P'), cfPlate1, Character.valueOf('R'), Items.field_151065_br });
-    addRecipe(new ItemStack(core2), new Object[] { " P ", "PRP", " P ", Character.valueOf('P'), cfPlate2, Character.valueOf('R'), Items.field_151065_br });
-    addRecipe(new ItemStack(core3), new Object[] { " P ", "PRP", " P ", Character.valueOf('P'), cfPlate3, Character.valueOf('R'), Items.field_151065_br });
-    addRecipe(new ItemStack(core4), new Object[] { " P ", "PRP", " P ", Character.valueOf('P'), cfPlate4, Character.valueOf('R'), Items.field_151065_br });
-    addRecipe(new ItemStack(engine1), new Object[] { "PRP", "RCR", "PRP", Character.valueOf('P'), cfPlate1, Character.valueOf('R'), Items.field_151137_ax, Character.valueOf('C'), chip1 });
-    addRecipe(new ItemStack(engine2), new Object[] { "PRP", "RCR", "PRP", Character.valueOf('P'), cfPlate2, Character.valueOf('R'), Items.field_151137_ax, Character.valueOf('C'), chip2 });
-    addRecipe(new ItemStack(engine3), new Object[] { "PRP", "RCR", "PRP", Character.valueOf('P'), cfPlate3, Character.valueOf('R'), Items.field_151137_ax, Character.valueOf('C'), chip3 });
-    addRecipe(new ItemStack(engine4), new Object[] { "PRP", "RCR", "PRP", Character.valueOf('P'), cfPlate4, Character.valueOf('R'), Items.field_151137_ax, Character.valueOf('C'), chip4 });
+    addRecipe(new ItemStack(chip1), new Object[] { "P", "R", "P", Character.valueOf('P'), cfPlate1, Character.valueOf('R'), Items.REDSTONE });
+    addRecipe(new ItemStack(chip2), new Object[] { "P", "R", "P", Character.valueOf('P'), cfPlate2, Character.valueOf('R'), Items.REDSTONE });
+    addRecipe(new ItemStack(chip3), new Object[] { "P", "R", "P", Character.valueOf('P'), cfPlate3, Character.valueOf('R'), Items.REDSTONE });
+    addRecipe(new ItemStack(chip4), new Object[] { "P", "R", "P", Character.valueOf('P'), cfPlate4, Character.valueOf('R'), Items.REDSTONE });
+    addRecipe(new ItemStack(core1), new Object[] { " P ", "PRP", " P ", Character.valueOf('P'), cfPlate1, Character.valueOf('R'), Items.BLAZE_POWDER });
+    addRecipe(new ItemStack(core2), new Object[] { " P ", "PRP", " P ", Character.valueOf('P'), cfPlate2, Character.valueOf('R'), Items.BLAZE_POWDER });
+    addRecipe(new ItemStack(core3), new Object[] { " P ", "PRP", " P ", Character.valueOf('P'), cfPlate3, Character.valueOf('R'), Items.BLAZE_POWDER });
+    addRecipe(new ItemStack(core4), new Object[] { " P ", "PRP", " P ", Character.valueOf('P'), cfPlate4, Character.valueOf('R'), Items.BLAZE_POWDER });
+    addRecipe(new ItemStack(engine1), new Object[] { "PRP", "RCR", "PRP", Character.valueOf('P'), cfPlate1, Character.valueOf('R'), Items.REDSTONE, Character.valueOf('C'), chip1 });
+    addRecipe(new ItemStack(engine2), new Object[] { "PRP", "RCR", "PRP", Character.valueOf('P'), cfPlate2, Character.valueOf('R'), Items.REDSTONE, Character.valueOf('C'), chip2 });
+    addRecipe(new ItemStack(engine3), new Object[] { "PRP", "RCR", "PRP", Character.valueOf('P'), cfPlate3, Character.valueOf('R'), Items.REDSTONE, Character.valueOf('C'), chip3 });
+    addRecipe(new ItemStack(engine4), new Object[] { "PRP", "RCR", "PRP", Character.valueOf('P'), cfPlate4, Character.valueOf('R'), Items.REDSTONE, Character.valueOf('C'), chip4 });
 
-    addRecipe(new ItemStack(droneFlyer), new Object[] { " R ", "ECE", "III", Character.valueOf('I'), Items.field_151042_j, Character.valueOf('E'), Items.field_151079_bi, Character.valueOf('R'), Items.field_151137_ax,
+    addRecipe(new ItemStack(droneFlyer), new Object[] { " R ", "ECE", "III", Character.valueOf('I'), Items.IRON_INGOT, Character.valueOf('E'), Items.ENDER_PEARL, Character.valueOf('R'), Items.REDSTONE,
     Character.valueOf('C'), chip1 });
-    addShapeless(new ItemStack(dronePainter), new Object[] { Items.field_151042_j, Items.field_151137_ax, new ItemStack(Items.field_151100_aR, 1, 1), new ItemStack(Items.field_151100_aR, 1, 2), new ItemStack(Items.field_151100_aR, 1, 4) });
+    addShapeless(new ItemStack(dronePainter), new Object[] { Items.IRON_INGOT, Items.REDSTONE, new ItemStack(Items.DYE, 1, 1), new ItemStack(Items.DYE, 1, 2), new ItemStack(Items.DYE, 1, 4) });
 
-    addShapeless(new ItemStack(droneScrew), new Object[] { Items.field_151042_j, Items.field_151043_k, Items.field_151137_ax, cfPlate1 });
-    addShapeless(new ItemStack(crafter), new Object[] { Blocks.field_150462_ai, chip1, case1 });
+    addShapeless(new ItemStack(droneScrew), new Object[] { Items.IRON_INGOT, Items.GOLD_INGOT, Items.REDSTONE, cfPlate1 });
+    addShapeless(new ItemStack(crafter), new Object[] { Blocks.CRAFTING_TABLE, chip1, case1 });
 
     addRecipe(new ItemStack(plasmaGun), new Object[] { "COE", "  H", Character.valueOf('C'), case1, Character.valueOf('O'), core1, Character.valueOf('E'), droneBit, Character.valueOf('H'), chip1 });
     addRecipe(new ItemStack(plasmaGunHoming), new Object[] { "COE", "  H", Character.valueOf('C'), case1, Character.valueOf('O'), core1, Character.valueOf('E'), new ItemStack(droneBit, 1, 1),
@@ -249,74 +249,74 @@ public class CustomDrones
     addRecipe(module(Module.useless2), new Object[] { "PP", "PP", Character.valueOf('P'), cfPlate2 });
     addRecipe(module(Module.useless3), new Object[] { "PP", "PP", Character.valueOf('P'), cfPlate3 });
     addRecipe(module(Module.useless4), new Object[] { "PP", "PP", Character.valueOf('P'), cfPlate4 });
-    addShapeless(module(Module.itemInventory), new Object[] { module(Module.useless1), Blocks.field_150486_ae });
-    addShapeless(module(Module.nplayerTransport), new Object[] { module(Module.useless2), Items.field_151008_G, Items.field_151123_aH });
-    addShapeless(module(Module.playerTransport), new Object[] { module(Module.useless3), Items.field_151008_G, Items.field_151123_aH });
+    addShapeless(module(Module.itemInventory), new Object[] { module(Module.useless1), Blocks.CHEST });
+    addShapeless(module(Module.nplayerTransport), new Object[] { module(Module.useless2), Items.FEATHER, Items.SLIME_BALL });
+    addShapeless(module(Module.playerTransport), new Object[] { module(Module.useless3), Items.FEATHER, Items.SLIME_BALL });
     addShapeless(module(Module.multiTransport), new Object[] { module(Module.useless4), module(Module.itemInventory),
       module(Module.nplayerTransport), module(Module.playerTransport) });
-    addShapeless(module(Module.itemCollect), new Object[] { module(Module.useless1), Items.field_151112_aM });
-    addShapeless(module(Module.xpCollect), new Object[] { module(Module.useless2), Items.field_151112_aM, Items.field_151069_bo });
+    addShapeless(module(Module.itemCollect), new Object[] { module(Module.useless1), Items.FISHING_ROD });
+    addShapeless(module(Module.xpCollect), new Object[] { module(Module.useless2), Items.FISHING_ROD, Items.GLASS_BOTTLE });
     addShapeless(module(Module.multiCollect), new Object[] { module(Module.useless3), module(Module.itemCollect),
       module(Module.xpCollect) });
-    addShapeless(module(Module.chestDeposit), new Object[] { module(Module.useless2), Items.field_151107_aW, Items.field_151132_bS });
-    addShapeless(module(Module.mobScan1), new Object[] { module(Module.useless1), Items.field_151147_al, Items.field_151116_aA, Items.field_151110_aK });
-    addShapeless(module(Module.mobScan2), new Object[] { module(Module.useless2), Items.field_151147_al, Items.field_151116_aA, Items.field_151110_aK, Items.field_151078_bh, Items.field_151016_H, Items.field_151103_aS });
+    addShapeless(module(Module.chestDeposit), new Object[] { module(Module.useless2), Items.REPEATER, Items.COMPARATOR });
+    addShapeless(module(Module.mobScan1), new Object[] { module(Module.useless1), Items.PORKCHOP, Items.LEATHER, Items.EGG });
+    addShapeless(module(Module.mobScan2), new Object[] { module(Module.useless2), Items.PORKCHOP, Items.LEATHER, Items.EGG, Items.ROTTEN_FLESH, Items.GUNPOWDER, Items.BONE });
 
-    addShapeless(module(Module.oreScan), new Object[] { module(Module.useless1), Items.field_151044_h, Items.field_151137_ax, Items.field_151042_j, Items.field_151043_k, Items.field_151045_i, Items.field_151166_bC, new ItemStack(Items.field_151100_aR, 11) });
+    addShapeless(module(Module.oreScan), new Object[] { module(Module.useless1), Items.COAL, Items.REDSTONE, Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND, Items.EMERALD, new ItemStack(Items.DYE, 11) });
 
     addShapeless(module(Module.multiScan), new Object[] { module(Module.useless2), module(Module.mobScan2),
       module(Module.oreScan) });
     addShapeless(module(Module.controlMovement), new Object[] { module(Module.useless1), cfPlate1 });
-    addShapeless(module(Module.pathMovement), new Object[] { module(Module.useless1), cfPlate1, Items.field_151107_aW });
-    addShapeless(module(Module.followMovement), new Object[] { module(Module.useless1), cfPlate1, Items.field_151058_ca });
+    addShapeless(module(Module.pathMovement), new Object[] { module(Module.useless1), cfPlate1, Items.REPEATER });
+    addShapeless(module(Module.followMovement), new Object[] { module(Module.useless1), cfPlate1, Items.LEAD });
     addShapeless(module(Module.multiMovement), new Object[] { module(Module.useless2), module(Module.controlMovement),
       module(Module.pathMovement), module(Module.followMovement) });
-    addShapeless(module(Module.camera), new Object[] { module(Module.useless3), Blocks.field_150359_w, Blocks.field_150429_aA });
-    addShapeless(module(Module.weapon1), new Object[] { module(Module.useless1), Items.field_151065_br, Items.field_151042_j });
-    addShapeless(module(Module.weapon2), new Object[] { module(Module.useless2), Items.field_151065_br, Items.field_151043_k });
-    addShapeless(module(Module.weapon3), new Object[] { module(Module.useless3), Items.field_151065_br, Items.field_151045_i });
-    addShapeless(module(Module.weapon4), new Object[] { module(Module.useless4), Items.field_151065_br, Items.field_151166_bC });
-    addShapeless(module(Module.armor1), new Object[] { module(Module.useless1), Items.field_151116_aA, Items.field_151042_j });
-    addShapeless(module(Module.armor2), new Object[] { module(Module.useless2), Items.field_151116_aA, Items.field_151043_k });
-    addShapeless(module(Module.armor3), new Object[] { module(Module.useless3), Items.field_151116_aA, Items.field_151045_i });
-    addShapeless(module(Module.armor4), new Object[] { module(Module.useless4), Items.field_151116_aA, Items.field_151166_bC });
-    addShapeless(module(Module.shooting), new Object[] { module(Module.useless1), Items.field_151031_f, Items.field_151065_br });
+    addShapeless(module(Module.camera), new Object[] { module(Module.useless3), Blocks.GLASS, Blocks.REDSTONE_TORCH });
+    addShapeless(module(Module.weapon1), new Object[] { module(Module.useless1), Items.BLAZE_POWDER, Items.IRON_INGOT });
+    addShapeless(module(Module.weapon2), new Object[] { module(Module.useless2), Items.BLAZE_POWDER, Items.GOLD_INGOT });
+    addShapeless(module(Module.weapon3), new Object[] { module(Module.useless3), Items.BLAZE_POWDER, Items.DIAMOND });
+    addShapeless(module(Module.weapon4), new Object[] { module(Module.useless4), Items.BLAZE_POWDER, Items.EMERALD });
+    addShapeless(module(Module.armor1), new Object[] { module(Module.useless1), Items.LEATHER, Items.IRON_INGOT });
+    addShapeless(module(Module.armor2), new Object[] { module(Module.useless2), Items.LEATHER, Items.GOLD_INGOT });
+    addShapeless(module(Module.armor3), new Object[] { module(Module.useless3), Items.LEATHER, Items.DIAMOND });
+    addShapeless(module(Module.armor4), new Object[] { module(Module.useless4), Items.LEATHER, Items.EMERALD });
+    addShapeless(module(Module.shooting), new Object[] { module(Module.useless1), Items.BOW, Items.BLAZE_POWDER });
     addShapeless(module(Module.shootingHoming), new Object[] { module(Module.useless2), module(Module.shooting), new ItemStack(droneBit, 1, 1) });
 
-    addShapeless(module(Module.batterySave1), new Object[] { module(Module.useless1), Items.field_151042_j, Items.field_151174_bG });
-    addShapeless(module(Module.batterySave2), new Object[] { module(Module.useless2), Items.field_151043_k, Items.field_151174_bG });
-    addShapeless(module(Module.batterySave3), new Object[] { module(Module.useless3), Items.field_151045_i, Items.field_151174_bG });
-    addShapeless(module(Module.batterySave4), new Object[] { module(Module.useless4), Items.field_151166_bC, Items.field_151174_bG });
-    addShapeless(module(Module.heatPower), new Object[] { module(Module.useless1), Items.field_151129_at, Blocks.field_150424_aL });
-    addShapeless(module(Module.solarPower), new Object[] { module(Module.useless2), Blocks.field_150410_aZ, Blocks.field_150426_aN });
+    addShapeless(module(Module.batterySave1), new Object[] { module(Module.useless1), Items.IRON_INGOT, Items.POTATO });
+    addShapeless(module(Module.batterySave2), new Object[] { module(Module.useless2), Items.GOLD_INGOT, Items.POTATO });
+    addShapeless(module(Module.batterySave3), new Object[] { module(Module.useless3), Items.DIAMOND, Items.POTATO });
+    addShapeless(module(Module.batterySave4), new Object[] { module(Module.useless4), Items.EMERALD, Items.POTATO });
+    addShapeless(module(Module.heatPower), new Object[] { module(Module.useless1), Items.LAVA_BUCKET, Blocks.NETHERRACK });
+    addShapeless(module(Module.solarPower), new Object[] { module(Module.useless2), Blocks.GLASS_PANE, Blocks.GLOWSTONE });
     addShapeless(module(Module.multiPower), new Object[] { module(Module.useless2), module(Module.heatPower),
       module(Module.solarPower) });
-    addShapeless(module(Module.autoReturn), new Object[] { module(Module.useless2), Items.field_151111_aL });
-    addShapeless(module(Module.deflect), new Object[] { module(Module.useless1), Items.field_185159_cQ, Items.field_151008_G });
-    addShapeless(module(Module.deflame), new Object[] { module(Module.useless2), Items.field_151131_as, Blocks.field_150425_aM, Blocks.field_150354_m });
+    addShapeless(module(Module.autoReturn), new Object[] { module(Module.useless2), Items.COMPASS });
+    addShapeless(module(Module.deflect), new Object[] { module(Module.useless1), Items.SHIELD, Items.FEATHER });
+    addShapeless(module(Module.deflame), new Object[] { module(Module.useless2), Items.WATER_BUCKET, Blocks.SOUL_SAND, Blocks.SAND });
 
-    addShapeless(module(Module.deexplosion), new Object[] { module(Module.useless3), Items.field_151016_H, Items.field_151061_bv, Blocks.field_150343_Z });
+    addShapeless(module(Module.deexplosion), new Object[] { module(Module.useless3), Items.GUNPOWDER, Items.ENDER_EYE, Blocks.OBSIDIAN });
 
     addShapeless(module(Module.multiDe), new Object[] { module(Module.useless4), module(Module.deflect), module(Module.deflame),
       module(Module.deexplosion) });
-    addShapeless(module(Module.mine1), new Object[] { module(Module.useless1), Items.field_151035_b, Items.field_151051_r });
-    addShapeless(module(Module.mine2), new Object[] { module(Module.useless2), Items.field_151005_D, Items.field_151011_C });
-    addShapeless(module(Module.mine3), new Object[] { module(Module.useless3), Items.field_151046_w, Items.field_151047_v });
-    addShapeless(module(Module.mine4), new Object[] { module(Module.useless4), Items.field_151046_w, Items.field_151166_bC, Blocks.field_150343_Z });
+    addShapeless(module(Module.mine1), new Object[] { module(Module.useless1), Items.IRON_PICKAXE, Items.STONE_SHOVEL });
+    addShapeless(module(Module.mine2), new Object[] { module(Module.useless2), Items.GOLDEN_PICKAXE, Items.GOLDEN_SHOVEL });
+    addShapeless(module(Module.mine3), new Object[] { module(Module.useless3), Items.DIAMOND_PICKAXE, Items.DIAMOND_SHOVEL });
+    addShapeless(module(Module.mine4), new Object[] { module(Module.useless4), Items.DIAMOND_PICKAXE, Items.EMERALD, Blocks.OBSIDIAN });
   }
 
 
   public void registerGunUpgradeRecipes()
   {
-    addShapeless(gunUpgrade(ItemGunUpgrade.GunUpgrade.explosion), new Object[] { chip1, Blocks.field_150335_W });
-    addShapeless(gunUpgrade(ItemGunUpgrade.GunUpgrade.scatter), new Object[] { chip1, Items.field_151123_aH, Items.field_151064_bs });
+    addShapeless(gunUpgrade(ItemGunUpgrade.GunUpgrade.explosion), new Object[] { chip1, Blocks.TNT });
+    addShapeless(gunUpgrade(ItemGunUpgrade.GunUpgrade.scatter), new Object[] { chip1, Items.SLIME_BALL, Items.MAGMA_CREAM });
     addShapeless(gunUpgrade(ItemGunUpgrade.GunUpgrade.healing), new Object[] { chip1,
-      PotionUtils.func_185188_a(new ItemStack(Items.field_151068_bn), PotionType.func_185168_a("healing")) });
+      PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), PotionType.getPotionTypeForName("healing")) });
     addShapeless(gunUpgrade(ItemGunUpgrade.GunUpgrade.doubleShot), new Object[] { chip1, chip2 });
     addShapeless(gunUpgrade(ItemGunUpgrade.GunUpgrade.tripleShot), new Object[] { chip1, chip3 });
-    addShapeless(gunUpgrade(ItemGunUpgrade.GunUpgrade.fire), new Object[] { chip1, Items.field_151033_d, Items.field_151065_br });
-    addShapeless(gunUpgrade(ItemGunUpgrade.GunUpgrade.ice), new Object[] { chip1, Blocks.field_150432_aD,
-      PotionUtils.func_185188_a(new ItemStack(Items.field_151068_bn), PotionType.func_185168_a("slowness")) });
+    addShapeless(gunUpgrade(ItemGunUpgrade.GunUpgrade.fire), new Object[] { chip1, Items.FLINT_AND_STEEL, Items.BLAZE_POWDER });
+    addShapeless(gunUpgrade(ItemGunUpgrade.GunUpgrade.ice), new Object[] { chip1, Blocks.ICE,
+      PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), PotionType.getPotionTypeForName("slowness")) });
   }
 
   public static ItemStack gunUpgrade(ItemGunUpgrade.GunUpgrade gu)
@@ -342,7 +342,7 @@ public class CustomDrones
     {
       if ((object instanceof ItemStack))
       {
-        list.add(((ItemStack)object).func_77946_l());
+        list.add(((ItemStack)object).copy());
       }
       else if ((object instanceof Item))
       {
@@ -375,18 +375,18 @@ public class CustomDrones
 
   public static RecipeType getRecipeType(ItemStack is)
   {
-    if ((is == null) || (is.func_77973_b() == null)) return RecipeType.None;
-    if ((is.func_77973_b() instanceof ItemDronePart)) return RecipeType.Parts;
-    if ((is.func_77973_b() instanceof ItemDroneModule)) return RecipeType.Modules;
-    if ((is.func_77973_b() instanceof ItemDroneSpawn)) return RecipeType.Drones;
-    if ((is.func_77973_b() instanceof IItemWeapon)) return RecipeType.Weapons;
-    if ((is.func_77973_b() instanceof ItemDroneFlyer)) return RecipeType.Tools;
-    if ((is.func_77973_b() instanceof ItemDronePainter)) return RecipeType.Tools;
-    if ((is.func_77973_b() instanceof ItemDroneScrew)) return RecipeType.Tools;
-    if ((is.func_77973_b() instanceof ItemGunUpgrade)) return RecipeType.Upgrades;
-    if ((is.func_77973_b() instanceof ItemBlock))
+    if ((is == null) || (is.getItem() == null)) return RecipeType.None;
+    if ((is.getItem() instanceof ItemDronePart)) return RecipeType.Parts;
+    if ((is.getItem() instanceof ItemDroneModule)) return RecipeType.Modules;
+    if ((is.getItem() instanceof ItemDroneSpawn)) return RecipeType.Drones;
+    if ((is.getItem() instanceof IItemWeapon)) return RecipeType.Weapons;
+    if ((is.getItem() instanceof ItemDroneFlyer)) return RecipeType.Tools;
+    if ((is.getItem() instanceof ItemDronePainter)) return RecipeType.Tools;
+    if ((is.getItem() instanceof ItemDroneScrew)) return RecipeType.Tools;
+    if ((is.getItem() instanceof ItemGunUpgrade)) return RecipeType.Upgrades;
+    if ((is.getItem() instanceof ItemBlock))
     {
-      Block b = ((ItemBlock)is.func_77973_b()).func_179223_d();
+      Block b = ((ItemBlock)is.getItem()).getBlock();
       if ((b instanceof BlockCrafter)) return RecipeType.Tools;
     }
     return RecipeType.None;
