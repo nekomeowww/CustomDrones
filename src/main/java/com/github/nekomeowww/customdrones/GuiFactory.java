@@ -38,7 +38,7 @@ public class GuiFactory
     {
         public ConfigGui(GuiScreen parentScreen)
         {
-            super(getConfigElements(parentScreen), "drones", ConfigControl.CONFIGID, false, false, "CustomDrones configuration");
+            super(parentScreen, getConfigElements(parentScreen), "customdrones", ConfigControl.CONFIGID, false, false, "CustomDrones configuration");
         }
 
         private static List<IConfigElement> getConfigElements(GuiScreen parent)
