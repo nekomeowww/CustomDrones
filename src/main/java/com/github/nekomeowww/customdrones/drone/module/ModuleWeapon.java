@@ -4,9 +4,9 @@ import java.util.List;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import williamle.drones.drone.DroneInfo;
-import williamle.drones.entity.EntityDrone;
-import williamle.drones.gui.GuiDroneStatus;
+import com.github.nekomeowww.customdrones.drone.DroneInfo;
+import com.github.nekomeowww.customdrones.entity.EntityDrone;
+import com.github.nekomeowww.customdrones.gui.GuiDroneStatus;
 
 public class ModuleWeapon
         extends Module

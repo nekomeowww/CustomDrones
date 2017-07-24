@@ -12,10 +12,10 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import williamle.drones.entity.EntityDrone;
-import williamle.drones.gui.GuiDroneStatus;
-import williamle.drones.network.PacketDispatcher;
-import williamle.drones.network.server.PacketDroneDropRider;
+import com.github.nekomeowww.customdrones.entity.EntityDrone;
+import com.github.nekomeowww.customdrones.gui.GuiDroneStatus;
+import com.github.nekomeowww.customdrones.network.PacketDispatcher;
+import com.github.nekomeowww.customdrones.network.server.PacketDroneDropRider;
 
 public class ModuleTransport
         extends Module
@@ -27,14 +27,14 @@ public class ModuleTransport
 
     public boolean collideWithBlock(EntityDrone drone, BlockPos pos, IBlockState state)
     {
-        if ((!drone.field_70170_p.field_72995_K) && (canFunctionAs(nplayerTransport)) && (drone.getRider() == null) &&
-                (state.func_177230_c() == Blocks.field_150335_W))
+        if ((!drone.getEntityWorld().isRemote) && (canFunctionAs(nplayerTransport)) && (drone.getRider() == null) &&
+                (state.getBlock() == Blocks.TNT))
         {
-            drone.field_70170_p.func_175698_g(pos);
+            drone.getEntityWorld().setBlockToAir(pos);
 
-            EntityTNTPrimed tnt = new EntityTNTPrimed(drone.field_70170_p, pos.func_177958_n(), pos.func_177956_o(), pos.func_177952_p(), drone.getControllingPlayer() == null ? drone : drone.getControllingPlayer());
-            tnt.func_184220_m(drone);
-            drone.field_70170_p.func_72838_d(tnt);
+            EntityTNTPrimed tnt = new EntityTNTPrimed(drone.getEntityWorld(), pos.getX(), pos.getY(), pos.getZ(), drone.getControllingPlayer() == null ? drone : drone.getControllingPlayer());
+            tnt.startRiding(drone);
+            drone.getEntityWorld().spawnEntityInWorld(tnt);
         }
         return super.collideWithBlock(drone, pos, state);
     }
@@ -43,14 +43,14 @@ public class ModuleTransport
     {
         super.updateModule(drone);
         if ((canFunctionAs(nplayerTransport)) && ((drone.getRider() instanceof EntityTNTPrimed))) {
-            ((EntityTNTPrimed)drone.getRider()).func_184534_a(80 - drone.field_70173_aa % 20);
+            ((EntityTNTPrimed)drone.getRider()).setFuse(80 - drone.ticksExisted % 20);
         }
     }
 
     public double costBatRawPerSec(EntityDrone drone)
     {
         if (drone.getRider() != null) {
-            return super.costBatRawPerSec(drone) + drone.getRider().field_70130_N * drone.getRider().field_70131_O;
+            return super.costBatRawPerSec(drone) + drone.getRider().width * drone.getRider().height;
         }
         return super.costBatRawPerSec(drone);
     }
@@ -95,11 +95,11 @@ public class ModuleTransport
             this.transportEntity = ((mod == Module.nplayerTransport) || (mod == Module.playerTransport) || (mod == Module.multiTransport));
         }
 
-        public void func_73866_w_()
+        public void initGui()
         {
-            super.func_73866_w_();
+            super.initGui();
             if (this.transportEntity) {
-                this.field_146292_n.add(new GuiButton(1, this.field_146294_l / 2 - 24, this.field_146295_m / 2 + 70, 70, 20, "Drop entity"));
+                this.buttonList.add(new GuiButton(1, this.width / 2 - 24, this.height / 2 + 70, 70, 20, "Drop entity"));
             }
         }
 
@@ -110,14 +110,14 @@ public class ModuleTransport
             {
                 String transporting = "None";
                 if ((this.parent.drone.getRider() instanceof EntityPlayer)) {
-                    transporting = TextFormatting.AQUA + ((EntityPlayer)this.parent.drone.getRider()).func_70005_c_();
+                    transporting = TextFormatting.AQUA + ((EntityPlayer)this.parent.drone.getRider()).getName();
                 } else if (this.parent.drone.getRider() != null) {
-                    transporting = TextFormatting.AQUA + this.parent.drone.getRider().func_70005_c_();
+                    transporting = TextFormatting.AQUA + this.parent.drone.getRider().getName();
                 }
                 l.add("Transporting entity: " + transporting);
                 if (this.parent.drone.getRider() != null)
                 {
-                    double cost = this.parent.drone.getRider().field_70130_N * this.parent.drone.getRider().field_70131_O;
+                    double cost = this.parent.drone.getRider().width * this.parent.drone.getRider().height;
                     l.add("Transporting weight cost: " + TextFormatting.RED + Math.round(cost * 100.0D) / 100.0D + " battery/sec");
                 }
             }
@@ -126,7 +126,7 @@ public class ModuleTransport
         public void buttonClickedOnEnabledGui(GuiButton button)
         {
             super.buttonClickedOnEnabledGui(button);
-            if ((button.field_146127_k == 1) && (this.parent.drone.getRider() != null)) {
+            if ((button.id == 1) && (this.parent.drone.getRider() != null)) {
                 PacketDispatcher.sendToServer(new PacketDroneDropRider(this.parent.drone));
             }
         }

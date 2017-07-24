@@ -45,10 +45,10 @@ public class ModuleRecharge
         }
         int range = 2 + d.droneInfo.chip;
         double recharge = 0.0D;
-        if ((canFunctionAs(solarPower)) && (d.field_70170_p.func_175710_j(d.func_180425_c())))
+        if ((canFunctionAs(solarPower)) && (d.getEntityWorld().canBlockSeeSky(d.getPosition())))
         {
-            double lightClearness = d.field_70170_p.func_175724_o(d.func_180425_c());
-            double sunnyness = d.field_70170_p.func_72820_D() % 24000L;
+            double lightClearness = d.getEntityWorld().getLightBrightness(d.getPosition());
+            double sunnyness = d.getEntityWorld().getWorldTime() % 24000L;
             if (sunnyness < 6000.0D) {
                 sunnyness += 0.0D;
             } else if ((sunnyness > 6000.0D) && (sunnyness <= 18000.0D)) {
@@ -61,20 +61,20 @@ public class ModuleRecharge
             recharge += lightClearness * daytimeLightness * 0.375D * d.droneInfo.chip;
         }
         if (canFunctionAs(heatPower)) {
-            for (int x = (int)(d.field_70165_t - range); x <= d.field_70165_t + range; x++) {
-                for (int y = (int)(d.field_70163_u - range); y <= d.field_70163_u + range; y++) {
-                    for (int z = (int)(d.field_70161_v - range); z <= d.field_70161_v + range; z++)
+            for (int x = (int)(d.posX - range); x <= d.posX + range; x++) {
+                for (int y = (int)(d.posY - range); y <= d.posY + range; y++) {
+                    for (int z = (int)(d.posZ - range); z <= d.posZ + range; z++)
                     {
-                        double distSqr = d.func_70092_e(x + 0.5D, y + 0.5D, z + 0.5D);
+                        double distSqr = d.getDistanceSq(x + 0.5D, y + 0.5D, z + 0.5D);
                         if (distSqr <= range * range)
                         {
-                            Block b = d.field_70170_p.func_180495_p(new BlockPos(x, y, z)).func_177230_c();
+                            Block b = d.getEntityWorld().getBlockState(new BlockPos(x, y, z)).getBlock();
                             double heatPower = 0.0D;
-                            if (b == Blocks.field_150480_ab) {
+                            if (b == Blocks.FIRE) {
                                 heatPower = 1.0D;
-                            } else if (b == Blocks.field_150356_k) {
+                            } else if (b == Blocks.FLOWING_LAVA) {
                                 heatPower = 2.0D;
-                            } else if (b == Blocks.field_150353_l) {
+                            } else if (b == Blocks.LAVA) {
                                 heatPower = 3.0D;
                             }
                             if (heatPower > 0.0D)

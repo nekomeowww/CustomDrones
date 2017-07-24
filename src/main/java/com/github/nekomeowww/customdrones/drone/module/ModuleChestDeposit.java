@@ -28,40 +28,40 @@ public class ModuleChestDeposit
         super.updateModule(drone);
         if (drone.droneInfo.hasInventory())
         {
-            int x = (int)Math.floor(drone.field_70165_t);
-            int y = (int)Math.floor(drone.field_70163_u - 1.0D);
-            int z = (int)Math.floor(drone.field_70161_v);
+            int x = (int)Math.floor(drone.posX);
+            int y = (int)Math.floor(drone.posY - 1.0D);
+            int z = (int)Math.floor(drone.posZ);
             IInventory iinv = null;
-            TileEntity tile0 = drone.field_70170_p.func_175625_s(new BlockPos(x, y, z));
+            TileEntity tile0 = drone.getEntityWorld().getTileEntity(new BlockPos(x, y, z));
             if ((tile0 instanceof IInventory)) {
                 iinv = (IInventory)tile0;
             } else if (((tile0 instanceof TileEntityEnderChest)) && (drone.getControllingPlayer() != null)) {
-                iinv = drone.getControllingPlayer().func_71005_bN();
+                iinv = drone.getControllingPlayer().getInventoryEnderChest();
             }
             if (iinv != null)
             {
                 InventoryDrone droneinv = drone.droneInfo.inventory;
-                int stackLimit = iinv.func_70297_j_();
-                int invSize = iinv.func_70302_i_();
-                for (int a = 0; a < droneinv.func_70302_i_(); a++)
+                int stackLimit = iinv.getInventoryStackLimit();
+                int invSize = iinv.getSizeInventory();
+                for (int a = 0; a < droneinv.getSizeInventory(); a++)
                 {
-                    ItemStack is0 = droneinv.func_70301_a(a);
+                    ItemStack is0 = droneinv.getStackInSlot(a);
                     if (is0 != null) {
                         for (int b = 0; b < invSize; b++)
                         {
-                            ItemStack is1 = iinv.func_70301_a(b);
+                            ItemStack is1 = iinv.getStackInSlot(b);
                             if (is1 != null)
                             {
-                                int thisStackLimit = Math.min(stackLimit, is1.func_77976_d());
-                                if ((ItemStack.func_179545_c(is0, is1)) && (is1.field_77994_a < thisStackLimit))
+                                int thisStackLimit = Math.min(stackLimit, is1.getMaxStackSize());
+                                if ((ItemStack.areItemsEqual(is0, is1)) && (is1.stackSize < thisStackLimit))
                                 {
-                                    int maxAdd = thisStackLimit - is1.field_77994_a;
-                                    int canAdd = is0.field_77994_a;
+                                    int maxAdd = thisStackLimit - is1.stackSize;
+                                    int canAdd = is0.stackSize;
                                     int toAdd = Math.min(maxAdd, canAdd);
-                                    is1.field_77994_a += toAdd;
-                                    is0.field_77994_a -= toAdd;
-                                    iinv.func_70299_a(b, is1);
-                                    if (is0.field_77994_a <= 0)
+                                    is1.stackSize += toAdd;
+                                    is0.stackSize -= toAdd;
+                                    iinv.setInventorySlotContents(b, is1);
+                                    if (is0.stackSize <= 0)
                                     {
                                         is0 = null;
                                         break;
@@ -73,13 +73,13 @@ public class ModuleChestDeposit
                     if (is0 != null) {
                         for (int b = 0; b < invSize; b++)
                         {
-                            ItemStack is1 = iinv.func_70301_a(b);
+                            ItemStack is1 = iinv.getStackInSlot(b);
                             if (is1 == null)
                             {
-                                is1 = is0.func_77946_l();
+                                is1 = is0.copy();
                                 is0 = null;
-                                iinv.func_70299_a(b, is1);
-                                droneinv.func_70299_a(a, is0);
+                                iinv.setInventorySlotContents(b, is1);
+                                droneinv.setInventorySlotContents(a, is0);
                                 break;
                             }
                         }

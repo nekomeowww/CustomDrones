@@ -52,8 +52,8 @@ public class ModuleReturn
     public Vec3d getReturnPos(EntityDrone drone)
     {
         NBTTagCompound tag = getModNBT(drone.droneInfo);
-        if ((tag != null) && (tag.func_74764_b("Return X")) && (tag.func_74764_b("Return Y")) && (tag.func_74764_b("Return Z"))) {
-            return new Vec3d(tag.func_74769_h("Return X"), tag.func_74769_h("Return Y"), tag.func_74769_h("Return Z"));
+        if ((tag != null) && (tag.hasKey("Return X")) && (tag.hasKey("Return Y")) && (tag.hasKey("Return Z"))) {
+            return new Vec3d(tag.getDouble("Return X"), tag.getDouble("Return Y"), tag.getDouble("Return Z"));
         }
         return null;
     }
@@ -63,9 +63,9 @@ public class ModuleReturn
         NBTTagCompound tag = getModNBT(drone.droneInfo);
         if (tag != null)
         {
-            tag.func_74780_a("Return X", vec.field_72450_a);
-            tag.func_74780_a("Return Y", vec.field_72448_b);
-            tag.func_74780_a("Return Z", vec.field_72449_c);
+            tag.setDouble("Return X", vec.xCoord);
+            tag.setDouble("Return Y", vec.yCoord);
+            tag.setDouble("Return Z", vec.zCoord);
         }
     }
 
@@ -77,27 +77,27 @@ public class ModuleReturn
             return;
         }
         double speedMult = drone.getSpeedMultiplication();
-        Vec3d dir = VecHelper.fromTo(drone.func_174791_d(), repos);
-        if (dir.func_72433_c() <= 1.0D)
+        Vec3d dir = VecHelper.fromTo(drone.getPositionVector(), repos);
+        if (dir.lengthVector() <= 1.0D)
         {
-            int x = (int)Math.floor(drone.field_70165_t);
-            int y = (int)Math.floor(drone.field_70163_u);
-            int z = (int)Math.floor(drone.field_70161_v);
+            int x = (int)Math.floor(drone.posX);
+            int y = (int)Math.floor(drone.posY);
+            int z = (int)Math.floor(drone.posZ);
             for (int y0 = y; y0 >= y - 1; y0--)
             {
                 BlockPos bs = new BlockPos(x, y0, z);
                 IInventory iinv = null;
-                TileEntity tile0 = drone.field_70170_p.func_175625_s(bs);
+                TileEntity tile0 = drone.getEntityWorld().getTileEntity(bs);
                 if ((tile0 instanceof IInventory)) {
                     iinv = (IInventory)tile0;
                 } else if (((tile0 instanceof TileEntityEnderChest)) && (drone.getControllingPlayer() != null)) {
-                    iinv = drone.getControllingPlayer().func_71005_bN();
+                    iinv = drone.getControllingPlayer().getInventoryEnderChest();
                 }
                 if (iinv != null)
                 {
-                    for (int a = 0; a < iinv.func_70302_i_(); a++)
+                    for (int a = 0; a < iinv.getSizeInventory(); a++)
                     {
-                        ItemStack is1 = iinv.func_70301_a(a);
+                        ItemStack is1 = iinv.getStackInSlot(a);
                         if (DroneInfo.batteryFuel.containsKey(drone.droneInfo.getItemStackObject(is1)))
                         {
                             is1 = drone.droneInfo.applyItem(drone, is1);
@@ -105,7 +105,7 @@ public class ModuleReturn
                                 break;
                             }
                             ItemStack is2 = drone.droneInfo.inventory.addToInv(is1);
-                            iinv.func_70299_a(a, is2);
+                            iinv.setInventorySlotContents(a, is2);
                             break;
                         }
                     }
@@ -115,11 +115,11 @@ public class ModuleReturn
         }
         else
         {
-            dir = dir.func_72432_b();
+            dir = dir.normalize();
         }
-        drone.field_70181_x += dir.field_72448_b * speedMult;
-        drone.field_70159_w += dir.field_72450_a * speedMult;
-        drone.field_70179_y += dir.field_72449_c * speedMult;
+        drone.motionY += dir.yCoord * speedMult;
+        drone.motionX += dir.xCoord * speedMult;
+        drone.motionZ += dir.zCoord * speedMult;
     }
 
     public boolean canOverrideDroneMovement(EntityDrone drone)
@@ -135,7 +135,7 @@ public class ModuleReturn
         if (repos == null) {
             return 0.0D;
         }
-        double dist = e.func_70011_f(repos.field_72450_a, repos.field_72448_b, repos.field_72449_c);
+        double dist = e.getDistance(repos.xCoord, repos.yCoord, repos.zCoord);
         double tickLeft = e.droneInfo.getBattery(false) / e.droneInfo.getMovementBatteryConsumption(e);
         double maxSpeed = e.getSpeedMultiplication();
         double tickToFly = dist / maxSpeed;
@@ -161,16 +161,16 @@ public class ModuleReturn
             super(mod);
         }
 
-        public void func_73866_w_()
+        public void initGui()
         {
-            super.func_73866_w_();
-            this.field_146292_n.add(new GuiButton(1, this.field_146294_l / 2 - 24, this.field_146295_m / 2 + 70, 70, 20, "Return here"));
+            super.initGui();
+            this.buttonList.add(new GuiButton(1, this.width / 2 - 24, this.height / 2 + 70, 70, 20, "Return here"));
         }
 
         public void buttonClickedOnEnabledGui(GuiButton button)
         {
             super.buttonClickedOnEnabledGui(button);
-            if (button.field_146127_k == 1) {
+            if (button.id == 1) {
                 PacketDispatcher.sendToServer(new PacketDroneSetReturnPos(this.parent.drone));
             }
         }
@@ -185,9 +185,9 @@ public class ModuleReturn
                 {
                     double minB = ((ModuleReturn)this.mod).getMinBatteryToReturn(this.parent.drone);
                     if (minB < 0.0D) {
-                        l.add(TextFormatting.RED + "Unable to return to [" + (int)v.field_72450_a + ";" + (int)v.field_72448_b + ";" + (int)v.field_72449_c + "]");
+                        l.add(TextFormatting.RED + "Unable to return to [" + (int)v.xCoord + ";" + (int)v.yCoord + ";" + (int)v.zCoord + "]");
                     } else {
-                        l.add("Return to " + TextFormatting.GREEN + "[" + (int)v.field_72450_a + ";" + (int)v.field_72448_b + ";" + (int)v.field_72449_c + "]" + TextFormatting.RESET + " on battery less than " + TextFormatting.RED +
+                        l.add("Return to " + TextFormatting.GREEN + "[" + (int)v.xCoord + ";" + (int)v.yCoord + ";" + (int)v.zCoord + "]" + TextFormatting.RESET + " on battery less than " + TextFormatting.RED +
 
                                 (int)Math.round(minB * 10.0D) / 10.0D);
                     }
@@ -196,18 +196,18 @@ public class ModuleReturn
                 {
                     l.add(TextFormatting.RED + "" + TextFormatting.ITALIC + "Return coordinates not assigned");
                 }
-                int x = (int)Math.floor(this.parent.drone.field_70165_t);
-                int y = (int)Math.floor(this.parent.drone.field_70163_u);
-                int z = (int)Math.floor(this.parent.drone.field_70161_v);
+                int x = (int)Math.floor(this.parent.drone.posX);
+                int y = (int)Math.floor(this.parent.drone.posY);
+                int z = (int)Math.floor(this.parent.drone.posZ);
                 for (int y0 = y; y0 >= y - 1; y0--)
                 {
                     BlockPos bs = new BlockPos(x, y0, z);
                     IInventory iinv = null;
-                    TileEntity tile0 = this.parent.drone.field_70170_p.func_175625_s(bs);
+                    TileEntity tile0 = this.parent.drone.getEntityWorld().getTileEntity(bs);
                     if ((tile0 instanceof IInventory)) {
                         iinv = (IInventory)tile0;
                     } else if (((tile0 instanceof TileEntityEnderChest)) && (this.parent.drone.getControllingPlayer() != null)) {
-                        iinv = this.parent.drone.getControllingPlayer().func_71005_bN();
+                        iinv = this.parent.drone.getControllingPlayer().getInventoryEnderChest();
                     }
                     if (iinv != null)
                     {

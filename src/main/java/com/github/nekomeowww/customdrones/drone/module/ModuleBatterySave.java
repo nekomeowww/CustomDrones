@@ -75,13 +75,13 @@ public class ModuleBatterySave
                 prevConsumedNew = 0.0D;
             }
             double savedNew = prevCostNew - prevConsumedNew;
-            if ((this.parent.drone.field_70173_aa % 7 == 0) || (Math.abs(prevConsumedNew - this.prevConsumed) >= 0.05D)) {
+            if ((this.parent.drone.ticksExisted % 7 == 0) || (Math.abs(prevConsumedNew - this.prevConsumed) >= 0.05D)) {
                 this.prevConsumed = prevConsumedNew;
             }
-            if ((this.parent.drone.field_70173_aa % 7 == 0) || (Math.abs(prevCostNew - this.prevCost) >= 0.05D)) {
+            if ((this.parent.drone.ticksExisted % 7 == 0) || (Math.abs(prevCostNew - this.prevCost) >= 0.05D)) {
                 this.prevCost = prevCostNew;
             }
-            if ((this.parent.drone.field_70173_aa % 7 == 0) || (Math.abs(savedNew - this.saved) >= 0.05D)) {
+            if ((this.parent.drone.ticksExisted % 7 == 0) || (Math.abs(savedNew - this.saved) >= 0.05D)) {
                 this.saved = savedNew;
             }
             double pcnDisplay = Math.round(this.prevConsumed * 20.0D * 100.0D) / 100.0D;

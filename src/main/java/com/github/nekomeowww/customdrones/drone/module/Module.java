@@ -207,10 +207,10 @@ public class Module
     {
         if ((di != null) && (di.modsNBT != null))
         {
-            if (!di.modsNBT.func_74764_b("MNBT")) {
-                di.modsNBT.func_74782_a("MNBT", new NBTTagCompound());
+            if (!di.modsNBT.hasKey("MNBT")) {
+                di.modsNBT.setTag("MNBT", new NBTTagCompound());
             }
-            return di.modsNBT.func_74775_l("MNBT");
+            return di.modsNBT.getCompoundTag("MNBT");
         }
         return null;
     }
@@ -218,7 +218,7 @@ public class Module
     public void setModNBT(DroneInfo di, NBTTagCompound tag)
     {
         if ((di != null) && (di.modsNBT != null)) {
-            di.modsNBT.func_74782_a("MNBT", tag);
+            di.modsNBT.setTag("MNBT", tag);
         }
     }
 
@@ -294,25 +294,25 @@ public class Module
             this.mod = m;
         }
 
-        public void func_73866_w_()
+        public void initGui()
         {
-            super.func_73866_w_();
-            this.field_146292_n.add(this.disableButton = new GuiButton(0, this.field_146294_l / 2 + 48, this.field_146295_m / 2 + 70, 40, 20, "Disable"));
-            this.field_146292_n.add(this.uninstallButton = new GuiButton(99, this.field_146294_l / 2 + 90, this.field_146295_m / 2 + 70, 50, 20, "Uninstall"));
+            super.initGui();
+            this.buttonList.add(this.disableButton = new GuiButton(0, this.width / 2 + 48, this.height / 2 + 70, 40, 20, "Disable"));
+            this.buttonList.add(this.uninstallButton = new GuiButton(99, this.width / 2 + 90, this.height / 2 + 70, 50, 20, "Uninstall"));
             if (!this.parent.drone.droneInfo.isEnabled(this.mod)) {
-                this.disableButton.field_146126_j = "Enable";
+                this.disableButton.displayString = "Enable";
             }
         }
 
-        protected void func_146284_a(GuiButton button)
+        protected void actionPerformed(GuiButton button)
                 throws IOException
         {
-            super.func_146284_a(button);
+            super.actionPerformed(button);
             boolean enabled = this.parent.drone.droneInfo.isEnabled(this.mod);
             if (button == this.disableButton)
             {
                 PacketDispatcher.sendToServer(new PacketDroneSwitchMod(this.parent.drone, this.mod, !enabled));
-                this.disableButton.field_146126_j = (enabled ? "Enable" : "Disable");
+                this.disableButton.displayString = (enabled ? "Enable" : "Disable");
             }
             if (button == this.uninstallButton)
             {
@@ -330,15 +330,15 @@ public class Module
 
         public void buttonClickedOnEnabledGui(GuiButton button) {}
 
-        public void func_146278_c(int tint) {}
+        public void drawBackground(int tint) {}
 
-        public void func_146276_q_() {}
+        public void drawDefaultBackground() {}
 
-        public void func_146270_b(int tint) {}
+        public void drawWorldBackground(int tint) {}
 
-        public void func_73876_c()
+        public void updateScreen()
         {
-            super.func_73876_c();
+            super.updateScreen();
             if (Mouse.isCreated())
             {
                 int mouseD = Mouse.getDWheel();
@@ -374,33 +374,33 @@ public class Module
 
         public void addDescText(List<String> l) {}
 
-        public void func_73863_a(int mouseX, int mouseY, float partialTicks)
+        public void drawScreen(int mouseX, int mouseY, float partialTicks)
         {
             List<String> desc = getDescText();
             if (!desc.isEmpty())
             {
-                ScaledResolution sr = new ScaledResolution(this.field_146297_k);
-                int sclh = sr.func_78328_b();
-                int sclw = sr.func_78326_a();
+                ScaledResolution sr = new ScaledResolution(this.mc);
+                int sclh = sr.getScaledHeight();
+                int sclw = sr.getScaledWidth();
                 this.splittedString.clear();
                 for (int a = 0; a < desc.size(); a++) {
-                    this.splittedString.addAll(this.field_146289_q.func_78271_c((String)desc.get(a), 280));
+                    this.splittedString.addAll(this.fontRendererObj.listFormattedStringToWidth((String)desc.get(a), 280));
                 }
                 this.maxScrollHeight = (this.splittedString.size() * 10 + 8);
                 GL11.glPushMatrix();
                 GL11.glEnable(3089);
-                GL11.glScissor((sclw / 2 - 143) * this.field_146297_k.field_71443_c / sclw, (sclh - (sclh / 2 + 91)) * this.field_146297_k.field_71440_d / sclh, 284 * this.field_146297_k.field_71443_c / sclw, 80 * this.field_146297_k.field_71440_d / sclh);
+                GL11.glScissor((sclw / 2 - 143) * this.mc.displayWidth / sclw, (sclh - (sclh / 2 + 91)) * this.mc.displayHeight / sclh, 284 * this.mc.displayWidth / sclw, 80 * this.mc.displayHeight / sclh);
 
-                GL11.glTranslated(this.field_146294_l / 2 - 140, this.field_146295_m / 2 + 15 - this.scrollHeight, 0.0D);
+                GL11.glTranslated(this.width / 2 - 140, this.height / 2 + 15 - this.scrollHeight, 0.0D);
                 for (int a = 0; a < this.splittedString.size(); a++)
                 {
                     String s = (String)this.splittedString.get(a);
-                    this.field_146289_q.func_78276_b(s, 0, a * 10, 16777215);
+                    this.fontRendererObj.drawString(s, 0, a * 10, 16777215);
                 }
                 GL11.glDisable(3089);
                 GL11.glPopMatrix();
             }
-            super.func_73863_a(mouseX, mouseY, partialTicks);
+            super.drawScreen(mouseX, mouseY, partialTicks);
         }
     }
 }
