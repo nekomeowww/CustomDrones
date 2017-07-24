@@ -19,7 +19,7 @@ public class RenderPlasmaBullet<T extends EntityPlasmaShot>
 
     public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
-        super.func_76986_a(entity, x, y, z, entityYaw, partialTicks);
+        super.doRender(entity, x, y, z, entityYaw, partialTicks);
         GL11.glPushMatrix();
         GL11.glTranslated(x, y, z);
         model.doRender(entity, entityYaw, partialTicks, new Object[] { Double.valueOf(x), Double.valueOf(y), Double.valueOf(z) });
