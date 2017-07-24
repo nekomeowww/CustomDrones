@@ -97,15 +97,15 @@ public class Filters
             if ((input instanceof Block))
             {
                 b = (Block)input;
-                ibs = b.func_176223_P();
+                ibs = b.getDefaultState();
             }
             else if ((input instanceof IBlockState))
             {
                 ibs = (IBlockState)input;
-                b = ibs.func_177230_c();
+                b = ibs.getBlock();
             }
 
-            return (b == Blocks.field_150350_a) || (ibs.func_185904_a().func_76222_j()) || ((this.liquid) && (ibs.func_185904_a().func_76224_d()));
+            return (b == Blocks.AIR) || (ibs.getMaterial().isReplaceable()) || ((this.liquid) && (ibs.getMaterial().isLiquid()));
         }
     }
 
@@ -117,8 +117,8 @@ public class Filters
             boolean thisApply = super.apply(input);
             boolean blockApply = true;
             boolean stateApply = true;
-            if ((input instanceof IBlockState)) blockApply = super.apply(((IBlockState)input).func_177230_c());
-            if ((input instanceof Block)) stateApply = super.apply(((Block)input).func_176223_P());
+            if ((input instanceof IBlockState)) blockApply = super.apply(((IBlockState)input).getBlock());
+            if ((input instanceof Block)) stateApply = super.apply(((Block)input).getDefaultState());
             return (thisApply) && (blockApply) && (stateApply);
         }
     }
@@ -131,8 +131,8 @@ public class Filters
             boolean thisApply = super.apply(input);
             boolean blockApply = false;
             boolean stateApply = false;
-            if ((input instanceof IBlockState)) blockApply = super.apply(((IBlockState)input).func_177230_c());
-            if ((input instanceof Block)) stateApply = super.apply(((Block)input).func_176223_P());
+            if ((input instanceof IBlockState)) blockApply = super.apply(((IBlockState)input).getBlock());
+            if ((input instanceof Block)) stateApply = super.apply(((Block)input).getDefaultState());
             return (thisApply) || (blockApply) || (stateApply);
         }
     }
