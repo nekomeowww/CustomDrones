@@ -38,7 +38,7 @@ import com.github.nekomeowww.customdrones.api.helpers.EntityHelper;
 import com.github.nekomeowww.customdrones.api.helpers.VecHelper;
 import com.github.nekomeowww.customdrones.api.helpers.WorldHelper;
 import com.github.nekomeowww.customdrones.api.model.Color;
-import com.github.nekomeowww.customdrones.item.ItemGunUpgrade.GunUpgrade;
+import com.github.nekomeowww.customdrones.item.ItemGunUpgrade;
 
 public class EntityPlasmaShot
         extends Entity
@@ -54,7 +54,7 @@ public class EntityPlasmaShot
     public EntityPlasmaShot(World worldIn)
     {
         super(worldIn);
-        func_70105_a(0.1F, 0.1F);
+        setSize(0.1F, 0.1F);
         this.color = new Color(1.0D, 1.0D, 1.0D, 1.0D);
     }
 
@@ -95,30 +95,30 @@ public class EntityPlasmaShot
 
     public void setUpgrades(List<ItemGunUpgrade.GunUpgrade> gus)
     {
-        this.shotTag.func_74778_a("Gun Upgrades", ItemGunUpgrade.GunUpgrade.upgradesToString(gus));
+        this.shotTag.setString("Gun Upgrades", ItemGunUpgrade.GunUpgrade.upgradesToString(gus));
     }
 
-    public boolean func_70112_a(double distance)
+    public boolean isInRangeToRenderDist(double distance)
     {
         return distance <= 16384.0D;
     }
 
-    public AxisAlignedBB func_70046_E()
+    public AxisAlignedBB getCollisionBoundingBox()
     {
-        return func_174813_aQ();
+        return getEntityBoundingBox();
     }
 
-    public AxisAlignedBB func_70114_g(Entity entityIn)
+    public AxisAlignedBB getCollisionBox(Entity entityIn)
     {
-        return func_174813_aQ();
+        return getEntityBoundingBox();
     }
 
-    public boolean func_70067_L()
+    public boolean canBeCollidedWith()
     {
         return true;
     }
 
-    public boolean func_70104_M()
+    public boolean canBePushed()
     {
         return true;
     }
@@ -128,94 +128,94 @@ public class EntityPlasmaShot
         return true;
     }
 
-    public boolean func_184220_m(Entity entityIn)
+    public boolean startRiding(Entity entityIn)
     {
         return false;
     }
 
-    public float func_70111_Y()
+    public float getCollisionBorderSize()
     {
         return 0.1F;
     }
 
-    public boolean func_90999_ad()
+    public boolean canRenderOnFire()
     {
         return false;
     }
 
-    public void func_70071_h_()
+    public void onUpdate()
     {
-        super.func_70071_h_();
+        super.onUpdate();
         if ((this.homing) && (this.homingTarget != null))
         {
-            double speed = Math.sqrt(this.field_70159_w * this.field_70159_w + this.field_70181_x * this.field_70181_x + this.field_70179_y * this.field_70179_y);
-            Vec3d oldDir = new Vec3d(this.field_70159_w, this.field_70181_x, this.field_70179_y);
-            Vec3d dir = VecHelper.fromTo(func_174791_d(), EntityHelper.getCenterVec(this.homingTarget));
+            double speed = Math.sqrt(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
+            Vec3d oldDir = new Vec3d(this.motionX, this.motionY, this.motionZ);
+            Vec3d dir = VecHelper.fromTo(getPositionVector(), EntityHelper.getCenterVec(this.homingTarget));
             dir = VecHelper.setLength(dir, speed / 2.0D);
-            dir = VecHelper.setLength(oldDir.func_178787_e(dir), speed);
-            this.field_70159_w = dir.field_72450_a;
-            this.field_70181_x = dir.field_72448_b;
-            this.field_70179_y = dir.field_72449_c;
+            dir = VecHelper.setLength(oldDir.add(dir), speed);
+            this.motionX = dir.xCoord;
+            this.motionY = dir.yCoord;
+            this.motionZ = dir.zCoord;
         }
-        func_70091_d(this.field_70159_w, this.field_70181_x, this.field_70179_y);
+        move(this.motionX, this.motionY, this.motionZ);
         collideWithNearbyEntities();
-        if (((this.field_70122_E) || (!this.field_70132_H)) ||
+        if (((this.onGround) || (!this.isCollided)) ||
 
-                (this.field_70173_aa >= 100)) {
-            func_70106_y();
+                (this.ticksExisted >= 100)) {
+            setDead();
         }
         if (this.homing) {
-            this.field_70170_p.func_175688_a(EnumParticleTypes.CRIT_MAGIC, this.field_70165_t, this.field_70163_u, this.field_70161_v, 0.0D, 0.0D, 0.0D, new int[0]);
+            this.getEntityWorld().spawnParticle(EnumParticleTypes.CRIT_MAGIC, this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D, new int[0]);
         }
     }
 
-    public void func_70106_y()
+    public void setDead()
     {
-        if (!this.field_70128_L)
+        if (!this.isDead)
         {
             List<ItemGunUpgrade.GunUpgrade> upgrades = getGunUpgrades();
-            if ((upgrades.contains(ItemGunUpgrade.GunUpgrade.explosion)) && (!this.field_70170_p.field_72995_K)) {
-                this.field_70170_p.func_72876_a(this.shooter != null ? this.shooter : this, this.field_70165_t, this.field_70163_u, this.field_70161_v,
+            if ((upgrades.contains(ItemGunUpgrade.GunUpgrade.explosion)) && (!this.getEntityWorld().isRemote)) {
+                this.getEntityWorld().createExplosion(this.shooter != null ? this.shooter : this, this.posX, this.posY, this.posZ,
                         (float)Math.abs(this.damage / 3.0D), true);
             }
-            if ((upgrades.contains(ItemGunUpgrade.GunUpgrade.scatter)) && (!this.field_70170_p.field_72995_K))
+            if ((upgrades.contains(ItemGunUpgrade.GunUpgrade.scatter)) && (!this.world.isRemote))
             {
                 Filters.FilterExcepts filter = new Filters.FilterExcepts(new Object[] { this.shooter, EntityXPOrb.class, EntityItem.class, EntityHomingBox.class, IProjectile.class });
 
                 double range = 32.0D;
                 for (int a = 0; a < (this.homing ? 4 : 6); a++)
                 {
-                    Vec3d dir = new Vec3d(this.field_70146_Z.nextDouble() - 0.5D, this.field_70146_Z.nextDouble() - 0.5D, this.field_70146_Z.nextDouble() - 0.5D).func_72432_b();
-                    EntityPlasmaShot babyShot = new EntityPlasmaShot(this.field_70170_p);
-                    babyShot.func_70107_b(this.field_70165_t, this.field_70163_u, this.field_70161_v);
+                    Vec3d dir = new Vec3d(this.rand.nextDouble() - 0.5D, this.rand.nextDouble() - 0.5D, this.rand.nextDouble() - 0.5D).normalize();
+                    EntityPlasmaShot babyShot = new EntityPlasmaShot(this.getEntityWorld());
+                    babyShot.setPosition(this.posX, this.posY, this.posZ);
                     babyShot.color = this.color;
                     this.damage *= 0.5D;
-                    babyShot.shotTag = this.shotTag.func_74737_b();
+                    babyShot.shotTag = this.shotTag.copy();
                     babyShot.removeUpgrade(ItemGunUpgrade.GunUpgrade.scatter);
                     babyShot.shooter = (this.shooter != null ? this.shooter : this);
                     babyShot.homing = this.homing;
                     if (this.homing) {
-                        babyShot.homingTarget = WorldHelper.getEntityBestInAngle(this.field_70170_p, func_174791_d(), dir,
-                                func_174813_aQ().func_186662_g(range), 90.0D, this.homingTarget, filter);
+                        babyShot.homingTarget = WorldHelper.getEntityBestInAngle(this.getEntityWorld(), getPositionVector(), dir,
+                                getEntityBoundingBox().expandXyz(range), 90.0D, this.homingTarget, filter);
                     }
-                    double speed = Math.sqrt(this.field_70159_w * this.field_70159_w + this.field_70181_x * this.field_70181_x + this.field_70179_y * this.field_70179_y) * 0.5D;
-                    Vec3d velocity = new Vec3d(dir.field_72450_a, 1.0D, dir.field_72449_c).func_72432_b().func_186678_a(speed);
-                    babyShot.field_70159_w = velocity.field_72450_a;
-                    babyShot.field_70181_x = velocity.field_72448_b;
-                    babyShot.field_70179_y = velocity.field_72449_c;
-                    this.field_70170_p.func_72838_d(babyShot);
+                    double speed = Math.sqrt(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ) * 0.5D;
+                    Vec3d velocity = new Vec3d(dir.xCoord, 1.0D, dir.zCoord).normalize().scale(speed);
+                    babyShot.motionX = velocity.xCoord;
+                    babyShot.motionY = velocity.yCoord;
+                    babyShot.motionZ = velocity.zCoord;
+                    this.getEntityWorld().spawnEntity(babyShot);
                 }
             }
         }
-        super.func_70106_y();
+        super.setDead();
     }
 
     public void collideWithNearbyEntities()
     {
         Filters.FilterExcepts excepts = new Filters.FilterExcepts(new Object[] { this, EntityPlasmaShot.class, EntityXPOrb.class, EntityItem.class, EntityHomingBox.class });
 
-        List<Entity> list = this.field_70170_p.func_175674_a(this,
-                func_174813_aQ().func_186662_g(func_70111_Y()), excepts);
+        List<Entity> list = this.getEntityWorld().getEntitiesInAABBexcluding(this,
+                getEntityBoundingBox().expandXyz(getCollisionBorderSize()), excepts);
         if (!list.isEmpty()) {
             for (Entity entity : list) {
                 collideWith(entity);
@@ -229,31 +229,31 @@ public class EntityPlasmaShot
         boolean canHeal = (this.damage < 0.0D) && ((entityIn instanceof EntityLivingBase));
         boolean canHarm = !shouldNotHarmEntity(entityIn);
         if (canHeal) {
-            ((EntityLivingBase)entityIn).func_70691_i((float)this.damage);
+            ((EntityLivingBase)entityIn).heal((float)this.damage);
         } else if (canHarm) {
-            entityIn.func_70097_a(DamageSource.func_92087_a(this.shooter), (float)this.damage);
+            entityIn.attackEntityFrom(DamageSource.causeThornsDamage(this.shooter), (float)this.damage);
         }
         if (canHarm)
         {
             if (upgrades.contains(ItemGunUpgrade.GunUpgrade.fire)) {
-                entityIn.func_70015_d((int)this.damage);
+                entityIn.setFire((int)this.damage);
             }
             if ((upgrades.contains(ItemGunUpgrade.GunUpgrade.ice)) && ((entityIn instanceof EntityLivingBase))) {
-                ((EntityLivingBase)entityIn).func_70690_d(new PotionEffect(
-                        Potion.func_180142_b("slowness"), (int)(this.damage * 20.0D)));
+                ((EntityLivingBase)entityIn).addPotionEffect(new PotionEffect(
+                        Potion.getPotionFromResourceLocation("slowness"), (int)(this.damage * 20.0D)));
             }
         }
         if (upgrades.contains(ItemGunUpgrade.GunUpgrade.ice)) {
-            entityIn.func_70066_B();
+            entityIn.extinguish();
         }
-        if (!this.field_70170_p.field_72995_K) {
-            func_70106_y();
+        if (!this.getEntityWorld().isRemote) {
+            setDead();
         }
     }
 
     public boolean shouldNotHarmEntity(Entity e)
     {
-        if (e.field_70128_L) {
+        if (e.isDead) {
             return true;
         }
         if (((this.shooter instanceof EntityDrone)) && (e == ((EntityDrone)this.shooter).getControllingPlayer())) {
@@ -265,35 +265,35 @@ public class EntityPlasmaShot
         return false;
     }
 
-    protected void func_145775_I()
+    protected void doBlockCollisions()
     {
-        super.func_145775_I();
-        AxisAlignedBB axisalignedbb = func_174813_aQ().func_186662_g(func_70111_Y());
+        super.doBlockCollisions();
+        AxisAlignedBB axisalignedbb = getEntityBoundingBox().expandXyz(getCollisionBorderSize());
 
-        BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos = BlockPos.PooledMutableBlockPos.func_185345_c(axisalignedbb.field_72340_a + 0.001D, axisalignedbb.field_72338_b + 0.001D, axisalignedbb.field_72339_c + 0.001D);
+        BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos = BlockPos.PooledMutableBlockPos.retain(axisalignedbb.minX + 0.001D, axisalignedbb.minY + 0.001D, axisalignedbb.minZ + 0.001D);
 
-        BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos1 = BlockPos.PooledMutableBlockPos.func_185345_c(axisalignedbb.field_72336_d - 0.001D, axisalignedbb.field_72337_e - 0.001D, axisalignedbb.field_72334_f - 0.001D);
-        BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos2 = BlockPos.PooledMutableBlockPos.func_185346_s();
-        if (this.field_70170_p.func_175707_a(blockpos$pooledmutableblockpos, blockpos$pooledmutableblockpos1)) {
-            for (int i = blockpos$pooledmutableblockpos.func_177958_n(); i <= blockpos$pooledmutableblockpos1.func_177958_n(); i++) {
-                for (int j = blockpos$pooledmutableblockpos.func_177956_o(); j <= blockpos$pooledmutableblockpos1.func_177956_o(); j++) {
-                    for (int k = blockpos$pooledmutableblockpos.func_177952_p(); k <= blockpos$pooledmutableblockpos1.func_177952_p(); k++)
+        BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos1 = BlockPos.PooledMutableBlockPos.retain(axisalignedbb.maxX - 0.001D, axisalignedbb.maxY - 0.001D, axisalignedbb.maxZ - 0.001D);
+        BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos2 = BlockPos.PooledMutableBlockPos.retain();
+        if (this.getEntityWorld().isAreaLoaded(blockpos$pooledmutableblockpos, blockpos$pooledmutableblockpos1)) {
+            for (int i = blockpos$pooledmutableblockpos.getX(); i <= blockpos$pooledmutableblockpos1.getX(); i++) {
+                for (int j = blockpos$pooledmutableblockpos.getY(); j <= blockpos$pooledmutableblockpos1.getY(); j++) {
+                    for (int k = blockpos$pooledmutableblockpos.getZ(); k <= blockpos$pooledmutableblockpos1.getZ(); k++)
                     {
-                        blockpos$pooledmutableblockpos2.func_181079_c(i, j, k);
-                        IBlockState iblockstate = this.field_70170_p.func_180495_p(blockpos$pooledmutableblockpos2);
+                        blockpos$pooledmutableblockpos2.setPos(i, j, k);
+                        IBlockState iblockstate = this.getEntityWorld().getBlockState(blockpos$pooledmutableblockpos2);
                         try
                         {
-                            Block b = iblockstate.func_177230_c();
-                            if (b.func_176209_a(iblockstate, true)) {
+                            Block b = iblockstate.getBlock();
+                            if (b.canCollideCheck(iblockstate, true)) {
                                 collideWithBlock(blockpos$pooledmutableblockpos2, iblockstate);
                             }
                         }
                         catch (Throwable throwable)
                         {
-                            CrashReport crashreport = CrashReport.func_85055_a(throwable, "Colliding entity with block");
+                            CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Colliding entity with block");
 
-                            CrashReportCategory crashreportcategory = crashreport.func_85058_a("Block being collided with");
-                            CrashReportCategory.func_175750_a(crashreportcategory, blockpos$pooledmutableblockpos2, iblockstate);
+                            CrashReportCategory crashreportcategory = crashreport.makeCategory("Block being collided with");
+                            CrashReportCategory.addBlockInfo(crashreportcategory, blockpos$pooledmutableblockpos2, iblockstate);
 
                             throw new ReportedException(crashreport);
                         }
@@ -305,88 +305,88 @@ public class EntityPlasmaShot
 
     public void collideWithBlock(BlockPos pos, IBlockState state)
     {
-        pos = pos.func_185334_h();
-        Block block = state.func_177230_c();
-        BlockPos posUp = pos.func_177984_a().func_185334_h();
-        IBlockState stateUp = this.field_70170_p.func_180495_p(posUp);
-        Block blockUp = stateUp.func_177230_c();
-        boolean isSolid = (!(block instanceof BlockLiquid)) && (!block.func_176200_f(this.field_70170_p, pos));
+        pos = pos.toImmutable();
+        Block block = state.getBlock();
+        BlockPos posUp = pos.up().toImmutable();
+        IBlockState stateUp = this.getEntityWorld().getBlockState(posUp);
+        Block blockUp = stateUp.getBlock();
+        boolean isSolid = (!(block instanceof BlockLiquid)) && (!block.isReplaceable(this.getEntityWorld(), pos));
         boolean toDie = isSolid;
         List<ItemGunUpgrade.GunUpgrade> upgrades = getGunUpgrades();
         if (upgrades.contains(ItemGunUpgrade.GunUpgrade.ice))
         {
-            if ((block == Blocks.field_150355_j) || (block == Blocks.field_150358_i)) {
-                this.field_70170_p.func_175656_a(pos, Blocks.field_150432_aD.func_176223_P());
-            } else if ((block == Blocks.field_150353_l) || (block == Blocks.field_150356_k)) {
-                this.field_70170_p.func_175656_a(pos, Blocks.field_150347_e.func_176223_P());
-            } else if (block == Blocks.field_150480_ab) {
-                this.field_70170_p.func_175698_g(pos);
-            } else if (blockUp == Blocks.field_150480_ab) {
-                this.field_70170_p.func_175698_g(posUp);
-            } else if ((blockUp == Blocks.field_150350_a) && (Blocks.field_150431_aC.func_176196_c(this.field_70170_p, posUp))) {
-                this.field_70170_p.func_175656_a(posUp, Blocks.field_150431_aC.func_176223_P());
+            if ((block == Blocks.WATER) || (block == Blocks.FLOWING_WATER)) {
+                this.getEntityWorld().setBlockState(pos, Blocks.ICE.getDefaultState());
+            } else if ((block == Blocks.LAVA) || (block == Blocks.FLOWING_LAVA)) {
+                this.getEntityWorld().setBlockState(pos, Blocks.COBBLESTONE.getDefaultState());
+            } else if (block == Blocks.FIRE) {
+                this.getEntityWorld().setBlockToAir(pos);
+            } else if (blockUp == Blocks.FIRE) {
+                this.getEntityWorld().setBlockToAir(posUp);
+            } else if ((blockUp == Blocks.AIR) && (Blocks.SNOW_LAYER.canPlaceBlockAt(this.getEntityWorld(), posUp))) {
+                this.getEntityWorld().setBlockState(posUp, Blocks.SNOW_LAYER.getDefaultState());
             }
             if ((block instanceof BlockLiquid)) {
                 toDie = true;
             }
         }
         if (upgrades.contains(ItemGunUpgrade.GunUpgrade.fire)) {
-            if (block == Blocks.field_150432_aD)
+            if (block == Blocks.ICE)
             {
-                if (this.field_70170_p.field_73011_w.func_177500_n())
+                if (this.getEntityWorld().provider.doesWaterVaporize())
                 {
-                    this.field_70170_p.func_175698_g(pos);
+                    this.getEntityWorld().setBlockToAir(pos);
                 }
                 else
                 {
-                    Material material = this.field_70170_p.func_180495_p(pos.func_177977_b()).func_185904_a();
-                    if ((material.func_76230_c()) || (material.func_76224_d()))
+                    Material material = this.getEntityWorld().getBlockState(pos.down()).getMaterial();
+                    if ((material.blocksMovement()) || (material.isLiquid()))
                     {
-                        this.field_70170_p.func_175656_a(pos, Blocks.field_150358_i.func_176223_P());
+                        this.getEntityWorld().setBlockState(pos, Blocks.FLOWING_WATER.getDefaultState());
                     }
                     else
                     {
-                        this.field_70170_p.func_175656_a(pos, Blocks.field_150355_j.func_176223_P());
-                        this.field_70170_p.func_180496_d(pos, Blocks.field_150355_j);
+                        this.getEntityWorld().setBlockState(pos, Blocks.WATER.getDefaultState());
+                        this.getEntityWorld().notifyBlockOfStateChange(pos, Blocks.WATER);
                     }
                 }
             }
-            else if ((block == Blocks.field_150433_aE) || (block == Blocks.field_150431_aC)) {
-                this.field_70170_p.func_175698_g(pos);
-            } else if ((blockUp == Blocks.field_150350_a) && (Blocks.field_150480_ab.func_176196_c(this.field_70170_p, posUp))) {
-                this.field_70170_p.func_175656_a(posUp, Blocks.field_150480_ab.func_176223_P());
+            else if ((block == Blocks.SNOW) || (block == Blocks.SNOW_LAYER)) {
+                this.getEntityWorld().setBlockToAir(pos);
+            } else if ((blockUp == Blocks.AIR) && (Blocks.FIRE.canPlaceBlockAt(this.getEntityWorld(), posUp))) {
+                this.getEntityWorld().setBlockState(posUp, Blocks.FIRE.getDefaultState());
             }
         }
         if (toDie) {
-            func_70106_y();
+            setDead();
         }
     }
 
-    public void func_70186_c(double x, double y, double z, float velocity, float inaccuracy) {}
+    public void setThrowableHeading(double x, double y, double z, float velocity, float inaccuracy) {}
 
-    protected void func_70088_a() {}
+    protected void entityInit() {}
 
-    protected void func_70037_a(NBTTagCompound tagCompound)
+    protected void readEntityFromNBT(NBTTagCompound tagCompound)
     {
-        this.color = new Color(tagCompound.func_74762_e("Color"));
-        this.damage = tagCompound.func_74769_h("Damage");
-        this.homing = tagCompound.func_74767_n("Homing");
-        this.shotTag = tagCompound.func_74775_l("Shot tag");
-        if (tagCompound.func_186855_b("Shooter"))
+        this.color = new Color(tagCompound.getInteger("Color"));
+        this.damage = tagCompound.getDouble("Damage");
+        this.homing = tagCompound.getBoolean("Homing");
+        this.shotTag = tagCompound.getCompoundTag("Shot tag");
+        if (tagCompound.hasUniqueId("Shooter"))
         {
-            UUID shooterUUID = tagCompound.func_186857_a("Shooter");
-            this.shooter = WorldHelper.getEntityByPersistentUUID(this.field_70170_p, shooterUUID);
+            UUID shooterUUID = tagCompound.getUniqueId("Shooter");
+            this.shooter = WorldHelper.getEntityByPersistentUUID(this.getEntityWorld(), shooterUUID);
         }
     }
 
-    protected void func_70014_b(NBTTagCompound tagCompound)
+    protected void writeEntityToNBT(NBTTagCompound tagCompound)
     {
-        tagCompound.func_74768_a("Color", this.color.toInt());
-        tagCompound.func_74780_a("Damage", this.damage);
-        tagCompound.func_74757_a("Homing", this.homing);
-        tagCompound.func_74782_a("Shot tag", this.shotTag);
+        tagCompound.setInteger("Color", this.color.toInt());
+        tagCompound.setDouble("Damage", this.damage);
+        tagCompound.setBoolean("Homing", this.homing);
+        tagCompound.setTag("Shot tag", this.shotTag);
         if (this.shooter != null) {
-            tagCompound.func_186854_a("Shooter", this.shooter.getPersistentID());
+            tagCompound.setUniqueId("Shooter", this.shooter.getPersistentID());
         }
     }
 
@@ -413,7 +413,7 @@ public class EntityPlasmaShot
         if (hasShooter)
         {
             UUID shooterUUID = new UUID(most, least);
-            this.shooter = WorldHelper.getEntityByPersistentUUID(this.field_70170_p, shooterUUID);
+            this.shooter = WorldHelper.getEntityByPersistentUUID(this.getEntityWorld(), shooterUUID);
         }
     }
 }

@@ -25,15 +25,15 @@ public class EntityDroneBaby
     public EntityDroneBaby(World worldIn)
     {
         super(worldIn);
-        func_70105_a(0.3F, 0.4F);
+        setSize(0.3F, 0.4F);
         this.modelScale = 0.5D;
     }
 
     public void initDroneAI()
     {
-        this.droneTasks.func_75776_a(7, new DroneAITargetPlayer(this, 12.0D));
-        this.droneTasks.func_75776_a(8, new DroneAIAttackMelee(this));
-        this.droneTasks.func_75776_a(10, new DroneAIWanderHerd(this, 16.0D, 0.5D, 16.0D, 5, new Class[] { getClass() }));
+        this.droneTasks.addTask(7, new DroneAITargetPlayer(this, 12.0D));
+        this.droneTasks.addTask(8, new DroneAIAttackMelee(this));
+        this.droneTasks.addTask(10, new DroneAIWanderHerd(this, 16.0D, 0.5D, 16.0D, 5, new Class[] { getClass() }));
     }
 
     public void initDroneAIPostSpawn() {}
@@ -62,25 +62,25 @@ public class EntityDroneBaby
         this.droneInfo.switchModule(this, this.droneInfo.getModuleWithFunctionOf(Module.weapon1), false);
     }
 
-    public boolean func_70097_a(DamageSource source, float amount)
+    public boolean attackEntityFrom(DamageSource source, float amount)
     {
-        if (source.func_76346_g() != null)
+        if (source.getEntity() != null)
         {
             if ((getDroneAttackTarget() == null) || ((!(getDroneAttackTarget() instanceof EntityPlayer)) &&
-                    ((source.func_76346_g() instanceof EntityPlayer)))) {
-                setDroneAttackTarget(source.func_76346_g(), true);
+                    ((source.getEntity() instanceof EntityPlayer)))) {
+                setDroneAttackTarget(source.getEntity(), true);
             } else {
-                setDroneAttackTarget(source.func_76346_g(), false);
+                setDroneAttackTarget(source.getEntity(), false);
             }
-            callNearbyBabiesToAttack(source.func_76346_g(), 16.0D);
+            callNearbyBabiesToAttack(source.getEntity(), 16.0D);
         }
-        return super.func_70097_a(source, amount);
+        return super.attackEntityFrom(source, amount);
     }
 
     public void callNearbyBabiesToAttack(Entity e, double range)
     {
-        List<EntityDroneBaby> mobs = this.field_70170_p.func_72872_a(EntityDroneBaby.class,
-                func_174813_aQ().func_186662_g(range));
+        List<EntityDroneBaby> mobs = this.world.getEntitiesWithinAABB(EntityDroneBaby.class,
+                getEntityBoundingBox().expandXyz(range));
         mobs.remove(this);
         for (EntityDroneBaby mob : mobs) {
             if ((mob.getDroneAttackTarget() == null) || (
@@ -93,23 +93,23 @@ public class EntityDroneBaby
     public void addDropsOnDeath(List<ItemStack> list)
     {
         int chanceCount = addUpParts();
-        int i = this.field_70146_Z.nextInt(chanceCount * 2);
+        int i = this.rand.nextInt(chanceCount * 2);
         if (i > 0) {
-            list.add(new ItemStack(DronesMod.droneBit, i));
+            list.add(new ItemStack(CustomDrones.droneBit, i));
         }
-        if (this.field_70146_Z.nextInt(Math.max(100 - chanceCount, 1)) == 0) {
-            list.add(new ItemStack(DronesMod.droneBit, 1, 1));
+        if (this.rand.nextInt(Math.max(100 - chanceCount, 1)) == 0) {
+            list.add(new ItemStack(CustomDrones.droneBit, 1, 1));
         }
-        if (this.field_70146_Z.nextInt(20) == 0) {
+        if (this.rand.nextInt(20) == 0) {
             list.add(new ItemStack(getPart("casing", this.droneInfo.casing)));
         }
-        if (this.field_70146_Z.nextInt(60) == 0) {
+        if (this.rand.nextInt(60) == 0) {
             list.add(new ItemStack(getPart("chip", this.droneInfo.chip)));
         }
-        if (this.field_70146_Z.nextInt(60) == 0) {
+        if (this.rand.nextInt(60) == 0) {
             list.add(new ItemStack(getPart("core", this.droneInfo.core)));
         }
-        if (this.field_70146_Z.nextInt(15) == 0) {
+        if (this.rand.nextInt(15) == 0) {
             list.add(new ItemStack(getPart("engine", this.droneInfo.engine)));
         }
     }
@@ -124,9 +124,9 @@ public class EntityDroneBaby
         return (super.shouldAttackDrone(e)) && (!(e instanceof EntityDroneBaby));
     }
 
-    public void func_70037_a(NBTTagCompound tagCompound)
+    public void readEntityFromNBT(NBTTagCompound tagCompound)
     {
-        super.func_70037_a(tagCompound);
+        super.readEntityFromNBT(tagCompound);
         this.droneInfo.appearance.modelID = DroneModels.instance.baby.id;
     }
 }

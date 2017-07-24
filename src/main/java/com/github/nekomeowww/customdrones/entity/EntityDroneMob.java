@@ -46,7 +46,7 @@ public abstract class EntityDroneMob
     public int MOBID = 55537;
     public EntityAITasks droneTasks;
     public double modelScale;
-    public Entity field_110150_bn;
+    public Entity lastAttacker;
     public boolean hostile;
     public boolean shouldDespawn;
 
@@ -54,21 +54,21 @@ public abstract class EntityDroneMob
     {
         super(worldIn);
         this.modelScale = 1.0D;
-        this.droneTasks = new EntityAITasks((worldIn != null) && (worldIn.field_72984_F != null) ? worldIn.field_72984_F : null);
-        if ((worldIn != null) && (!worldIn.field_72995_K)) {
+        this.droneTasks = new EntityAITasks((worldIn != null) && (worldIn.theProfiler != null) ? worldIn.theProfiler : null);
+        if ((worldIn != null) && (!worldIn.isRemote)) {
             initDroneAI();
         }
     }
 
-    protected boolean func_70692_ba()
+    protected boolean canDespawn()
     {
         return this.shouldDespawn;
     }
 
-    public IEntityLivingData func_180482_a(DifficultyInstance difficulty, IEntityLivingData livingdata)
+    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData livingdata)
     {
         onInitSpawn();
-        return super.func_180482_a(difficulty, livingdata);
+        return super.onInitialSpawn(difficulty, livingdata);
     }
 
     public abstract void initDroneAI();
@@ -98,16 +98,16 @@ public abstract class EntityDroneMob
     public void randomizeDroneParts()
     {
         double log2 = Math.log(2.0D);
-        this.droneInfo.casing = (4 - (int)Math.floor(Math.log(this.field_70146_Z.nextInt(15) + 1) / log2));
-        this.droneInfo.chip = (4 - (int)Math.floor(Math.log(this.field_70146_Z.nextInt(15) + 1) / log2));
-        this.droneInfo.core = (4 - (int)Math.floor(Math.log(this.field_70146_Z.nextInt(15) + 1) / log2));
-        this.droneInfo.engine = (4 - (int)Math.floor(Math.log(this.field_70146_Z.nextInt(15) + 1) / log2));
+        this.droneInfo.casing = (4 - (int)Math.floor(Math.log(this.rand.nextInt(15) + 1) / log2));
+        this.droneInfo.chip = (4 - (int)Math.floor(Math.log(this.rand.nextInt(15) + 1) / log2));
+        this.droneInfo.core = (4 - (int)Math.floor(Math.log(this.rand.nextInt(15) + 1) / log2));
+        this.droneInfo.engine = (4 - (int)Math.floor(Math.log(this.rand.nextInt(15) + 1) / log2));
     }
 
     public void setAppearanceBasedOnBiome()
     {
-        Biome biome = this.field_70170_p.getBiomeForCoordsBody(func_180425_c());
-        if (((biome instanceof BiomeSnow)) || (this.field_70170_p.canSnowAtBody(func_180425_c(), false))) {
+        Biome biome = this.getEntityWorld().getBiomeForCoordsBody(getPosition());
+        if (((biome instanceof BiomeSnow)) || (this.getEntityWorld().canSnowAtBody(getPosition(), false))) {
             this.droneInfo.appearance.palette.setPalette(DroneAppearance.getPalette("Ice glacier"));
         } else if (((biome instanceof BiomeHell)) || ((biome instanceof BiomeMesa))) {
             this.droneInfo.appearance.palette.setPalette(DroneAppearance.getPalette("Sunset"));
@@ -163,23 +163,23 @@ public abstract class EntityDroneMob
         return false;
     }
 
-    public void func_70030_z()
+    public void onEntityUpdate()
     {
-        super.func_70030_z();
-        this.droneTasks.func_75774_a();
+        super.onEntityUpdate();
+        this.droneTasks.onUpdateTasks();
     }
 
-    public boolean func_70097_a(DamageSource source, float amount)
+    public boolean attackEntityFrom(DamageSource source, float amount)
     {
         if (source != null) {
-            this.field_110150_bn = source.func_76346_g();
+            this.lastAttacker = source.getEntity();
         }
-        return super.func_70097_a(source, amount);
+        return super.attackEntityFrom(source, amount);
     }
 
-    public float func_70047_e()
+    public float getEyeHeight()
     {
-        return this.field_70131_O / 2.0F;
+        return this.height / 2.0F;
     }
 
     public int getFlyingMode()
@@ -187,31 +187,31 @@ public abstract class EntityDroneMob
         return this.MOBID;
     }
 
-    public void func_70106_y()
+    public void setDead()
     {
-        super.func_70106_y();
-        if ((!this.field_70170_p.field_72995_K) && (this.field_70170_p.func_82736_K().func_82766_b("doMobLoot")))
+        super.setDead();
+        if ((!this.getEntityWorld().isRemote) && (this.getEntityWorld().getGameRules().getBoolean("doMobLoot")))
         {
             List<ItemStack> itemsToDrop = new ArrayList();
             addDropsOnDeath(itemsToDrop);
             for (ItemStack is : itemsToDrop) {
-                func_70099_a(is, this.field_70146_Z.nextFloat() * this.field_70131_O);
+                entityDropItem(is, this.rand.nextFloat() * this.height);
             }
-            if (((this.field_110150_bn instanceof EntityPlayer)) || (((this.field_110150_bn instanceof EntityDrone)) &&
-                    (((EntityDrone)this.field_110150_bn).getControllingPlayer() != null)))
+            if (((this.lastAttacker instanceof EntityPlayer)) || (((this.lastAttacker instanceof EntityDrone)) &&
+                    (((EntityDrone)this.lastAttacker).getControllingPlayer() != null)))
             {
                 int i = getXPOnDeath();
                 while (i > 0)
                 {
-                    int j = EntityXPOrb.func_70527_a(i);
+                    int j = EntityXPOrb.getXPSplit(i);
                     i -= j;
-                    this.field_70170_p.func_72838_d(new EntityXPOrb(this.field_70170_p, this.field_70165_t, this.field_70163_u, this.field_70161_v, j));
+                    this.getEntityWorld().spawnEntityInWorld(new EntityXPOrb(this.getEntityWorld(), this.posX, this.posY, this.posZ, j));
                 }
             }
         }
     }
 
-    public abstract void addDropsOnDeath(List<ItemStack> paramList);
+    public abstract void addDropsOnDeath(List<ItemStack> nameList);
 
     public abstract int getXPOnDeath();
 
@@ -226,66 +226,66 @@ public abstract class EntityDroneMob
             switch (i)
             {
                 case 1:
-                    return DronesMod.case1;
+                    return CustomDrones.case1;
                 case 2:
-                    return DronesMod.case2;
+                    return CustomDrones.case2;
                 case 3:
-                    return DronesMod.case3;
+                    return CustomDrones.case3;
                 case 4:
-                    return DronesMod.case4;
+                    return CustomDrones.case4;
             }
         } else if (s.equalsIgnoreCase("chip")) {
             switch (i)
             {
                 case 1:
-                    return DronesMod.chip1;
+                    return CustomDrones.chip1;
                 case 2:
-                    return DronesMod.chip2;
+                    return CustomDrones.chip2;
                 case 3:
-                    return DronesMod.chip3;
+                    return CustomDrones.chip3;
                 case 4:
-                    return DronesMod.chip4;
+                    return CustomDrones.chip4;
             }
         } else if (s.equalsIgnoreCase("core")) {
             switch (i)
             {
                 case 1:
-                    return DronesMod.core1;
+                    return CustomDrones.core1;
                 case 2:
-                    return DronesMod.core2;
+                    return CustomDrones.core2;
                 case 3:
-                    return DronesMod.core3;
+                    return CustomDrones.core3;
                 case 4:
-                    return DronesMod.core4;
+                    return CustomDrones.core4;
             }
         } else if (s.equalsIgnoreCase("engine")) {
             switch (i)
             {
                 case 1:
-                    return DronesMod.engine1;
+                    return CustomDrones.engine1;
                 case 2:
-                    return DronesMod.engine2;
+                    return CustomDrones.engine2;
                 case 3:
-                    return DronesMod.engine3;
+                    return CustomDrones.engine3;
                 case 4:
-                    return DronesMod.engine4;
+                    return CustomDrones.engine4;
             }
         }
         return null;
     }
 
-    public void func_70014_b(NBTTagCompound tagCompound)
+    public void writeEntityToNBT(NBTTagCompound tagCompound)
     {
-        super.func_70014_b(tagCompound);
-        tagCompound.func_74757_a("Hostile", this.hostile);
-        tagCompound.func_74757_a("Despawn", this.shouldDespawn);
+        super.writeEntityToNBT(tagCompound);
+        tagCompound.setBoolean("Hostile", this.hostile);
+        tagCompound.setBoolean("Despawn", this.shouldDespawn);
     }
 
-    public void func_70037_a(NBTTagCompound tagCompound)
+    public void readEntityFromNBT(NBTTagCompound tagCompound)
     {
-        super.func_70037_a(tagCompound);
-        this.hostile = tagCompound.func_74767_n("Hostile");
-        this.shouldDespawn = tagCompound.func_74767_n("Despawn");
+        super.readEntityFromNBT(tagCompound);
+        this.hostile = tagCompound.getBoolean("Hostile");
+        this.shouldDespawn = tagCompound.getBoolean("Despawn");
     }
 }
 
