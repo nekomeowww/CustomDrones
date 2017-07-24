@@ -7,7 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+
+import com.github.nekomeowww.customdrones.entity.*;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLiving.SpawnPlacementType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -17,20 +20,18 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldEntitySpawner;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
+import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent.Populate;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent.Post;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.event.world.WorldEvent.PotentialSpawns;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import com.github.nekomeowww.customdrones.CustomDrones;
-import com.github.nekomeowww.customdrones.entity.EntityDroneBaby;
-import com.github.nekomeowww.customdrones.entity.EntityDroneBabyBig;
-import com.github.nekomeowww.customdrones.entity.EntityDroneMob;
-import com.github.nekomeowww.customdrones.entity.EntityDroneWildItem;
 
 public class DroneSpawnHandler
 {
     public static Map<Biome, List<SpawnDroneEntry>> droneSpawnList = new HashMap();
-    public static Biome[] allBiomes = (Biome[])Biome.field_150597_n.toArray(new Biome[0]);
+    public static Biome[] allBiomes = (Biome[])Biome.EXPLORATION_BIOMES_LIST.toArray(new Biome[0]);
     public static SpawnDroneEntry spawnEntryBaby;
     public static SpawnDroneEntry spawnEntryBigBaby;
     public static SpawnDroneEntry spawnEntryWildItem;
@@ -62,12 +63,12 @@ public class DroneSpawnHandler
     {
         List<SpawnDroneEntry> list = (List)droneSpawnList.get(biomeIn);
         if ((list != null) && (!list.isEmpty())) {
-            while (randomIn.nextFloat() < biomeIn.func_76741_f())
+            while (randomIn.nextFloat() < biomeIn.getSpawningChance())
             {
-                SpawnDroneEntry spawnListEntry = (SpawnDroneEntry)WeightedRandom.func_76271_a(worldIn.field_73012_v, list);
+                SpawnDroneEntry spawnListEntry = (SpawnDroneEntry)WeightedRandom.getRandomItem(worldIn.rand, list);
                 if (spawnListEntry.droneClass != null)
                 {
-                    int groupCount = spawnListEntry.field_76301_c + randomIn.nextInt(1 + spawnListEntry.field_76299_d - spawnListEntry.field_76301_c);
+                    int groupCount = spawnListEntry.minGroupCount + randomIn.nextInt(1 + spawnListEntry.maxGroupCount - spawnListEntry.minGroupCount);
                     int posX = startX + randomIn.nextInt(rangeX);
                     int posZ = startZ + randomIn.nextInt(rangeZ);
                     int nextPosX = posX;
@@ -77,12 +78,12 @@ public class DroneSpawnHandler
                         boolean hasSpawned = false;
                         for (int spawnCounter = 0; (!hasSpawned) && (spawnCounter < 4); spawnCounter++)
                         {
-                            BlockPos blockpos = worldIn.func_175672_r(new BlockPos(posX, 0, posZ));
-                            if (WorldEntitySpawner.func_180267_a(EntityLiving.SpawnPlacementType.ON_GROUND, worldIn, blockpos))
+                            BlockPos blockpos = worldIn.getTopSolidOrLiquidBlock(new BlockPos(posX, 0, posZ));
+                            if (WorldEntitySpawner.canCreatureTypeSpawnAtLocation(EntityLiving.SpawnPlacementType.ON_GROUND, worldIn, blockpos))
                             {
                                 try
                                 {
-                                    droneMob = (EntityDroneMob)spawnListEntry.droneClass.getConstructor(new Class[] { World.class }).newInstance(new Object[] { worldIn });
+                                    EntityDroneMob droneMob = (EntityDroneMob)spawnListEntry.droneClass.getConstructor(new Class[] { World.class }).newInstance(new Object[] { worldIn });
                                 }
                                 catch (Exception exception)
                                 {
@@ -90,11 +91,11 @@ public class DroneSpawnHandler
                                     exception.printStackTrace();
                                     continue;
                                 }
-                                EntityDroneMob droneMob;
-                                droneMob.func_70012_b(posX + 0.5F, blockpos.func_177956_o(), posZ + 0.5F, randomIn
+                                EntityDroneMob droneMob = null;
+                                droneMob.setLocationAndAngles(posX + 0.5F, blockpos.getY(), posZ + 0.5F, randomIn
                                         .nextFloat() * 360.0F, 0.0F);
                                 droneMob.onInitSpawn();
-                                worldIn.func_72838_d(droneMob);
+                                worldIn.spawnEntityInWorld(droneMob);
                                 hasSpawned = true;
                             }
                             posX += randomIn.nextInt(5) - randomIn.nextInt(5);
@@ -112,9 +113,9 @@ public class DroneSpawnHandler
 
     public static void teleClosestPlayer(World worldIn, Entity e)
     {
-        EntityPlayer p = worldIn.func_72890_a(e, 512.0D);
-        if ((p != null) && (p.func_184614_ca() != null) && (p.func_184614_ca().func_77973_b() == DronesMod.droneFlyer)) {
-            p.func_70634_a(e.field_70165_t, e.field_70163_u + 1.0D, e.field_70161_v);
+        EntityPlayer p = worldIn.getClosestPlayerToEntity(e, 512.0D);
+        if ((p != null) && (p.getHeldItemMainhand() != null) && (p.getHeldItemMainhand().getItem() == CustomDrones.droneFlyer)) {
+            p.setPositionAndUpdate(e.posX, e.posY + 1.0D, e.posZ);
         }
     }
 
@@ -132,9 +133,9 @@ public class DroneSpawnHandler
             for (SpawnDroneEntry entry : spawns) {
                 if (entry.droneClass == entityClass)
                 {
-                    entry.field_76292_a = weightedProb;
-                    entry.field_76301_c = min;
-                    entry.field_76299_d = max;
+                    entry.itemWeight = weightedProb;
+                    entry.minGroupCount = min;
+                    entry.maxGroupCount = max;
                     found = true;
                     entry0 = entry;
                     break;
@@ -156,7 +157,7 @@ public class DroneSpawnHandler
         {
             super(weight, groupCountMin, groupCountMax);
             this.droneClass = entityclassIn;
-            this.field_76300_b = entityclassIn;
+            this.entityClass = entityclassIn;
         }
     }
 }

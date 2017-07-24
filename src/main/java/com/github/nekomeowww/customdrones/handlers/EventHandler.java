@@ -16,9 +16,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.*;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemPickupEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemSmeltedEvent;
+import net.minecraftforge.event.entity.*;
 import com.github.nekomeowww.customdrones.AchievementPageDrone;
 import com.github.nekomeowww.customdrones.CustomDrones;
 import com.github.nekomeowww.customdrones.block.BlockCrafter;
@@ -42,17 +44,17 @@ public class EventHandler
         Explosion ex = evn.getExplosion();
         World world = evn.getWorld();
         BlockPos bp = new BlockPos(ex.getPosition());
-        AxisAlignedBB aabb = new AxisAlignedBB(bp).func_186662_g(ModuleDe.getMaxPossibleRange());
-        List<EntityDrone> drones = world.func_72872_a(EntityDrone.class, aabb);
+        AxisAlignedBB aabb = new AxisAlignedBB(bp).expandXyz(ModuleDe.getMaxPossibleRange());
+        List<EntityDrone> drones = world.getEntitiesWithinAABB(EntityDrone.class, aabb);
         for (EntityDrone d : drones) {
             if (d.hasEnabled(Module.deexplosion))
             {
                 double range = ((ModuleDe)Module.deexplosion).getRange(d);
-                if (d.func_174813_aQ().func_186662_g(range).func_72318_a(ex.getPosition()))
+                if (d.getEntityBoundingBox().expandXyz(range).isVecInside(ex.getPosition()))
                 {
                     evn.setCanceled(true);
                     d.droneInfo.reduceBattery(20.0D * d.droneInfo.getBatteryConsumptionRate(d));
-                    world.func_184133_a(null, bp, SoundEvents.field_187646_bt, SoundCategory.PLAYERS, 2.5F, 1.0F);
+                    world.playSound(null, bp, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 2.5F, 1.0F);
                     return;
                 }
             }
@@ -62,7 +64,7 @@ public class EventHandler
     @SubscribeEvent
     public void itemPickup(PlayerEvent.ItemPickupEvent evn)
     {
-        itemReceived(evn.player, evn.pickedUp.func_92059_d());
+        itemReceived(evn.player, evn.pickedUp.getEntityItem());
     }
 
     @SubscribeEvent
@@ -79,44 +81,44 @@ public class EventHandler
 
     public void itemReceived(EntityPlayer player, ItemStack is)
     {
-        Item i = is.func_77973_b();
+        Item i = is.getItem();
         if ((i instanceof ItemDroneBit))
         {
-            player.func_71029_a(AchievementPageDrone.droneBit);
+            player.addStat(AchievementPageDrone.droneBit);
         }
         else if ((i instanceof ItemDronePart))
         {
-            player.func_71029_a(AchievementPageDrone.dronePart);
+            player.addStat(AchievementPageDrone.dronePart);
         }
         else if ((i instanceof ItemDroneSpawn))
         {
-            player.func_71029_a(AchievementPageDrone.droneSpawn);
-            DroneInfo di = DronesMod.droneSpawn.getDroneInfo(is);
+            player.addStat(AchievementPageDrone.droneSpawn);
+            DroneInfo di = CustomDrones.droneSpawn.getDroneInfo(is);
             if ((di.casing == 4) && (di.chip == 4) && (di.core == 4) && (di.engine == 4)) {
-                player.func_71029_a(AchievementPageDrone.droneSpawnBest);
+                player.addStat(AchievementPageDrone.droneSpawnBest);
             }
         }
         else if ((i instanceof ItemDroneFlyer))
         {
-            player.func_71029_a(AchievementPageDrone.droneFlyer);
+            player.addStat(AchievementPageDrone.droneFlyer);
         }
         else if ((i instanceof ItemDronePainter))
         {
-            player.func_71029_a(AchievementPageDrone.dronePaint);
+            player.addStat(AchievementPageDrone.dronePaint);
         }
         else if ((i instanceof ItemDroneScrew))
         {
-            player.func_71029_a(AchievementPageDrone.droneScrew);
+            player.addStat(AchievementPageDrone.droneScrew);
         }
         else if ((i instanceof ItemPlasmaGun))
         {
-            player.func_71029_a(AchievementPageDrone.dronePlasmaGun);
+            player.addStat(AchievementPageDrone.dronePlasmaGun);
         }
         else if ((i instanceof ItemBlock))
         {
-            Block b = ((ItemBlock)i).func_179223_d();
+            Block b = ((ItemBlock)i).getBlock();
             if ((b instanceof BlockCrafter)) {
-                player.func_71029_a(AchievementPageDrone.droneCrafter);
+                player.addStat(AchievementPageDrone.droneCrafter);
             }
         }
     }

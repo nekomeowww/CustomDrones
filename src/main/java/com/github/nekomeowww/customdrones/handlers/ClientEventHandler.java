@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovementInput;
 import net.minecraft.util.MovementInputFromOptions;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -36,46 +37,46 @@ public class ClientEventHandler
     {
         if (evn.type == TickEvent.Type.RENDER)
         {
-            Minecraft mc = Minecraft.func_71410_x();
-            Entity viewEntity = mc != null ? mc.func_175606_aa() : null;
+            Minecraft mc = Minecraft.getMinecraft();
+            Entity viewEntity = mc != null ? mc.getRenderViewEntity() : null;
             if ((evn.phase == TickEvent.Phase.START) && ((viewEntity instanceof EntityDrone)))
             {
-                mc.func_147108_a(null);
-                mc.field_71474_y.field_74319_N = true;
-                mc.field_71474_y.field_74320_O = 0;
+                mc.displayGuiScreen(null);
+                mc.gameSettings.hideGUI = true;
+                mc.gameSettings.thirdPersonView = 0;
                 if ((Keyboard.isCreated()) && (Keyboard.isKeyDown(1)))
                 {
-                    ((EntityDrone)mc.func_175606_aa()).setCameraMode(false);
-                    mc.field_71474_y.field_74319_N = ModuleCamera.prevHideGui;
-                    mc.func_175607_a(ModuleCamera.prevRenderView);
+                    ((EntityDrone)mc.getRenderViewEntity()).setCameraMode(false);
+                    mc.gameSettings.hideGUI = ModuleCamera.prevHideGui;
+                    mc.setRenderViewEntity(ModuleCamera.prevRenderView);
                 }
             }
         }
         if ((evn.type == TickEvent.Type.CLIENT) && (evn.phase == TickEvent.Phase.START))
         {
-            Minecraft mc = Minecraft.func_71410_x();
-            if ((mc != null) && (mc.field_71462_r == null))
+            Minecraft mc = Minecraft.getMinecraft();
+            if ((mc != null) && (mc.currentScreen == null))
             {
-                EntityPlayer p = mc.field_71439_g;
-                if ((p != null) && (p.func_184614_ca() != null) &&
-                        (DronesMod.droneFlyer.getFlyMode(p.func_184614_ca()) == 3))
+                EntityPlayer p = mc.thePlayer; //thePlayer used to be player
+                if ((p != null) && (p.getHeldItemMainhand() != null) &&
+                        (CustomDrones.droneFlyer.getFlyMode(p.getHeldItemMainhand()) == 3))
                 {
-                    EntityDrone drone = DronesMod.droneFlyer.getControllingDrone(p.field_70170_p, p.func_184614_ca());
+                    EntityDrone drone = CustomDrones.droneFlyer.getControllingDrone(p.getEntityWorld(), p.getHeldItemMainhand());
                     if ((drone != null) && (drone.isControllerFlying())) {
                         drone.setControllingPlayer(p);
                     }
-                    int u = mc.field_71474_y.field_74351_w.func_151470_d() ? 1 : 0;
-                    int d = mc.field_71474_y.field_74368_y.func_151470_d() ? 1 : 0;
-                    int l = mc.field_71474_y.field_74370_x.func_151470_d() ? 1 : 0;
-                    int r = mc.field_71474_y.field_74366_z.func_151470_d() ? 1 : 0;
-                    int j = mc.field_71474_y.field_74314_A.func_151470_d() ? 1 : 0;
-                    int s = mc.field_71474_y.field_74311_E.func_151470_d() ? 1 : 0;
-                    if ((p.func_184218_aH()) && ((p.func_184187_bx() instanceof EntityDrone)))
+                    int u = mc.gameSettings.keyBindForward.isKeyDown() ? 1 : 0;
+                    int d = mc.gameSettings.keyBindBack.isKeyDown() ? 1 : 0;
+                    int l = mc.gameSettings.keyBindLeft.isKeyDown() ? 1 : 0;
+                    int r = mc.gameSettings.keyBindRight.isKeyDown() ? 1 : 0;
+                    int j = mc.gameSettings.keyBindJump.isKeyDown() ? 1 : 0;
+                    int s = mc.gameSettings.keyBindSneak.isKeyDown() ? 1 : 0;
+                    if ((p.isRiding()) && ((p.getRidingEntity() instanceof EntityDrone)))
                     {
-                        j = mc.field_71474_y.field_74351_w.func_151470_d() ? 1 : 0;
-                        s = mc.field_71474_y.field_74368_y.func_151470_d() ? 1 : 0;
-                        u = mc.field_71474_y.field_74314_A.func_151470_d() ? 1 : 0;
-                        d = mc.field_71474_y.field_74311_E.func_151470_d() ? 1 : 0;
+                        j = mc.gameSettings.keyBindForward.isKeyDown() ? 1 : 0;
+                        s = mc.gameSettings.keyBindBack.isKeyDown() ? 1 : 0;
+                        u = mc.gameSettings.keyBindJump.isKeyDown() ? 1 : 0;
+                        d = mc.gameSettings.keyBindSneak.isKeyDown() ? 1 : 0;
                     }
                     int buttonCombination = u | d << 1 | l << 2 | r << 3 | j << 4 | s << 5;
                     if (buttonCombination > 0)
@@ -83,17 +84,17 @@ public class ClientEventHandler
                         PacketDispatcher.sendToServer(new PacketDroneButtonControl(buttonCombination));
                         if ((p instanceof EntityPlayerSP))
                         {
-                            if ((((EntityPlayerSP)p).field_71158_b instanceof MovementInputFromOptions)) {
-                                playerMovementInput = (MovementInputFromOptions)((EntityPlayerSP)p).field_71158_b;
+                            if ((((EntityPlayerSP)p).movementInput instanceof MovementInputFromOptions)) {
+                                playerMovementInput = (MovementInputFromOptions)((EntityPlayerSP)p).movementInput;
                             }
-                            ((EntityPlayerSP)p).field_71158_b = new MovementInput();
+                            ((EntityPlayerSP)p).movementInput = new MovementInput();
                         }
                     }
                 }
                 else if ((p instanceof EntityPlayerSP))
                 {
-                    if (!(((EntityPlayerSP)p).field_71158_b instanceof MovementInputFromOptions)) {
-                        ((EntityPlayerSP)p).field_71158_b = playerMovementInput;
+                    if (!(((EntityPlayerSP)p).movementInput instanceof MovementInputFromOptions)) {
+                        ((EntityPlayerSP)p).movementInput = playerMovementInput;
                     }
                 }
             }
@@ -105,8 +106,8 @@ public class ClientEventHandler
     {
         if ((event.getModID() == "drones") && (event.getConfigID() == ConfigControl.CONFIGID))
         {
-            DronesMod.configControl.syncConfig();
-            DronesMod.configControl.config.save();
+            CustomDrones.configControl.syncConfig();
+            CustomDrones.configControl.config.save();
         }
     }
 }
