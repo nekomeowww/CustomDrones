@@ -35,7 +35,7 @@ public class ModelBaseMod<T extends Entity>
         return this;
     }
 
-    public void doRender(T entity, float yaw, float partialTicks, Object... params)
+    public void doRender(T entity, float yaw, float partialTicks, Object... names)
     {
         for (CMBase cm : this.models.values()) {
             cm.fullRender();
@@ -64,10 +64,10 @@ public class ModelBaseMod<T extends Entity>
 
     public void bindTexture(ResourceLocation location)
     {
-        this.renderManager.field_78724_e.func_110577_a(location);
+        this.renderManager.renderEngine.bindTexture(location);
     }
 
-    public void applyAppearances(EntityDrone drone, float yaw, float partialTicks, Object... params)
+    public void applyAppearances(EntityDrone drone, float yaw, float partialTicks, Object... names)
     {
         applyDefaultAppearance();
     }

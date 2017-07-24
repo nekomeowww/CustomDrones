@@ -13,12 +13,12 @@ public class ModelPlasmaShot
         super(rm);
     }
 
-    public void doRender(EntityPlasmaShot bullet, float yaw, float partialTicks, Object... params)
+    public void doRender(EntityPlasmaShot bullet, float yaw, float partialTicks, Object... names)
     {
         if (bullet != null)
         {
             double d = 0.35D;
-            Vec3d dir = vec(bullet.field_70159_w * d, bullet.field_70181_x * d, bullet.field_70179_y * d);
+            Vec3d dir = vec(bullet.motionX * d, bullet.motionY * d, bullet.motionZ * d);
             double width = Math.sqrt(Math.min(8.0D, Math.max(1.0D, bullet.damage))) / 50.0D;
             CMPipe pipe = new CMPipe(vec(0.0D, 0.0D, 0.0D), dir, width / 5.0D, width, 10);
             pipe.setColor(bullet.color);
