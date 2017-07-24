@@ -59,7 +59,7 @@ public class WorldGen
 {
     public static int droneTowerRarity = 250;
     public static Random rnd = new Random();
-    public static IBlockState air = Blocks.field_150350_a.func_176223_P();
+    public static IBlockState air = Blocks.AIR.getDefaultState();
 
     public static void syncConfig(Configuration config, String cat)
     {
@@ -79,9 +79,9 @@ public class WorldGen
 
     public static void telePlayer(World world, BlockPos pos)
     {
-        EntityPlayer p = world.func_184137_a(pos.func_177958_n(), pos.func_177956_o(), pos.func_177952_p(), 512.0D, false);
-        if ((p != null) && (p.func_184614_ca() != null) && (p.func_184614_ca().func_77973_b() == DronesMod.droneFlyer)) {
-            p.func_70634_a(pos.func_177958_n(), pos.func_177956_o(), pos.func_177952_p());
+        EntityPlayer p = world.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), 512.0D, false);
+        if ((p != null) && (p.getHeldItemMainhand() != null) && (p.getHeldItemMainhand().getItem() == CustomDrones.droneFlyer)) {
+            p.setPositionAndUpdate(pos.getX(), pos.getY(), pos.getZ());
         }
     }
 
@@ -92,19 +92,19 @@ public class WorldGen
 
     public static void genChest(World world, BlockPos bp, List<ItemStack> items)
     {
-        world.func_175656_a(bp, Blocks.field_150486_ae.func_176223_P());
-        if ((world.func_175625_s(bp) instanceof TileEntityChest))
+        world.setBlockState(bp, Blocks.CHEST.getDefaultState());
+        if ((world.getTileEntity(bp) instanceof TileEntityChest))
         {
-            TileEntityChest tile = (TileEntityChest)world.func_175625_s(bp);
+            TileEntityChest tile = (TileEntityChest)world.getTileEntity(bp);
             List<Integer> empties = new ArrayList();
-            for (int a = 0; a < tile.func_70302_i_(); a++) {
+            for (int a = 0; a < tile.getSizeInventory(); a++) {
                 empties.add(Integer.valueOf(a));
             }
             while ((!items.isEmpty()) && (!empties.isEmpty()))
             {
                 Integer emptyIndex = (Integer)empties.get(rnd.nextInt(empties.size()));
                 ItemStack is = (ItemStack)items.get(rnd.nextInt(items.size()));
-                tile.func_70299_a(emptyIndex.intValue(), is.func_77946_l());
+                tile.setInventorySlotContents(emptyIndex.intValue(), is.copy());
                 items.remove(is);
                 empties.remove(emptyIndex);
             }
@@ -113,20 +113,20 @@ public class WorldGen
 
     public static void genBox(World world, BlockPos bp1, BlockPos bp2, IBlockState ibs, Predicate filter)
     {
-        int minX = Math.min(bp1.func_177958_n(), bp2.func_177958_n());
-        int minY = Math.min(bp1.func_177956_o(), bp2.func_177956_o());
-        int minZ = Math.min(bp1.func_177952_p(), bp2.func_177952_p());
-        int maxX = Math.max(bp1.func_177958_n(), bp2.func_177958_n());
-        int maxY = Math.max(bp1.func_177956_o(), bp2.func_177956_o());
-        int maxZ = Math.max(bp1.func_177952_p(), bp2.func_177952_p());
+        int minX = Math.min(bp1.getX(), bp2.getX());
+        int minY = Math.min(bp1.getY(), bp2.getY());
+        int minZ = Math.min(bp1.getZ(), bp2.getZ());
+        int maxX = Math.max(bp1.getX(), bp2.getX());
+        int maxY = Math.max(bp1.getY(), bp2.getY());
+        int maxZ = Math.max(bp1.getZ(), bp2.getZ());
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++)
                 {
                     BlockPos pos = new BlockPos(x, y, z);
-                    IBlockState state = world.func_180495_p(pos);
+                    IBlockState state = world.getBlockState(pos);
                     if ((filter == null) || (filter.apply(state))) {
-                        world.func_175656_a(pos, ibs);
+                        world.setBlockState(pos, ibs);
                     }
                 }
             }
@@ -135,26 +135,26 @@ public class WorldGen
 
     public static void genBoxMargin(World world, BlockPos bp1, BlockPos bp2, IBlockState ibs1, IBlockState ibs2, int xMargin, int yMargin, int zMargin, Predicate filter1, Predicate filter2)
     {
-        int minX = Math.min(bp1.func_177958_n(), bp2.func_177958_n());
-        int minY = Math.min(bp1.func_177956_o(), bp2.func_177956_o());
-        int minZ = Math.min(bp1.func_177952_p(), bp2.func_177952_p());
-        int maxX = Math.max(bp1.func_177958_n(), bp2.func_177958_n());
-        int maxY = Math.max(bp1.func_177956_o(), bp2.func_177956_o());
-        int maxZ = Math.max(bp1.func_177952_p(), bp2.func_177952_p());
+        int minX = Math.min(bp1.getX(), bp2.getX());
+        int minY = Math.min(bp1.getY(), bp2.getY());
+        int minZ = Math.min(bp1.getZ(), bp2.getZ());
+        int maxX = Math.max(bp1.getX(), bp2.getX());
+        int maxY = Math.max(bp1.getY(), bp2.getY());
+        int maxZ = Math.max(bp1.getZ(), bp2.getZ());
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++)
                 {
                     BlockPos pos = new BlockPos(x, y, z);
-                    IBlockState state = world.func_180495_p(pos);
+                    IBlockState state = world.getBlockState(pos);
                     if ((x < minX + xMargin) || (x > maxX - xMargin) || (y < minY + yMargin) || (y > maxY - yMargin) || (z < minZ + zMargin) || (z > maxZ - zMargin))
                     {
                         if ((filter1 == null) || (filter1.apply(state))) {
-                            world.func_175656_a(pos, ibs1);
+                            world.setBlockState(pos, ibs1);
                         }
                     }
                     else if ((filter2 == null) || (filter2.apply(state))) {
-                        world.func_175656_a(pos, ibs2);
+                        world.setBlockState(pos, ibs2);
                     }
                 }
             }
@@ -164,92 +164,92 @@ public class WorldGen
     public static GenBlockEntry blocksForBiome(World world, BlockPos bp)
     {
         Biome biome = world.getBiomeForCoordsBody(bp);
-        IBlockState primary = Blocks.field_150348_b.func_176223_P();
-        IBlockState secondary = Blocks.field_150346_d.func_176223_P();
-        IBlockState decor1 = Blocks.field_150347_e.func_176223_P();
-        IBlockState decor2 = Blocks.field_150322_A.func_176223_P();
-        IBlockState plant1 = Blocks.field_150328_O.func_176223_P();
-        IBlockState plant2 = Blocks.field_150327_N.func_176223_P();
-        IBlockState liquid = Blocks.field_150355_j.func_176223_P();
+        IBlockState primary = Blocks.STONE.getDefaultState();
+        IBlockState secondary = Blocks.DIRT.getDefaultState();
+        IBlockState decor1 = Blocks.COBBLESTONE.getDefaultState();
+        IBlockState decor2 = Blocks.SANDSTONE.getDefaultState();
+        IBlockState plant1 = Blocks.RED_FLOWER.getDefaultState();
+        IBlockState plant2 = Blocks.YELLOW_FLOWER.getDefaultState();
+        IBlockState liquid = Blocks.WATER.getDefaultState();
         if ((biome instanceof BiomePlains))
         {
-            decor1 = Blocks.field_150351_n.func_176223_P();
-            plant1 = Blocks.field_150330_I.func_176223_P();
-            plant2 = Blocks.field_150329_H.func_176223_P();
+            decor1 = Blocks.GRAVEL.getDefaultState();
+            plant1 = Blocks.DEADBUSH.getDefaultState();
+            plant2 = Blocks.TALLGRASS.getDefaultState();
         }
         if ((biome instanceof BiomeMesa))
         {
-            primary = Blocks.field_180395_cM.func_176223_P();
-            secondary = Blocks.field_150406_ce.func_176223_P().func_177226_a(BlockColored.field_176581_a, EnumDyeColor.SILVER);
+            primary = Blocks.RED_SANDSTONE.getDefaultState();
+            secondary = Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(BlockColored.COLOR, EnumDyeColor.SILVER);
 
-            decor1 = Blocks.field_150406_ce.func_176223_P().func_177226_a(BlockColored.field_176581_a, EnumDyeColor.ORANGE);
+            decor1 = Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(BlockColored.COLOR, EnumDyeColor.ORANGE);
 
-            decor2 = Blocks.field_150406_ce.func_176223_P().func_177226_a(BlockColored.field_176581_a, EnumDyeColor.YELLOW);
+            decor2 = Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(BlockColored.COLOR, EnumDyeColor.YELLOW);
 
-            plant1 = Blocks.field_150434_aF.func_176223_P();
-            plant2 = Blocks.field_150330_I.func_176223_P();
+            plant1 = Blocks.CACTUS.getDefaultState();
+            plant2 = Blocks.DEADBUSH.getDefaultState();
         }
         if ((biome instanceof BiomeOcean))
         {
-            primary = Blocks.field_150435_aG.func_176223_P();
-            secondary = Blocks.field_180395_cM.func_176223_P();
-            decor1 = Blocks.field_180397_cI.func_176223_P();
-            decor2 = Blocks.field_150360_v.func_176223_P();
-            plant1 = Blocks.field_150350_a.func_176223_P();
-            plant2 = Blocks.field_150350_a.func_176223_P();
+            primary = Blocks.CLAY.getDefaultState();
+            secondary = Blocks.RED_SANDSTONE.getDefaultState();
+            decor1 = Blocks.PRISMARINE.getDefaultState();
+            decor2 = Blocks.SPONGE.getDefaultState();
+            plant1 = Blocks.AIR.getDefaultState();
+            plant2 = Blocks.AIR.getDefaultState();
         }
         if ((biome instanceof BiomeHell))
         {
-            primary = Blocks.field_150424_aL.func_176223_P();
-            secondary = Blocks.field_150385_bj.func_176223_P();
-            decor1 = Blocks.field_150426_aN.func_176223_P();
-            decor2 = Blocks.field_150425_aM.func_176223_P();
-            plant1 = Blocks.field_150388_bm.func_176223_P();
-            plant2 = Blocks.field_150388_bm.func_176223_P();
+            primary = Blocks.NETHERRACK.getDefaultState();
+            secondary = Blocks.NETHER_BRICK.getDefaultState();
+            decor1 = Blocks.GLOWSTONE.getDefaultState();
+            decor2 = Blocks.SOUL_SAND.getDefaultState();
+            plant1 = Blocks.NETHER_WART.getDefaultState();
+            plant2 = Blocks.NETHER_WART.getDefaultState();
         }
         if (((biome instanceof BiomeDesert)) || ((biome instanceof BiomeBeach)))
         {
-            primary = Blocks.field_150322_A.func_176223_P();
-            secondary = Blocks.field_180395_cM.func_176223_P();
-            decor1 = Blocks.field_150359_w.func_176223_P();
-            decor2 = Blocks.field_150351_n.func_176223_P();
-            plant1 = Blocks.field_150330_I.func_176223_P();
-            plant2 = Blocks.field_150329_H.func_176223_P();
+            primary = Blocks.SANDSTONE.getDefaultState();
+            secondary = Blocks.RED_SANDSTONE.getDefaultState();
+            decor1 = Blocks.GLASS.getDefaultState();
+            decor2 = Blocks.GRAVEL.getDefaultState();
+            plant1 = Blocks.DEADBUSH.getDefaultState();
+            plant2 = Blocks.TALLGRASS.getDefaultState();
         }
         if (((biome instanceof BiomeHills)) || ((biome instanceof BiomeStoneBeach)))
         {
-            secondary = Blocks.field_150417_aV.func_176223_P();
-            decor2 = Blocks.field_150351_n.func_176223_P();
-            plant1 = Blocks.field_150330_I.func_176223_P();
-            plant2 = Blocks.field_150329_H.func_176223_P();
+            secondary = Blocks.STONEBRICK.getDefaultState();
+            decor2 = Blocks.GRAVEL.getDefaultState();
+            plant1 = Blocks.DEADBUSH.getDefaultState();
+            plant2 = Blocks.TALLGRASS.getDefaultState();
         }
         if (((biome instanceof BiomeForest)) || ((biome instanceof BiomeJungle)) || ((biome instanceof BiomeTaiga)) || ((biome instanceof BiomeSwamp)) || ((biome instanceof BiomeSavanna)))
         {
             BlockPlanks.EnumType woodVariant = woodVariant(biome);
-            IBlockState log = Blocks.field_150364_r.func_176223_P().func_177226_a(BlockOldLog.field_176301_b, woodVariant);
-            IBlockState plank = Blocks.field_150344_f.func_176223_P().func_177226_a(BlockPlanks.field_176383_a, woodVariant);
+            IBlockState log = Blocks.LOG.getDefaultState().withProperty(BlockOldLog.VARIANT, woodVariant);
+            IBlockState plank = Blocks.PLANKS.getDefaultState().withProperty(BlockPlanks.VARIANT, woodVariant);
 
-            IBlockState leaf = Blocks.field_150362_t.func_176223_P().func_177226_a(BlockOldLeaf.field_176239_P, woodVariant).func_177226_a(BlockOldLeaf.field_176236_b, Boolean.valueOf(false));
-            BlockFlower.EnumFlowerType flower1 = biome.func_180623_a(rnd, bp);
-            BlockFlower.EnumFlowerType flower2 = biome.func_180623_a(rnd, bp);
-            BlockFlower.EnumFlowerColor flower1Color = flower1.func_176964_a();
-            BlockFlower.EnumFlowerColor flower2Color = flower2.func_176964_a();
+            IBlockState leaf = Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, woodVariant).withProperty(BlockOldLeaf.CHECK_DECAY, Boolean.valueOf(false));
+            BlockFlower.EnumFlowerType flower1 = biome.pickRandomFlower(rnd, bp);
+            BlockFlower.EnumFlowerType flower2 = biome.pickRandomFlower(rnd, bp);
+            BlockFlower.EnumFlowerColor flower1Color = flower1.getBlockType();
+            BlockFlower.EnumFlowerColor flower2Color = flower2.getBlockType();
 
             primary = plank;
             secondary = log;
             decor1 = decor2 = leaf;
-            plant1 = flower1Color.func_180346_a().func_176223_P().func_177226_a(flower1Color.func_180346_a().func_176494_l(), flower1);
+            plant1 = flower1Color.getBlock().getDefaultState().withProperty(flower1Color.getBlock().getTypeProperty(), flower1);
 
-            plant2 = flower2Color.func_180346_a().func_176223_P().func_177226_a(flower2Color.func_180346_a().func_176494_l(), flower2);
+            plant2 = flower2Color.getBlock().getDefaultState().withProperty(flower2Color.getBlock().getTypeProperty(), flower2);
         }
-        if (((biome instanceof BiomeSnow)) || (biome == Biomes.field_76776_l) || (biome == Biomes.field_76777_m) ||
-                (biome.func_150561_m() == Biome.TempCategory.COLD))
+        if (((biome instanceof BiomeSnow)) || (biome == Biomes.FROZEN_OCEAN) || (biome == Biomes.FROZEN_RIVER) ||
+                (biome.getTempCategory() == Biome.TempCategory.COLD))
         {
-            primary = Blocks.field_150432_aD.func_176223_P();
-            secondary = Blocks.field_150433_aE.func_176223_P();
-            decor1 = Blocks.field_150359_w.func_176223_P();
-            decor2 = Blocks.field_185778_de.func_176223_P();
-            plant1 = plant2 = Blocks.field_150431_aC.func_176223_P();
+            primary = Blocks.ICE.getDefaultState();
+            secondary = Blocks.SNOW.getDefaultState();
+            decor1 = Blocks.GLASS.getDefaultState();
+            decor2 = Blocks.FROSTED_ICE.getDefaultState();
+            plant1 = plant2 = Blocks.SNOW_LAYER.getDefaultState();
         }
         return new GenBlockEntry(new IBlockState[] { primary, secondary, decor1, decor2, plant1, plant2, liquid });
     }
@@ -257,13 +257,13 @@ public class WorldGen
     public static BlockPlanks.EnumType woodVariant(Biome biome)
     {
         BlockPlanks.EnumType woodVariant = BlockPlanks.EnumType.SPRUCE;
-        if (biome.func_185353_n() >= 0.5F)
+        if (biome.getTemperature() >= 0.5F)
         {
             woodVariant = rnd.nextInt(2) == 0 ? BlockPlanks.EnumType.BIRCH : BlockPlanks.EnumType.OAK;
             if ((biome instanceof BiomeSwamp)) {
                 woodVariant = BlockPlanks.EnumType.OAK;
             }
-            if (((biome instanceof BiomeForest)) && ((biome.func_150567_a(rnd) instanceof WorldGenCanopyTree))) {
+            if (((biome instanceof BiomeForest)) && ((biome.genBigTreeChance(rnd) instanceof WorldGenCanopyTree))) {
                 woodVariant = BlockPlanks.EnumType.OAK;
             }
             if ((biome instanceof BiomeJungle)) {
@@ -310,25 +310,25 @@ public class WorldGen
                 this.liquid = blockStates[6];
             }
             if (this.primary == null) {
-                this.primary = Blocks.field_150348_b.func_176223_P();
+                this.primary = Blocks.STONE.getDefaultState();
             }
             if (this.secondary == null) {
-                this.secondary = Blocks.field_150346_d.func_176223_P();
+                this.secondary = Blocks.DIRT.getDefaultState();
             }
             if (this.decor1 == null) {
-                this.decor1 = Blocks.field_150354_m.func_176223_P();
+                this.decor1 = Blocks.SAND.getDefaultState();
             }
             if (this.decor2 == null) {
-                this.decor2 = Blocks.field_150322_A.func_176223_P();
+                this.decor2 = Blocks.SANDSTONE.getDefaultState();
             }
             if (this.plant1 == null) {
-                this.plant1 = Blocks.field_150328_O.func_176223_P();
+                this.plant1 = Blocks.RED_FLOWER.getDefaultState();
             }
             if (this.plant2 == null) {
-                this.plant2 = Blocks.field_150327_N.func_176223_P();
+                this.plant2 = Blocks.YELLOW_FLOWER.getDefaultState();
             }
             if (this.liquid == null) {
-                this.liquid = Blocks.field_150355_j.func_176223_P();
+                this.liquid = Blocks.WATER.getDefaultState();
             }
         }
 
@@ -344,7 +344,7 @@ public class WorldGen
             {
                 Block b = blocks[a];
                 if (b != null) {
-                    ibss[a] = b.func_176223_P();
+                    ibss[a] = b.getDefaultState();
                 }
             }
             return ibss;
