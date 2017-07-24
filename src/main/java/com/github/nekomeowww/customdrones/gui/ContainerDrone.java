@@ -18,79 +18,79 @@ public class ContainerDrone
 
     public ContainerDrone(IInventory invp, InventoryDrone invd)
     {
-        func_75146_a(new Slot(this.module = new InventoryBasic("Mod apply", true, 1), 0, 82, 47));
+        addSlotToContainer(new Slot(this.module = new InventoryBasic("Mod apply", true, 1), 0, 82, 47));
         this.invDrone = invd;
-        this.moduleSlotID = (this.field_75151_b.size() - 1);
+        this.moduleSlotID = (this.inventorySlots.size() - 1);
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 9; x++) {
-                func_75146_a(new Slot(invp, x + y * 9 + 9, 116 + x * 18, 101 + y * 18));
+                addSlotToContainer(new Slot(invp, x + y * 9 + 9, 116 + x * 18, 101 + y * 18));
             }
         }
         for (int x = 0; x < 9; x++) {
-            func_75146_a(new Slot(invp, x, 116 + x * 18, 159));
+            addSlotToContainer(new Slot(invp, x, 116 + x * 18, 159));
         }
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 9; x++)
             {
                 int index = x + y * 9;
-                if (index < invd.func_70302_i_()) {
-                    func_75146_a(new Slot(invd, index, 116 + x * 18, 11 + y * 18));
+                if (index < invd.getSizeInventory()) {
+                    addSlotToContainer(new Slot(invd, index, 116 + x * 18, 11 + y * 18));
                 }
             }
         }
     }
 
-    public ItemStack func_82846_b(EntityPlayer playerIn, int index)
+    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index)
     {
         ItemStack itemstack = null;
-        Slot slot = (Slot)this.field_75151_b.get(index);
-        if ((slot != null) && (slot.func_75216_d()))
+        Slot slot = (Slot)this.inventorySlots.get(index);
+        if ((slot != null) && (slot.getHasStack()))
         {
-            ItemStack itemstack1 = slot.func_75211_c();
-            itemstack = itemstack1.func_77946_l();
+            ItemStack itemstack1 = slot.getStack();
+            itemstack = itemstack1.copy();
             if (index == 0)
             {
-                if (!func_75135_a(itemstack1, 1, 36, false)) {
+                if (!mergeItemStack(itemstack1, 1, 36, false)) {
                     return null;
                 }
-                slot.func_75220_a(itemstack1, itemstack);
+                slot.onSlotChange(itemstack1, itemstack);
             }
             else if (index <= 36)
             {
-                if (!func_75135_a(itemstack1, 37, 38 + this.invDrone.func_70302_i_() - 1, false)) {
+                if (!mergeItemStack(itemstack1, 37, 38 + this.invDrone.getSizeInventory() - 1, false)) {
                     return null;
                 }
-                slot.func_75220_a(itemstack1, itemstack);
+                slot.onSlotChange(itemstack1, itemstack);
             }
-            else if (!func_75135_a(itemstack1, 1, 37, false))
+            else if (!mergeItemStack(itemstack1, 1, 37, false))
             {
                 return null;
             }
-            if (itemstack1.field_77994_a == 0) {
-                slot.func_75215_d((ItemStack)null);
+            if (itemstack1.stackSize == 0) {
+                slot.putStack((ItemStack)null);
             } else {
-                slot.func_75218_e();
+                slot.onSlotChanged();
             }
-            if (itemstack1.field_77994_a == itemstack.field_77994_a) {
+            if (itemstack1.stackSize == itemstack.stackSize) {
                 return null;
             }
-            slot.func_82870_a(playerIn, itemstack1);
+            slot.onPickupFromSlot(playerIn, itemstack1);
         }
         return itemstack;
     }
 
-    public boolean func_75145_c(EntityPlayer playerIn)
+    public boolean canInteractWith(EntityPlayer playerIn)
     {
         return true;
     }
 
-    public void func_75134_a(EntityPlayer playerIn)
+    public void onContainerClosed(EntityPlayer playerIn)
     {
-        if (func_75147_a(this.module, 0).func_75216_d())
+        if (getSlotFromInventory(this.module, 0).getHasStack())
         {
-            playerIn.func_71019_a(func_75147_a(this.module, 0).func_75211_c(), false);
-            func_75147_a(this.module, 0).func_75215_d(null);
+            playerIn.dropItem(getSlotFromInventory(this.module, 0).getStack(), false);
+            getSlotFromInventory(this.module, 0).putStack(null);
         }
-        super.func_75134_a(playerIn);
+        super.onContainerClosed(playerIn);
     }
 }
