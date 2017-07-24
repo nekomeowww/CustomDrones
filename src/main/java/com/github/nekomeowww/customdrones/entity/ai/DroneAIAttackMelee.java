@@ -22,29 +22,29 @@ public class DroneAIAttackMelee
         this.rnd = new Random();
     }
 
-    public boolean func_75250_a()
+    public boolean shouldExecute()
     {
         return this.drone.getDroneAttackTarget() != null;
     }
 
-    public void func_75249_e()
+    public void startExecuting()
     {
-        super.func_75249_e();
+        super.startExecuting();
         this.drone.droneInfo.switchModule(this.drone, this.drone.droneInfo.getModuleWithFunctionOf(Module.weapon1), true);
     }
 
-    public void func_75251_c()
+    public void resetTask()
     {
-        super.func_75251_c();
+        super.resetTask();
         this.drone.droneInfo.switchModule(this.drone, this.drone.droneInfo.getModuleWithFunctionOf(Module.weapon1), false);
     }
 
-    public void func_75246_d()
+    public void updateTask()
     {
-        super.func_75246_d();
+        super.updateTask();
         Entity target = this.drone.getDroneAttackTarget();
         this.drone.flyTo(EntityHelper.getCenterVec(target), 0.0D, 1.0D);
-        if (((target instanceof EntityPlayer)) && (((EntityPlayer)target).field_71075_bZ.field_75102_a)) {
+        if (((target instanceof EntityPlayer)) && (((EntityPlayer)target).capabilities.disableDamage)) {
             this.drone.setDroneAttackTarget(null, true);
         }
     }

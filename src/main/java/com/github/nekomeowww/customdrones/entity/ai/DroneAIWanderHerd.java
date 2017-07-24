@@ -30,13 +30,13 @@ public class DroneAIWanderHerd
         Vec3d thisWander = null;
         for (int a = 0; a < this.tryCount; a++)
         {
-            double xWander = this.drone.field_70165_t + (this.rnd.nextDouble() - 0.5D) * range;
-            double zWander = this.drone.field_70161_v + (this.rnd.nextDouble() - 0.5D) * range;
-            double yWander = this.drone.field_70163_u + (this.rnd.nextDouble() - 0.5D) * range;
+            double xWander = this.drone.posX + (this.rnd.nextDouble() - 0.5D) * range;
+            double zWander = this.drone.posZ + (this.rnd.nextDouble() - 0.5D) * range;
+            double yWander = this.drone.posY + (this.rnd.nextDouble() - 0.5D) * range;
             yWander = Math.min(Math.max(yWander, 2.0D), this.drone.getBelowSurfaceY() + 8.0D);
             Vec3d vec = new Vec3d(xWander, yWander, zWander);
-            List<Entity> herdFriends = this.drone.field_70170_p.func_175674_a(this.drone, this.drone
-                    .func_174813_aQ().func_186662_g(this.herdRange), this.herdClass);
+            List<Entity> herdFriends = this.drone.world.getEntitiesInAABBexcluding(this.drone, this.drone
+                    .getEntityBoundingBox().expandXyz(this.herdRange), this.herdClass);
             double thisWeight = getWeight(herdFriends);
             if ((thisWander == null) || (weight == 0.0D) || (thisWeight > weight))
             {

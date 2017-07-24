@@ -26,15 +26,15 @@ public class DroneAIFlyToNearest
         this.clazz = clazz;
     }
 
-    public boolean func_75250_a()
+    public boolean shouldExecute()
     {
-        return this.drone.field_70170_p.func_72857_a(this.clazz, this.drone.func_174813_aQ().func_186662_g(this.range), this.drone) != null;
+        return this.drone.world.findNearestEntityWithinAABB(this.clazz, this.drone.getEntityBoundingBox().expandXyz(this.range), this.drone) != null;
     }
 
-    public void func_75246_d()
+    public void updateTask()
     {
-        super.func_75246_d();
-        Entity e = this.drone.field_70170_p.func_72857_a(this.clazz, this.drone.func_174813_aQ().func_186662_g(this.range), this.drone);
+        super.updateTask();
+        Entity e = this.drone.world.findNearestEntityWithinAABB(this.clazz, this.drone.getEntityBoundingBox().expandXyz(this.range), this.drone);
 
         this.drone.flyTo(EntityHelper.getEyeVec(e), 0.2D, this.speed);
     }

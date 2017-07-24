@@ -23,24 +23,24 @@ public class DroneAIWander
         this.speed = s;
     }
 
-    public boolean func_75250_a()
+    public boolean shouldExecute()
     {
-        return (this.drone.getDroneAttackTarget() == null) && (!this.drone.field_70170_p.field_72995_K);
+        return (this.drone.getDroneAttackTarget() == null) && (!this.drone.world.isRemote);
     }
 
-    public void func_75251_c()
+    public void resetTask()
     {
-        super.func_75251_c();
+        super.resetTask();
         this.wanderPos = null;
     }
 
-    public void func_75246_d()
+    public void updateTask()
     {
-        super.func_75246_d();
+        super.updateTask();
         int baseTickMod = 38 + this.rnd.nextInt(4);
-        boolean newPos = (this.wanderPos == null) && (this.drone.field_70173_aa % baseTickMod == 0);
+        boolean newPos = (this.wanderPos == null) && (this.drone.ticksExisted % baseTickMod == 0);
         if ((!newPos) && (this.wanderPos != null)) {
-            newPos = ((this.drone.func_70092_e(this.wanderPos.field_72450_a, this.wanderPos.field_72448_b, this.wanderPos.field_72449_c) < 0.2D) && (this.drone.field_70173_aa % (baseTickMod * 2) == 0)) || (this.drone.field_70173_aa % (baseTickMod * 5) == 0);
+            newPos = ((this.drone.getDistanceSq(this.wanderPos.xCoord, this.wanderPos.yCoord, this.wanderPos.zCoord) < 0.2D) && (this.drone.ticksExisted % (baseTickMod * 2) == 0)) || (this.drone.ticksExisted % (baseTickMod * 5) == 0);
         }
         if (newPos) {
             this.wanderPos = getWanderPos(this.range);
@@ -52,10 +52,10 @@ public class DroneAIWander
 
     public Vec3d getWanderPos(double range)
     {
-        double yWander = this.drone.field_70163_u + (this.rnd.nextDouble() - 0.5D) * range;
+        double yWander = this.drone.posY + (this.rnd.nextDouble() - 0.5D) * range;
         yWander = Math.min(Math.max(yWander, 2.0D), this.drone.getBelowSurfaceY() + range);
 
-        return new Vec3d(this.drone.field_70165_t + (this.rnd.nextDouble() - 0.5D) * range, yWander, this.drone.field_70161_v + (this.rnd.nextDouble() - 0.5D) * range);
+        return new Vec3d(this.drone.posX + (this.rnd.nextDouble() - 0.5D) * range, yWander, this.drone.posZ + (this.rnd.nextDouble() - 0.5D) * range);
     }
 }
 
