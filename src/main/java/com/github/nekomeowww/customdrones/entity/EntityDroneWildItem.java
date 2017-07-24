@@ -28,7 +28,7 @@ public class EntityDroneWildItem
     public EntityDroneWildItem(World worldIn)
     {
         super(worldIn);
-        func_70105_a(0.5F, 0.7F);
+        setSize(0.5F, 0.7F);
         this.modelScale = 0.5D;
     }
 
@@ -36,12 +36,12 @@ public class EntityDroneWildItem
     {
         while (this.holding == null)
         {
-            DroneWeightedLists.WeightedItemStack wis = (DroneWeightedLists.WeightedItemStack)WeightedRandom.func_76271_a(this.field_70146_Z, DroneWeightedLists.wildHoldingList);
+            DroneWeightedLists.WeightedItemStack wis = (DroneWeightedLists.WeightedItemStack)WeightedRandom.getRandomItem(this.rand, DroneWeightedLists.wildHoldingList);
             if ((wis != null) && (wis.is != null))
             {
-                this.holding = wis.is.func_77946_l();
-                if (((this.holding.func_77973_b() instanceof ItemBlock)) && (((ItemBlock)this.holding.func_77973_b()).field_150939_a == Blocks.field_150335_W)) {
-                    this.droneTasks.func_75776_a(1, new DroneAIFlyToNearest(this, 16.0D, 0.75D, EntityPlayer.class));
+                this.holding = wis.is.copy();
+                if (((this.holding.getItem() instanceof ItemBlock)) && (((ItemBlock)this.holding.getItem()).block == Blocks.TNT)) {
+                    this.droneTasks.addTask(1, new DroneAIFlyToNearest(this, 16.0D, 0.75D, EntityPlayer.class));
                 }
             }
         }
@@ -72,20 +72,20 @@ public class EntityDroneWildItem
 
     public void initDroneAI()
     {
-        this.droneTasks.func_75776_a(10, new DroneAIWander(this, 16.0D, 0.5D));
+        this.droneTasks.addTask(10, new DroneAIWander(this, 16.0D, 0.5D));
     }
 
     public void initDroneAIPostSpawn() {}
 
-    public void func_70100_b_(EntityPlayer entityIn)
+    public void onCollideWithPlayer(EntityPlayer entityIn)
     {
-        super.func_70100_b_(entityIn);
-        if ((this.holding != null) && ((this.holding.func_77973_b() instanceof ItemBlock)) &&
-                (((ItemBlock)this.holding.func_77973_b()).field_150939_a == Blocks.field_150335_W))
+        super.onCollideWithPlayer(entityIn);
+        if ((this.holding != null) && ((this.holding.getItem() instanceof ItemBlock)) &&
+                (((ItemBlock)this.holding.getItem()).block == Blocks.TNT))
         {
             this.holding = null;
-            this.field_70170_p.func_72876_a(this, this.field_70165_t, this.field_70163_u, this.field_70161_v, 0.5F * this.droneInfo.core, true);
-            func_70106_y();
+            this.getEntityWorld().createExplosion(this, this.posX, this.posY, this.posZ, 0.5F * this.droneInfo.core, true);
+            setDead();
         }
     }
 
@@ -123,25 +123,25 @@ public class EntityDroneWildItem
         }
     }
 
-    public void func_70014_b(NBTTagCompound tag)
+    public void writeEntityToNBT(NBTTagCompound tag)
     {
-        super.func_70014_b(tag);
-        tag.func_74757_a("Holding", this.holding != null);
+        super.writeEntityToNBT(tag);
+        tag.setBoolean("Holding", this.holding != null);
         if (this.holding != null)
         {
             NBTTagCompound holdingTag = new NBTTagCompound();
-            this.holding.func_77955_b(holdingTag);
-            tag.func_74782_a("Holding tag", holdingTag);
+            this.holding.writeToNBT(holdingTag);
+            tag.setTag("Holding tag", holdingTag);
         }
     }
 
-    public void func_70037_a(NBTTagCompound tag)
+    public void readEntityFromNBT(NBTTagCompound tag)
     {
-        super.func_70037_a(tag);
-        if (tag.func_74767_n("Holding"))
+        super.readEntityFromNBT(tag);
+        if (tag.getBoolean("Holding"))
         {
-            NBTTagCompound holdingTag = tag.func_74775_l("Holding tag");
-            this.holding = ItemStack.func_77949_a(holdingTag);
+            NBTTagCompound holdingTag = tag.getCompoundTag("Holding tag");
+            this.holding = ItemStack.loadItemStackFromNBT(holdingTag);
         }
         this.droneInfo.appearance.modelID = DroneModels.instance.wildItem.id;
     }

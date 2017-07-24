@@ -12,38 +12,38 @@ public class EntityHomingBox
     public EntityHomingBox(World worldIn)
     {
         super(worldIn);
-        this.field_98038_p = true;
-        func_70105_a(1.0F, 1.0F);
-        this.field_70145_X = true;
+        this.forceSpawn = true;
+        setSize(1.0F, 1.0F);
+        this.noClip = true;
     }
 
-    public void func_70071_h_()
+    public void onUpdate()
     {
-        super.func_70071_h_();
+        super.onUpdate();
         if (this.target != null)
         {
-            func_70105_a(this.target.field_70130_N, this.target.field_70131_O);
-            func_70107_b(this.target.field_70165_t, this.target.field_70163_u, this.target.field_70161_v);
+            setSize(this.target.width, this.target.height);
+            setPosition(this.target.posX, this.target.posY, this.target.posZ);
         }
         else
         {
-            func_70105_a(1.0F, 1.0F);
+            setSize(1.0F, 1.0F);
         }
     }
 
-    protected void func_70088_a() {}
+    protected void entityInit() {}
 
-    public boolean func_70067_L()
+    public boolean canBeCollidedWith()
     {
         return false;
     }
 
-    public boolean func_70104_M()
+    public boolean canBePushed()
     {
         return false;
     }
 
-    protected boolean func_70041_e_()
+    protected boolean canTriggerWalking()
     {
         return false;
     }
@@ -53,7 +53,7 @@ public class EntityHomingBox
         return false;
     }
 
-    protected void func_70037_a(NBTTagCompound compound) {}
+    protected void readEntityFromNBT(NBTTagCompound compound) {}
 
-    protected void func_70014_b(NBTTagCompound compound) {}
+    protected void writeEntityToNBT(NBTTagCompound compound) {}
 }

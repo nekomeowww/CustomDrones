@@ -1,11 +1,14 @@
 package com.github.nekomeowww.customdrones.entity;
 
+import com.github.nekomeowww.customdrones.CustomDrones;
+import com.github.nekomeowww.customdrones.item.IItemInteractDrone;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.lang.Math;
 import javax.annotation.Nullable;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -65,11 +68,11 @@ public class EntityDrone
         implements IEntityAdditionalSpawnData
 {
     public static int DroneNextID = 0;
-    private static final DataParameter<Boolean> DICHANGED = EntityDataManager.func_187226_a(EntityDrone.class, DataSerializers.field_187198_h);
-    private static final DataParameter<Integer> FLYMODE = EntityDataManager.func_187226_a(EntityDrone.class, DataSerializers.field_187192_b);
-    private static final DataParameter<Boolean> CAMERA = EntityDataManager.func_187226_a(EntityDrone.class, DataSerializers.field_187198_h);
-    private static final DataParameter<Float> CAMERAPITCH = EntityDataManager.func_187226_a(EntityDrone.class, DataSerializers.field_187193_c);
-    private static final DataParameter<String> CONTROLPLAYER = EntityDataManager.func_187226_a(EntityDrone.class, DataSerializers.field_187194_d);
+    private static final DataParameter<Boolean> DICHANGED = EntityDataManager.createKey(EntityDrone.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Integer> FLYMODE = EntityDataManager.createKey(EntityDrone.class, DataSerializers.VARINT);
+    private static final DataParameter<Boolean> CAMERA = EntityDataManager.createKey(EntityDrone.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Float> CAMERAPITCH = EntityDataManager.createKey(EntityDrone.class, DataSerializers.FLOAT);
+    private static final DataParameter<String> CONTROLPLAYER = EntityDataManager.createKey(EntityDrone.class, DataSerializers.STRING);
     public DroneInfo droneInfo;
     public double wingRotate = 0.0D;
     public float acceX;
@@ -90,12 +93,12 @@ public class EntityDrone
     public EntityDrone(World worldIn)
     {
         super(worldIn);
-        func_70105_a(0.8F, 0.3F);
+        setSize(0.8F, 0.3F);
         this.droneInfo = new DroneInfo(this);
         applyDroneAttributes();
     }
 
-    public ITextComponent func_145748_c_()
+    public ITextComponent getDisplayName()
     {
         return new TextComponentString(this.droneInfo.getDisplayName());
     }
@@ -105,52 +108,52 @@ public class EntityDrone
         return this.droneInfo == null ? -1 : this.droneInfo.id;
     }
 
-    protected boolean func_70692_ba()
+    protected boolean canDespawn()
     {
         return false;
     }
 
-    protected void func_70088_a()
+    protected void entityInit()
     {
-        super.func_70088_a();
-        this.field_70180_af.func_187214_a(DICHANGED, Boolean.valueOf(false));
-        this.field_70180_af.func_187214_a(FLYMODE, Integer.valueOf(0));
-        this.field_70180_af.func_187214_a(CAMERA, Boolean.valueOf(false));
-        this.field_70180_af.func_187214_a(CAMERAPITCH, Float.valueOf(0.0F));
-        this.field_70180_af.func_187214_a(CONTROLPLAYER, "");
+        super.entityInit();
+        this.dataManager.register(DICHANGED, Boolean.valueOf(false));
+        this.dataManager.register(FLYMODE, Integer.valueOf(0));
+        this.dataManager.register(CAMERA, Boolean.valueOf(false));
+        this.dataManager.register(CAMERAPITCH, Float.valueOf(0.0F));
+        this.dataManager.register(CONTROLPLAYER, "");
     }
 
     protected void applyDroneAttributes()
     {
-        func_110148_a(SharedMonsterAttributes.field_111267_a).func_111128_a(this.droneInfo.getMaxDamage(this));
+        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(this.droneInfo.getMaxDamage(this));
     }
 
-    public Vec3d func_70040_Z()
+    public Vec3d getLookVec()
     {
-        return func_70676_i(1.0F);
+        return getLook(1.0F);
     }
 
     public Vec3d getHorizontalLookVec()
     {
-        return func_174806_f(0.0F, this.field_70177_z);
+        return getVectorForRotation(0.0F, this.rotationYaw);
     }
 
-    public float func_70047_e()
+    public float getEyeHeight()
     {
         return 0.15F;
     }
 
-    public boolean func_70067_L()
+    public boolean canBeCollidedWith()
     {
         return true;
     }
 
-    public boolean func_70104_M()
+    public boolean canBePushed()
     {
         return true;
     }
 
-    protected boolean func_70041_e_()
+    protected boolean canTriggerWalking()
     {
         return true;
     }
@@ -161,29 +164,29 @@ public class EntityDrone
     }
 
     @SideOnly(Side.CLIENT)
-    public int func_70070_b(float partialTicks)
+    public int getBrightnessForRender(float partialTicks)
     {
-        return super.func_70070_b(partialTicks);
+        return super.getBrightnessForRender(partialTicks);
     }
 
-    public float func_70013_c(float partialTicks)
+    public float getBrightness(float partialTicks)
     {
-        return super.func_70013_c(partialTicks);
+        return super.getBrightness(partialTicks);
     }
 
-    public void func_180430_e(float distance, float damageMultiplier) {}
+    public void fall(float distance, float damageMultiplier) {}
 
-    public EnumActionResult func_184199_a(EntityPlayer player, Vec3d vec, ItemStack is, EnumHand hand)
+    public EnumActionResult applyPlayerInteraction(EntityPlayer player, Vec3d vec, ItemStack is, EnumHand hand)
     {
-        ItemStack stack = player.func_184614_ca();
+        ItemStack stack = player.getHeldItemMainhand();
         boolean hasController = playerHasCorrespondingController(player, false);
         if (usefulInteraction(player, vec, stack, hand, hasController))
         {
-            if ((stack == null) || (player.func_70093_af()))
+            if ((stack == null) || (player.isSneaking()))
             {
                 if (hasController)
                 {
-                    player.openGui(DronesMod.instance, 1, this.field_70170_p, getDroneID(), 0, 0);
+                    player.openGui(CustomDrones.instance, 1, this.getEntityWorld(), getDroneID(), 0, 0);
                     return EnumActionResult.SUCCESS;
                 }
                 EntityHelper.addChat(player, 1, TextFormatting.RED + "No corresponding controller");
@@ -196,16 +199,16 @@ public class EntityDrone
                 {
                     if (hasController)
                     {
-                        if (stack.func_77973_b() == DronesMod.droneModule)
+                        if (stack.getItem() == CustomDrones.droneModule)
                         {
                             Module mod = ItemDroneModule.getModule(stack);
                             DroneInfo.ApplyResult addEntry = this.droneInfo.canAddModule(mod);
                             if (addEntry.successful) {
-                                if (!this.field_70170_p.field_72995_K)
+                                if (!this.getEntityWorld().isRemote)
                                 {
                                     this.droneInfo.applyModule(mod);
                                     this.droneInfo.updateDroneInfoToClient(player);
-                                    player.func_184611_a(EnumHand.MAIN_HAND, null);
+                                    player.setHeldItem(EnumHand.MAIN_HAND, null);
                                 }
                             }
                             EntityHelper.addChat(player, 1, addEntry.displayString);
@@ -213,19 +216,19 @@ public class EntityDrone
                         else
                         {
                             stack = this.droneInfo.applyItem(this, stack);
-                            player.func_184611_a(EnumHand.MAIN_HAND, stack);
+                            player.setHeldItem(EnumHand.MAIN_HAND, stack);
                         }
                         return EnumActionResult.SUCCESS;
                     }
                     EntityHelper.addChat(player, 1, TextFormatting.RED + "No corresponding controller");
                     return EnumActionResult.FAIL;
                 }
-                if ((stack.func_77973_b() instanceof IItemInteractDrone)) {
-                    return ((IItemInteractDrone)stack.func_77973_b()).interactWithDrone(this.field_70170_p, this, player, vec, stack, hand);
+                if ((stack.getItem() instanceof IItemInteractDrone)) {
+                    return ((IItemInteractDrone)stack.getItem()).interactWithDrone(this.getEntityWorld(), this, player, vec, stack, hand);
                 }
             }
         }
-        return super.func_184199_a(player, vec, is, hand);
+        return super.applyPlayerInteraction(player, vec, is, hand);
     }
 
     public boolean usefulInteraction(EntityPlayer player, Vec3d vec, ItemStack is, EnumHand hand, boolean hasController)
@@ -239,11 +242,11 @@ public class EntityDrone
             return true;
         }
         if (mustInHand) {
-            return DronesMod.droneFlyer.getControllerFreq(player.func_184614_ca()) == this.droneInfo.droneFreq;
+            return CustomDrones.droneFlyer.getControllerFreq(player.getHeldItemMainhand()) == this.droneInfo.droneFreq;
         }
-        InventoryPlayer inv = player.field_71071_by;
-        for (int a = 0; a < inv.func_70302_i_(); a++) {
-            if (DronesMod.droneFlyer.getControllerFreq(inv.func_70301_a(a)) == this.droneInfo.droneFreq) {
+        InventoryPlayer inv = player.inventory;
+        for (int a = 0; a < inv.getSizeInventory(); a++) {
+            if (CustomDrones.droneFlyer.getControllerFreq(inv.getStackInSlot(a)) == this.droneInfo.droneFreq) {
                 return true;
             }
         }
@@ -252,10 +255,10 @@ public class EntityDrone
 
     public Entity getRider()
     {
-        return func_184179_bs();
+        return getControllingPassenger();
     }
 
-    public double func_70042_X()
+    public double getMountedYOffset()
     {
         if (getRider() != null) {
             return 0.0D - getRiderHeight();
@@ -270,9 +273,9 @@ public class EntityDrone
             h = 0.0D;
         } else if (((getRider() instanceof EntityPlayer)) || ((getRider() instanceof EntityZombie)) ||
                 ((getRider() instanceof EntityPigZombie)) || ((getRider() instanceof EntitySkeleton))) {
-            h = getRider().field_70131_O * 0.88D;
+            h = getRider().height * 0.88D;
         } else {
-            h = getRider().field_70131_O * 1.15D;
+            h = getRider().height * 1.15D;
         }
         return h;
     }
@@ -280,7 +283,7 @@ public class EntityDrone
     public void dropRider()
     {
         if (getRider() != null) {
-            getRider().func_184210_p();
+            getRider().dismountRidingEntity();
         }
     }
 
@@ -291,7 +294,7 @@ public class EntityDrone
 
     public int getFlyingMode()
     {
-        return ((Integer)func_184212_Q().func_187225_a(FLYMODE)).intValue();
+        return ((Integer)getDataManager().get(FLYMODE)).intValue();
     }
 
     public String getFlyingModeString()
@@ -317,7 +320,7 @@ public class EntityDrone
 
     public void setFlyingMode(int i)
     {
-        func_184212_Q().func_187227_b(FLYMODE, Integer.valueOf(i));
+        getDataManager().set(FLYMODE, Integer.valueOf(i));
     }
 
     public void setNextFlyingMode()
@@ -351,61 +354,61 @@ public class EntityDrone
 
     public boolean getWatchedDIChanged()
     {
-        return ((Boolean)this.field_70180_af.func_187225_a(DICHANGED)).booleanValue();
+        return ((Boolean)this.dataManager.get(DICHANGED)).booleanValue();
     }
 
     public void setWatchedDIChanged(boolean b)
     {
-        func_184212_Q().func_187227_b(DICHANGED, Boolean.valueOf(b));
+        getDataManager().set(DICHANGED, Boolean.valueOf(b));
     }
 
     public void setCameraMode(boolean b)
     {
-        if (this.field_70170_p.field_72995_K) {
+        if (this.getEntityWorld().isRemote) {
             PacketDispatcher.sendToServer(new PacketDroneSetCameraMode(this, b));
         } else {
-            func_184212_Q().func_187227_b(CAMERA, Boolean.valueOf(b));
+            getDataManager().set(CAMERA, Boolean.valueOf(b));
         }
     }
 
     public boolean getCameraMode()
     {
-        return ((Boolean)func_184212_Q().func_187225_a(CAMERA)).booleanValue();
+        return ((Boolean)getDataManager().get(CAMERA)).booleanValue();
     }
 
     public void setCameraPitch(float f)
     {
-        if (this.field_70170_p.field_72995_K) {
+        if (this.getEntityWorld().isRemote) {
             PacketDispatcher.sendToServer(new PacketDroneSetCameraPitch(this, f));
         }
-        func_184212_Q().func_187227_b(CAMERAPITCH, Float.valueOf(f));
+        getDataManager().set(CAMERAPITCH, Float.valueOf(f));
     }
 
     public float getCameraPitch()
     {
-        return ((Float)func_184212_Q().func_187225_a(CAMERAPITCH)).floatValue();
+        return ((Float)getDataManager().get(CAMERAPITCH)).floatValue();
     }
 
     public void setControllingPlayer(EntityPlayer p)
     {
         this.controllingPlayer = p;
-        func_184212_Q().func_187227_b(CONTROLPLAYER, p == null ? "" : p.func_70005_c_());
+        getDataManager().set(CONTROLPLAYER, p == null ? "" : p.getName());
     }
 
     public EntityPlayer getControllingPlayer()
     {
-        String s = (String)func_184212_Q().func_187225_a(CONTROLPLAYER);
+        String s = (String)getDataManager().get(CONTROLPLAYER);
         if ((s.length() == 0) || (s.equals(""))) {
             this.controllingPlayer = null;
-        } else if ((this.controllingPlayer == null) || (!this.controllingPlayer.func_70005_c_().equals(s))) {
-            this.controllingPlayer = this.field_70170_p.func_72924_a(s);
+        } else if ((this.controllingPlayer == null) || (!this.controllingPlayer.getName().equals(s))) {
+            this.controllingPlayer = this.getEntityWorld().getPlayerEntityByName(s);
         }
         return this.controllingPlayer;
     }
 
-    public void func_70030_z()
+    public void onEntityUpdate()
     {
-        super.func_70030_z();
+        super.onEntityUpdate();
         if (this.hitDelay > 0) {
             this.hitDelay -= 1;
         }
@@ -415,10 +418,10 @@ public class EntityDrone
         if ((this.pickupDelay > 0) && (getRider() == null)) {
             this.pickupDelay -= 1;
         }
-        if (!this.field_70170_p.field_72995_K) {
+        if (!this.getEntityWorld().isRemote) {
             setWatchedDIChanged(this.droneInfo.isChanged);
         }
-        if ((getDroneAttackTarget() == null) || (getDroneAttackTarget().field_70128_L)) {
+        if ((getDroneAttackTarget() == null) || (getDroneAttackTarget().isDead)) {
             setDroneAttackTarget(null, true);
         }
         updateFlyingBehavior();
@@ -426,22 +429,22 @@ public class EntityDrone
         updateWingRotation();
         this.droneInfo.updateDroneInfo(this);
         double speedControl = 1.0D - 0.087D * Math.pow(this.droneInfo.getMaxSpeed(), 0.1D);
-        this.field_70159_w *= speedControl;
-        this.field_70181_x *= speedControl;
-        this.field_70179_y *= speedControl;
-        func_70091_d(this.field_70159_w, this.field_70181_x, this.field_70179_y);
-        func_85033_bc();
-        func_145771_j(this.field_70165_t, this.field_70163_u, this.field_70161_v);
+        this.motionX *= speedControl;
+        this.motionY *= speedControl;
+        this.motionZ *= speedControl;
+        move(this.motionX, this.motionY, this.motionZ);
+        collideWithNearbyEntities();
+        pushOutOfBlocks(this.posX, this.posY, this.posZ);
     }
 
     public void updateRotation()
     {
         double maxYawChange = 6.0D;
-        double nextYaw = (float)(Math.atan2(-this.field_70159_w, this.field_70179_y) / 3.141592653589793D * 180.0D);
-        if ((Math.abs(this.field_70159_w) <= 0.001D) && (Math.abs(this.field_70179_y) <= 0.001D)) {
-            nextYaw = this.field_70177_z;
+        double nextYaw = (float)(Math.atan2(-this.motionX, this.motionZ) / 3.141592653589793D * 180.0D);
+        if ((Math.abs(this.motionX) <= 0.001D) && (Math.abs(this.motionZ) <= 0.001D)) {
+            nextYaw = this.rotationYaw;
         }
-        double changingYaw = nextYaw - this.field_70177_z;
+        double changingYaw = nextYaw - this.rotationYaw;
         changingYaw %= 360.0D;
         if (360.0D - Math.abs(changingYaw) < Math.abs(changingYaw)) {
             changingYaw *= -1.0D;
@@ -451,22 +454,22 @@ public class EntityDrone
         } else if (changingYaw < 0.0D) {
             changingYaw = -Math.min(maxYawChange, -changingYaw);
         }
-        this.field_70177_z = ((float)(this.field_70177_z + changingYaw));
-        this.field_70177_z %= 360.0F;
+        this.rotationYaw = ((float)(this.rotationYaw + changingYaw));
+        this.rotationYaw %= 360.0F;
         if ((getCameraMode()) && (getControllingPlayer() != null)) {
-            if (this.field_70170_p.field_72995_K) {
-                setCameraPitch(getControllingPlayer().field_70125_A);
+            if (this.getEntityWorld().isRemote) {
+                setCameraPitch(getControllingPlayer().rotationPitch);
             }
         }
         double nextPitch = getCameraPitch();
         double maxPitchChange = 3.0D;
-        double changingPitch = nextPitch - this.field_70125_A;
+        double changingPitch = nextPitch - this.rotationPitch;
         if (changingPitch > 0.0D) {
             changingPitch = Math.min(maxPitchChange, changingPitch);
         } else if (changingPitch < 0.0D) {
             changingPitch = -Math.min(maxPitchChange, -changingPitch);
         }
-        this.field_70125_A = ((float)(this.field_70125_A + changingPitch));
+        this.rotationPitch = ((float)(this.rotationPitch + changingPitch));
     }
 
     public void updateFlyingBehavior()
@@ -486,9 +489,9 @@ public class EntityDrone
         if (this.droneInfo.getBattery(false) <= 0.0D)
         {
             this.idle = true;
-            this.field_70181_x -= 0.08D;
+            this.motionY -= 0.08D;
             if (getRider() != null) {
-                getRider().func_184210_p();
+                getRider().dismountRidingEntity();
             }
         }
         else
@@ -497,33 +500,33 @@ public class EntityDrone
             if (mode == 0)
             {
                 this.idle = true;
-                this.field_70181_x -= 0.08D;
+                this.motionY -= 0.08D;
                 if (getRider() != null) {
-                    getRider().func_184210_p();
+                    getRider().dismountRidingEntity();
                 }
             }
             else if (mode == 1)
             {
-                this.field_70181_x -= 0.08D;
+                this.motionY -= 0.08D;
                 double belowY = getBelowSurfaceY();
-                double distY = this.field_70163_u - belowY;
+                double distY = this.posY - belowY;
                 double maxDist = 1.5D + getRiderHeight();
                 if (distY < maxDist) {
-                    this.field_70181_x += 0.08D * Math.pow((maxDist - distY) * 2.0D, 0.5D) * this.droneInfo.getEngineLevel();
+                    this.motionY += 0.08D * Math.pow((maxDist - distY) * 2.0D, 0.5D) * this.droneInfo.getEngineLevel();
                 }
                 this.idle = true;
             }
             else
             {
                 double belowY = getBelowSurfaceY();
-                double distY = this.field_70163_u - belowY;
+                double distY = this.posY - belowY;
                 if (distY > getRiderHeight())
                 {
                     Entity rider = getRider();
-                    double riderWeight = rider != null ? 0.5D + rider.field_70130_N * rider.field_70131_O : 0.5D;
+                    double riderWeight = rider != null ? 0.5D + rider.width * rider.height : 0.5D;
                     double pullUpPower = this.droneInfo.getEngineLevel() * Math.sqrt(this.droneInfo.getMaxSpeed());
                     if (pullUpPower < riderWeight) {
-                        this.field_70181_x -= 0.08D * (riderWeight - pullUpPower) / riderWeight;
+                        this.motionY -= 0.08D * (riderWeight - pullUpPower) / riderWeight;
                     }
                 }
                 if (overridenByMod)
@@ -537,41 +540,41 @@ public class EntityDrone
 
     public void flyTo(Vec3d pos, double minMove, double rate)
     {
-        flyNormalAlong(VecHelper.fromTo(func_174791_d(), pos), minMove, rate);
+        flyNormalAlong(VecHelper.fromTo(getPositionVector(), pos), minMove, rate);
     }
 
     public void flyNormalAlong(Vec3d vec, double minMove, double rate)
     {
-        if ((vec != null) && (vec.func_72433_c() >= minMove))
+        if ((vec != null) && (vec.lengthVector() >= minMove))
         {
-            Vec3d vec1 = vec.func_72433_c() > 1.0D ? vec.func_72432_b() : vec.func_72441_c(0.0D, 0.0D, 0.0D);
-            flyNormalAlong(vec1.field_72450_a, vec1.field_72448_b, vec1.field_72449_c, rate);
+            Vec3d vec1 = vec.lengthVector() > 1.0D ? vec.normalize() : vec.addVector(0.0D, 0.0D, 0.0D);
+            flyNormalAlong(vec1.xCoord, vec1.yCoord, vec1.zCoord, rate);
         }
     }
 
     public void flyNormalAlong(double x, double y, double z, double rate)
     {
         double speedMult = getSpeedMultiplication() * rate;
-        this.field_70159_w += x * speedMult;
-        this.field_70181_x += y * speedMult;
-        this.field_70179_y += z * speedMult;
+        this.motionX += x * speedMult;
+        this.motionY += y * speedMult;
+        this.motionZ += z * speedMult;
     }
 
     public EntityPlayer getNearestPlayer(double distance, int hasController)
     {
         double d0 = -1.0D;
         EntityPlayer entityplayer = null;
-        for (int i = 0; i < this.field_70170_p.field_73010_i.size(); i++)
+        for (int i = 0; i < this.getEntityWorld().playerEntities.size(); i++)
         {
-            EntityPlayer entityplayer1 = (EntityPlayer)this.field_70170_p.field_73010_i.get(i);
-            if (EntitySelectors.field_180132_d.apply(entityplayer1)) {
+            EntityPlayer entityplayer1 = (EntityPlayer)this.getEntityWorld().playerEntities.get(i);
+            if (EntitySelectors.NOT_SPECTATING.apply(entityplayer1)) {
                 if (hasController != 0)
                 {
                     if (!playerHasCorrespondingController(entityplayer1, hasController == 2)) {}
                 }
                 else
                 {
-                    double d1 = entityplayer1.func_70092_e(this.field_70165_t, this.field_70163_u, this.field_70161_v);
+                    double d1 = entityplayer1.getDistanceSq(this.posX, this.posY, this.posZ);
                     if (((distance < 0.0D) || (d1 < distance * distance)) && ((d0 == -1.0D) || (d1 < d0)))
                     {
                         d0 = d1;
@@ -612,17 +615,17 @@ public class EntityDrone
     public double getBelowSurfaceY()
     {
         double yMax = -1.0D;
-        for (int x = (int)Math.floor(func_174813_aQ().field_72340_a); x <= func_174813_aQ().field_72336_d; x++) {
-            for (int z = (int)Math.floor(func_174813_aQ().field_72339_c); z <= func_174813_aQ().field_72334_f; z++) {
-                for (int y = (int)Math.floor(this.field_70163_u); y > 0; y--)
+        for (int x = (int)Math.floor(getEntityBoundingBox().minX); x <= getEntityBoundingBox().maxX; x++) {
+            for (int z = (int)Math.floor(getEntityBoundingBox().minZ); z <= getEntityBoundingBox().maxZ; z++) {
+                for (int y = (int)Math.floor(this.posY); y > 0; y--)
                 {
                     BlockPos pos = new BlockPos(x, y, z);
-                    IBlockState bs = this.field_70170_p.func_180495_p(pos);
-                    if ((!bs.func_185904_a().func_76222_j()) || (bs.func_185904_a() != Material.field_151579_a))
+                    IBlockState bs = this.getEntityWorld().getBlockState(pos);
+                    if ((!bs.getMaterial().isReplaceable()) || (bs.getMaterial() != Material.AIR))
                     {
-                        double posMax = pos.func_177956_o();
-                        if (this.field_70170_p.func_180495_p(pos).func_185890_d(this.field_70170_p, pos) != null) {
-                            posMax += this.field_70170_p.func_180495_p(pos).func_185890_d(this.field_70170_p, pos).field_72337_e;
+                        double posMax = pos.getY();
+                        if (this.getEntityWorld().getBlockState(pos).getCollisionBoundingBox(this.getEntityWorld(), pos) != null) {
+                            posMax += this.getEntityWorld().getBlockState(pos).getCollisionBoundingBox(this.getEntityWorld(), pos).maxY;
                         }
                         yMax = Math.max(yMax, posMax);
                         break;
@@ -642,7 +645,7 @@ public class EntityDrone
             double engine = 100.0D * rate;
             return engine;
         }
-        double add = (this.field_70159_w * this.field_70159_w + (this.field_70167_r - this.field_70163_u) * (this.field_70167_r - this.field_70163_u) + this.field_70179_y * this.field_70179_y) * 1000.0D;
+        double add = (this.motionX * this.motionX + (this.prevPosY - this.posY) * (this.prevPosY - this.posY) + this.motionZ * this.motionZ) * 1000.0D;
         return add;
     }
 
@@ -658,7 +661,7 @@ public class EntityDrone
         return this.wingRotate + increment * partialTick;
     }
 
-    public void func_70108_f(Entity e)
+    public void applyEntityCollision(Entity e)
     {
         boolean modStopFurtherCollision = false;
         for (Iterator localIterator = this.droneInfo.mods.iterator(); localIterator.hasNext(); modStopFurtherCollision = true)
@@ -670,15 +673,15 @@ public class EntityDrone
             return;
         }
         if ((!(e instanceof EntityDrone)) || (shouldPushDrone((EntityDrone)e))) {
-            super.func_70108_f(e);
+            super.applyEntityCollision(e);
         }
         if (getFlyingMode() != 0) {
             if ((getRider() == null) && (canPickUpEntity(e)))
             {
                 if (this.pickupDelay == 0)
                 {
-                    e.func_184220_m(this);
-                    func_70107_b(this.field_70165_t, e.field_70163_u + getRiderHeight(), this.field_70161_v);
+                    e.startRiding(this);
+                    setPosition(this.posX, e.posY + getRiderHeight(), this.posZ);
                     this.pickupDelay = 20;
                 }
             }
@@ -698,11 +701,11 @@ public class EntityDrone
                 else if ((e instanceof EntityPlayer))
                 {
                     EntityPlayer p = (EntityPlayer)e;
-                    for (int a = 0; a < p.field_71071_by.func_70302_i_(); a++)
+                    for (int a = 0; a < p.inventory.getSizeInventory(); a++)
                     {
-                        ItemStack is = p.field_71071_by.func_70301_a(a);
-                        if ((is != null) && (is.func_77973_b() == DronesMod.droneFlyer) &&
-                                (DronesMod.droneFlyer.getControllerFreq(is) == this.droneInfo.droneFreq))
+                        ItemStack is = p.inventory.getStackInSlot(a);
+                        if ((is != null) && (is.getItem() == CustomDrones.droneFlyer) &&
+                                (CustomDrones.droneFlyer.getControllerFreq(is) == this.droneInfo.droneFreq))
                         {
                             causeDam = false;
                             break;
@@ -711,7 +714,7 @@ public class EntityDrone
                 }
                 if (causeDam)
                 {
-                    double spdSqr = this.field_70159_w * this.field_70159_w + this.field_70181_x * this.field_70181_x + this.field_70179_y * this.field_70179_y;
+                    double spdSqr = this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ;
                     double spdDmgRate = Math.sqrt(spdSqr) * 20.0D / this.droneInfo.getMaxSpeed();
                     double baseDmg = this.droneInfo.getAttackPower(this);
                     double damage = baseDmg * 0.8D * spdDmgRate + 0.2D * baseDmg;
@@ -721,44 +724,44 @@ public class EntityDrone
         }
     }
 
-    protected void func_85033_bc()
+    protected void collideWithNearbyEntities()
     {
-        List<Entity> list = this.field_70170_p.func_72839_b(this,
-                func_174813_aQ().func_186662_g(func_70111_Y()));
+        List<Entity> list = this.getEntityWorld().getEntitiesWithinAABBExcludingEntity(this,
+                getEntityBoundingBox().expandXyz(getCollisionBorderSize()));
         if (!list.isEmpty()) {
             for (int i = 0; i < list.size(); i++)
             {
                 Entity entity = (Entity)list.get(i);
-                func_70108_f(entity);
+                applyEntityCollision(entity);
             }
         }
     }
 
-    protected void func_145775_I()
+    protected void doBlockCollisions()
     {
-        AxisAlignedBB axisalignedbb = func_174813_aQ().func_72317_d(this.field_70159_w, this.field_70181_x, this.field_70179_y);
+        AxisAlignedBB axisalignedbb = getEntityBoundingBox().offset(this.motionX, this.motionY, this.motionZ);
 
-        BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos = BlockPos.PooledMutableBlockPos.func_185345_c(axisalignedbb.field_72340_a + 0.001D, axisalignedbb.field_72338_b + 0.001D, axisalignedbb.field_72339_c + 0.001D);
+        BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos = BlockPos.PooledMutableBlockPos.retain(axisalignedbb.minX + 0.001D, axisalignedbb.minY + 0.001D, axisalignedbb.minZ + 0.001D);
 
-        BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos1 = BlockPos.PooledMutableBlockPos.func_185345_c(axisalignedbb.field_72336_d - 0.001D, axisalignedbb.field_72337_e - 0.001D, axisalignedbb.field_72334_f - 0.001D);
-        BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos2 = BlockPos.PooledMutableBlockPos.func_185346_s();
-        if (this.field_70170_p.func_175707_a(blockpos$pooledmutableblockpos, blockpos$pooledmutableblockpos1)) {
-            for (int i = blockpos$pooledmutableblockpos.func_177958_n(); i <= blockpos$pooledmutableblockpos1.func_177958_n(); i++) {
-                for (int j = blockpos$pooledmutableblockpos.func_177956_o(); j <= blockpos$pooledmutableblockpos1.func_177956_o(); j++) {
-                    for (int k = blockpos$pooledmutableblockpos.func_177952_p(); k <= blockpos$pooledmutableblockpos1.func_177952_p(); k++)
+        BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos1 = BlockPos.PooledMutableBlockPos.retain(axisalignedbb.maxX - 0.001D, axisalignedbb.maxY - 0.001D, axisalignedbb.maxZ - 0.001D);
+        BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos2 = BlockPos.PooledMutableBlockPos.retain();
+        if (this.getEntityWorld().isAreaLoaded(blockpos$pooledmutableblockpos, blockpos$pooledmutableblockpos1)) {
+            for (int i = blockpos$pooledmutableblockpos.getX(); i <= blockpos$pooledmutableblockpos1.getX(); i++) {
+                for (int j = blockpos$pooledmutableblockpos.getY(); j <= blockpos$pooledmutableblockpos1.getY(); j++) {
+                    for (int k = blockpos$pooledmutableblockpos.getZ(); k <= blockpos$pooledmutableblockpos1.getZ(); k++)
                     {
-                        blockpos$pooledmutableblockpos2.func_181079_c(i, j, k);
-                        IBlockState iblockstate = this.field_70170_p.func_180495_p(blockpos$pooledmutableblockpos2);
+                        blockpos$pooledmutableblockpos2.setPos(i, j, k);
+                        IBlockState iblockstate = this.getEntityWorld().getBlockState(blockpos$pooledmutableblockpos2);
                         try
                         {
                             collideWithBlock(blockpos$pooledmutableblockpos2, iblockstate);
                         }
                         catch (Throwable throwable)
                         {
-                            CrashReport crashreport = CrashReport.func_85055_a(throwable, "Colliding entity with block");
+                            CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Colliding entity with block");
 
-                            CrashReportCategory crashreportcategory = crashreport.func_85058_a("Block being collided with");
-                            CrashReportCategory.func_175750_a(crashreportcategory, blockpos$pooledmutableblockpos2, iblockstate);
+                            CrashReportCategory crashreportcategory = crashreport.makeCategory("Block being collided with");
+                            CrashReportCategory.addBlockInfo(crashreportcategory, blockpos$pooledmutableblockpos2, iblockstate);
 
                             throw new ReportedException(crashreport);
                         }
@@ -766,10 +769,10 @@ public class EntityDrone
                 }
             }
         }
-        blockpos$pooledmutableblockpos.func_185344_t();
-        blockpos$pooledmutableblockpos1.func_185344_t();
-        blockpos$pooledmutableblockpos2.func_185344_t();
-        super.func_145775_I();
+        blockpos$pooledmutableblockpos.release();
+        blockpos$pooledmutableblockpos1.release();
+        blockpos$pooledmutableblockpos2.release();
+        super.doBlockCollisions();
     }
 
     public void collideWithBlock(BlockPos pos, IBlockState state)
@@ -795,7 +798,7 @@ public class EntityDrone
 
     public DamageSource getAttackDamageSource()
     {
-        return this.controllingPlayer == null ? DamageSource.func_92087_a(this) : DamageSource.func_188403_a(this, this.controllingPlayer);
+        return this.controllingPlayer == null ? DamageSource.causeThornsDamage(this) : DamageSource.causeIndirectDamage(this, this.controllingPlayer);
     }
 
     public boolean shouldPushDrone(EntityDrone e)
@@ -816,7 +819,7 @@ public class EntityDrone
         if (((e instanceof EntityPlayer)) && (canPickUpPlayers())) {
             return true;
         }
-        if ((canPickUpNonPlayers()) && (!(e instanceof EntityItem)) && (!(e instanceof EntityXPOrb)) && (!(e instanceof IProjectile)) && (e.field_70130_N * e.field_70131_O < 4 + this.droneInfo.engine)) {
+        if ((canPickUpNonPlayers()) && (!(e instanceof EntityItem)) && (!(e instanceof EntityXPOrb)) && (!(e instanceof IProjectile)) && (e.width * e.height < 4 + this.droneInfo.engine)) {
             return true;
         }
         return false;
@@ -832,30 +835,30 @@ public class EntityDrone
         return hasEnabled(Module.nplayerTransport);
     }
 
-    public Entity func_184179_bs()
+    public Entity getControllingPassenger()
     {
-        return func_184188_bt().isEmpty() ? null : (Entity)func_184188_bt().get(0);
+        return getPassengers().isEmpty() ? null : (Entity)getPassengers().get(0);
     }
 
     public void setDroneAttackTarget(Entity e, boolean forcefully)
     {
         Entity oldTarget = getDroneAttackTarget();
-        if ((forcefully) || (oldTarget == null) || (oldTarget.field_70128_L)) {
+        if ((forcefully) || (oldTarget == null) || (oldTarget.isDead)) {
             this.entityToAttack = e;
-        } else if ((func_70068_e(e) < func_70068_e(oldTarget)) || (!func_70685_l(oldTarget))) {
+        } else if ((getDistanceSqToEntity(e) < getDistanceSqToEntity(oldTarget)) || (!canEntityBeSeen(oldTarget))) {
             this.entityToAttack = e;
         }
     }
 
-    public boolean func_70685_l(Entity e)
+    public boolean canEntityBeSeen(Entity e)
     {
-        return this.field_70170_p.func_147447_a(new Vec3d(this.field_70165_t, this.field_70163_u + func_70047_e(), this.field_70161_v), new Vec3d(e.field_70165_t, e.field_70163_u + e
-                .func_70047_e(), e.field_70161_v), false, true, false) == null;
+        return this.getEntityWorld().rayTraceBlocks(new Vec3d(this.posX, this.posY + getEyeHeight(), this.posZ), new Vec3d(e.posX, e.posY + e
+                .getEyeHeight(), e.posZ), false, true, false) == null;
     }
 
     public boolean canPosBeSeen(Vec3d pos)
     {
-        return this.field_70170_p.func_147447_a(new Vec3d(this.field_70165_t, this.field_70163_u + func_70047_e(), this.field_70161_v), pos, false, true, false) == null;
+        return this.getEntityWorld().rayTraceBlocks(new Vec3d(this.posX, this.posY + getEyeHeight(), this.posZ), pos, false, true, false) == null;
     }
 
     public Entity getDroneAttackTarget()
@@ -867,7 +870,7 @@ public class EntityDrone
     {
         if (this.attackDelay == 0)
         {
-            e.func_70097_a(dmg, dam);
+            e.attackEntityFrom(dmg, dam);
             this.attackDelay = (30 - this.droneInfo.core * 3);
             if (hasEnabled(Module.shooting)) {
                 this.attackDelay /= 2;
@@ -876,10 +879,10 @@ public class EntityDrone
         }
     }
 
-    public boolean func_70097_a(DamageSource source, float amount)
+    public boolean attackEntityFrom(DamageSource source, float amount)
     {
         double damage = 0.0D;
-        if (((source == DamageSource.field_76372_a) || (source == DamageSource.field_76370_b) || (source == DamageSource.field_76371_c)) &&
+        if (((source == DamageSource.inFire) || (source == DamageSource.onFire) || (source == DamageSource.lava)) &&
                 (hasEnabled(Module.heatPower))) {
             this.droneInfo.reduceBattery(-amount);
         } else {
@@ -888,73 +891,74 @@ public class EntityDrone
         if ((this.hitDelay <= 0) && (damage > 0.0D))
         {
             this.droneInfo.reduceDamage(this, damage * (1.0D - this.droneInfo.getDamageReduction(this)));
-            func_70018_K();
+            setBeenAttacked();
             if (this.droneInfo.getDamage(false) <= 0.0D) {
-                func_70106_y();
+                setDead();
             }
-            if (source.func_76346_g() != null) {
-                func_70653_a(this, (float)(0.5D * Math.sqrt(damage)), source.func_76346_g().field_70165_t - this.field_70165_t,
-                        source.func_76346_g().field_70161_v - this.field_70161_v);
+            if (source.getEntity() != null) {
+                knockBack(this, (float)(0.5D * Math.sqrt(damage)), source.getEntity().posX - this.posX,
+                        source.getEntity().posZ - this.posZ);
             }
-            func_184185_a(func_184601_bQ(), 0.5F, 1.0F + this.field_70146_Z.nextFloat());
+            playSound(getHurtSound(), 0.5F, 1.0F + this.rand.nextFloat());
         }
-        return super.func_70097_a(source, amount);
+        return super.attackEntityFrom(source, amount);
     }
 
-    public void func_70106_y()
+    public void setDead()
     {
-        super.func_70106_y();
+        super.setDead();
         for (int k = 0; k < 20; k++)
         {
-            double d2 = this.field_70146_Z.nextGaussian() * 0.02D;
-            double d0 = this.field_70146_Z.nextGaussian() * 0.02D;
-            double d1 = this.field_70146_Z.nextGaussian() * 0.02D;
-            this.field_70170_p.func_175688_a(EnumParticleTypes.EXPLOSION_NORMAL, this.field_70165_t + this.field_70146_Z
-                    .nextFloat() * this.field_70130_N * 2.0F - this.field_70130_N, this.field_70163_u + this.field_70146_Z
-                    .nextFloat() * this.field_70131_O, this.field_70161_v + this.field_70146_Z
-                    .nextFloat() * this.field_70130_N * 2.0F - this.field_70130_N, d2, d0, d1, new int[0]);
+            double d2 = this.rand.nextGaussian() * 0.02D;
+            double d0 = this.rand.nextGaussian() * 0.02D;
+            double d1 = this.rand.nextGaussian() * 0.02D;
+            this.getEntityWorld().spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, this.posX + this.rand
+                    .nextFloat() * this.width * 2.0F - this.width, this.posY + this.rand
+                    .nextFloat() * this.height, this.posZ + this.rand
+                    .nextFloat() * this.width * 2.0F - this.width, d2, d0, d1, new int[0]);
         }
-        func_184185_a(func_184615_bR(), 0.7F, 1.0F + this.field_70146_Z.nextFloat());
+        playSound(getDeathSound(), 0.7F, 1.0F + this.rand.nextFloat());
     }
 
-    protected void func_70018_K()
+    protected void setBeenAttacked()
     {
-        super.func_70018_K();
+        super.setBeenAttacked();
         this.hitDelay = 20;
     }
 
-    public void func_70653_a(Entity entityIn, float strenght, double xRatio, double zRatio)
+    public void knockBack(Entity entityIn, float strenght, double xRatio, double zRatio)
     {
-        this.field_70160_al = true;
-        float f = MathHelper.func_76133_a(xRatio * xRatio + zRatio * zRatio);
-        this.field_70159_w /= 2.0D;
-        this.field_70179_y /= 2.0D;
-        this.field_70159_w -= xRatio / f * strenght;
-        this.field_70179_y -= zRatio / f * strenght;
-        if (this.field_70122_E)
+        float sqrtResult = (float)Math.sqrt(xRatio * xRatio + zRatio * zRatio);
+        this.isAirBorne = true;
+        float f = sqrtResult;
+        this.motionX /= 2.0D;
+        this.motionZ /= 2.0D;
+        this.motionX -= xRatio / f * strenght;
+        this.motionZ -= zRatio / f * strenght;
+        if (this.onGround)
         {
-            this.field_70181_x /= 2.0D;
-            if (this.field_70181_x > 0.4000000059604645D) {
-                this.field_70181_x = 0.4000000059604645D;
+            this.motionY /= 2.0D;
+            if (this.motionY > 0.4000000059604645D) {
+                this.motionY = 0.4000000059604645D;
             }
         }
     }
 
     @Nullable
-    protected SoundEvent func_184601_bQ()
+    protected SoundEvent getHurtSound()
     {
-        return SoundEvents.field_187543_bD;
+        return SoundEvents.ENTITY_GENERIC_HURT;
     }
 
     @Nullable
-    protected SoundEvent func_184615_bR()
+    protected SoundEvent getDeathSound()
     {
-        return SoundEvents.field_187661_by;
+        return SoundEvents.ENTITY_GENERIC_DEATH;
     }
 
-    protected SoundEvent func_184588_d(int heightIn)
+    protected SoundEvent getFallSound(int heightIn)
     {
-        return heightIn > 4 ? SoundEvents.field_187655_bw : SoundEvents.field_187545_bE;
+        return heightIn > 4 ? SoundEvents.ENTITY_GENERIC_BIG_FALL : SoundEvents.ENTITY_GENERIC_SMALL_FALL;
     }
 
     public void setDroneInfo(DroneInfo di)
@@ -962,37 +966,37 @@ public class EntityDrone
         this.droneInfo = di;
     }
 
-    public void func_70037_a(NBTTagCompound tagCompound)
+    public void readEntityFromNBT(NBTTagCompound tagCompound)
     {
         if (this.droneInfo == null) {
             this.droneInfo = new DroneInfo();
         }
         this.droneInfo.readFromNBT(tagCompound);
-        setFlyingMode(tagCompound.func_74762_e("Mode"));
-        func_184212_Q().func_187227_b(CONTROLPLAYER, tagCompound.func_74779_i("ConPlayer"));
-        if (tagCompound.func_74764_b("Drone Path"))
+        setFlyingMode(tagCompound.getInteger("Mode"));
+        getDataManager().set(CONTROLPLAYER, tagCompound.getString("ConPlayer"));
+        if (tagCompound.hasKey("Drone Path"))
         {
-            NBTTagList automatePath = tagCompound.func_150295_c("Drone Path", 10);
-            if (automatePath.func_74745_c() > 0)
+            NBTTagList automatePath = tagCompound.getTagList("Drone Path", 10);
+            if (automatePath.tagCount() > 0)
             {
                 this.automatedPath = new Path();
-                for (int a = 0; a < automatePath.func_74745_c(); a++)
+                for (int a = 0; a < automatePath.tagCount(); a++)
                 {
-                    NBTTagCompound ntag = automatePath.func_150305_b(a);
-                    this.automatedPath.addNode(new Node(ntag.func_74769_h("X"), ntag.func_74769_h("Y"), ntag.func_74769_h("Z")));
+                    NBTTagCompound ntag = automatePath.getCompoundTagAt(a);
+                    this.automatedPath.addNode(new Node(ntag.getDouble("X"), ntag.getDouble("Y"), ntag.getDouble("Z")));
                 }
             }
         }
     }
 
-    public void func_70014_b(NBTTagCompound tagCompound)
+    public void writeEntityToNBT(NBTTagCompound tagCompound)
     {
         if (this.droneInfo == null) {
             this.droneInfo = new DroneInfo();
         }
         this.droneInfo.writeToNBT(tagCompound);
-        tagCompound.func_74768_a("Mode", getFlyingMode());
-        tagCompound.func_74778_a("ConPlayer", getControllingPlayer() == null ? "" : getControllingPlayer().func_70005_c_());
+        tagCompound.setInteger("Mode", getFlyingMode());
+        tagCompound.setString("ConPlayer", getControllingPlayer() == null ? "" : getControllingPlayer().getName());
         if (this.automatedPath != null)
         {
             NBTTagList automatePath = new NBTTagList();
@@ -1000,12 +1004,12 @@ public class EntityDrone
             {
                 Vec3d n = ((Node)this.automatedPath.nodes.get(a)).toVec();
                 NBTTagCompound ntag = new NBTTagCompound();
-                ntag.func_74780_a("X", n.field_72450_a);
-                ntag.func_74780_a("Y", n.field_72448_b);
-                ntag.func_74780_a("Z", n.field_72449_c);
-                automatePath.func_74742_a(ntag);
+                ntag.setDouble("X", n.xCoord);
+                ntag.setDouble("Y", n.yCoord);
+                ntag.setDouble("Z", n.zCoord);
+                automatePath.appendTag(ntag);
             }
-            tagCompound.func_74782_a("Drone Path", automatePath);
+            tagCompound.setTag("Drone Path", automatePath);
         }
     }
 
@@ -1014,7 +1018,7 @@ public class EntityDrone
         if ((world == null) || (droneID < 0)) {
             return null;
         }
-        List<EntityDrone> drones = getEntities(world, EntityDrone.class, EntitySelectors.field_94557_a);
+        List<EntityDrone> drones = getEntities(world, EntityDrone.class, EntitySelectors.IS_ALIVE);
         for (int a = 0; a < drones.size(); a++)
         {
             EntityDrone e = (EntityDrone)drones.get(a);
@@ -1028,9 +1032,9 @@ public class EntityDrone
     public static <T extends Entity> List<T> getEntities(World world, Class<? extends T> entityType, Predicate<? super T> filter)
     {
         List<T> list = Lists.newArrayList();
-        for (int a = 0; a < world.field_72996_f.size(); a++)
+        for (int a = 0; a < world.loadedEntityList.size(); a++)
         {
-            Entity entity = (Entity)world.field_72996_f.get(a);
+            Entity entity = (Entity)world.loadedEntityList.get(a);
             if ((entity != null) && (entityType.isAssignableFrom(entity.getClass())) && ((filter == null) ||
                     (filter.apply(entity)))) {
                 list.add(entity);
