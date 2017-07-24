@@ -31,7 +31,7 @@ public class CMArch
         lineWidth(3.0D);
         begin(3);
         for (Vec3d v : this.points) {
-            vertex(v.field_72450_a, v.field_72448_b, v.field_72449_c, 0.0D, 0.0D);
+            vertex(v.xCoord, v.yCoord, v.zCoord, 0.0D, 0.0D);
         }
         end();
     }
@@ -39,16 +39,16 @@ public class CMArch
     public Vec3d[] calculatePoints()
     {
         Vec3d[] list = new Vec3d[this.segments + 1];
-        double pull1Length = this.pull1.func_72433_c();
-        double pull2Length = this.pull2.func_72433_c();
+        double pull1Length = this.pull1.lengthVector();
+        double pull2Length = this.pull2.lengthVector();
         double pull1DifRatio = Math.pow((pull1Length + pull2Length) / Math.pow(pull2Length, this.rounding), 1.0D);
         double pull2DifRatio = Math.pow((pull1Length + pull2Length) / Math.pow(pull1Length, this.rounding), 1.0D);
         Vec3d baseLine = fromTo(this.end1, this.end2);
-        double baseLineLength = baseLine.func_72433_c();
+        double baseLineLength = baseLine.lengthVector();
         Vec3d baseLineStep = setLength(baseLine, baseLineLength / this.segments);
         for (int a = 0; a <= this.segments; a++)
         {
-            Vec3d thisBasePoint = this.end1.func_178787_e(scale(baseLineStep, a));
+            Vec3d thisBasePoint = this.end1.add(scale(baseLineStep, a));
             double thisStep = a / this.segments;
 
             double pull1Strength = 1.0D - thisStep * (pull1DifRatio + 1.0D);
@@ -63,7 +63,7 @@ public class CMArch
             pull2Strength *= 1.5707963267948966D;
             double pull1Mult = this.pullMultiply * Math.pow(Math.cos(pull1Strength), this.endMagnetivity);
             double pull2Mult = this.pullMultiply * Math.pow(Math.cos(pull2Strength), this.endMagnetivity);
-            Vec3d thisArchPoint = thisBasePoint.func_178787_e(scale(this.pull1, pull1Mult)).func_178787_e(scale(this.pull2, pull2Mult));
+            Vec3d thisArchPoint = thisBasePoint.add(scale(this.pull1, pull1Mult)).add(scale(this.pull2, pull2Mult));
             list[a] = thisArchPoint;
         }
         return list;
@@ -73,7 +73,7 @@ public class CMArch
     {
         double l = 0.0D;
         for (int a = 0; a < this.points.length - 1; a++) {
-            l += fromTo(this.points[a], this.points[(a + 1)]).func_72433_c();
+            l += fromTo(this.points[a], this.points[(a + 1)]).lengthVector();
         }
         return l;
     }
@@ -89,7 +89,7 @@ public class CMArch
         Vec3d prevVec = this.points[prevSegment];
         Vec3d nextVec = this.points[(prevSegment + 1)];
         Vec3d prevToNext = fromTo(prevVec, nextVec);
-        return prevVec.func_178787_e(scale(prevToNext, segMod));
+        return prevVec.add(scale(prevToNext, segMod));
     }
 
     public Vec3d getPointAtLengthRate(double d)
@@ -103,7 +103,7 @@ public class CMArch
             Vec3d thisVec = this.points[a];
             Vec3d nextVec = this.points[(a + 1)];
             Vec3d thisToNext = fromTo(thisVec, nextVec);
-            double thisLength = thisToNext.func_72433_c();
+            double thisLength = thisToNext.lengthVector();
             if (currentLength == neededLength) {
                 return thisVec;
             }
@@ -114,7 +114,7 @@ public class CMArch
             {
                 double exceedLength = neededLength - currentLength;
                 double exceedRatio = exceedLength / thisLength;
-                return thisVec.func_178787_e(scale(thisToNext, exceedRatio));
+                return thisVec.add(scale(thisToNext, exceedRatio));
             }
             currentLength += thisLength;
         }

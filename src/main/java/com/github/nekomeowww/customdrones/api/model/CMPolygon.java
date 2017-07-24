@@ -146,14 +146,14 @@ public class CMPolygon
             int cut = 0;
             Segment3d testSeg = (Segment3d)sides.get(a);
             Vec3d testEnd = VecHelper.getMid(new Vec3d[] { testSeg.aPoint, testSeg.bPoint });
-            Line3d testLine = new Line3d(p, testEnd.func_178788_d(p));
+            Line3d testLine = new Line3d(p, testEnd.subtract(p));
             for (Segment3d side : sides)
             {
                 if (side.onLine(p)) {
                     return false;
                 }
                 Vec3d intersect = side.intersect(testLine);
-                if ((intersect != null) && (!intersect.equals(p)) && (intersect.func_178788_d(p).func_72430_b(testLine.unit) > 0.0D)) {
+                if ((intersect != null) && (!intersect.equals(p)) && (intersect.subtract(p).dotProduct(testLine.unit) > 0.0D)) {
                     cut++;
                 }
             }

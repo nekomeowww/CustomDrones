@@ -44,14 +44,14 @@ public class CMSphere
                 Vec3d nextVec = rotateAround(nextVerVec, yUnit, -horDivAngle * b);
                 double[] currentUV = calculateUVFromLocalSphere(currentVec);
                 double[] nextUV = calculateUVFromLocalSphere(nextVec);
-                Vec3d currentFinal = this.origin.func_178787_e(currentVec);
-                Vec3d nextFinal = this.origin.func_178787_e(nextVec);
-                Vec3d currentNorm = currentVec.func_72432_b();
-                Vec3d nextNorm = nextVec.func_72432_b();
-                normal(currentNorm.field_72450_a, currentNorm.field_72448_b, currentNorm.field_72449_c);
-                vertex(currentFinal.field_72450_a, currentFinal.field_72448_b, currentFinal.field_72449_c, currentUV[0], currentUV[1]);
-                normal(nextNorm.field_72450_a, nextNorm.field_72448_b, nextNorm.field_72449_c);
-                vertex(nextFinal.field_72450_a, nextFinal.field_72448_b, nextFinal.field_72449_c, nextUV[0], nextUV[1]);
+                Vec3d currentFinal = this.origin.add(currentVec);
+                Vec3d nextFinal = this.origin.add(nextVec);
+                Vec3d currentNorm = currentVec.normalize();
+                Vec3d nextNorm = nextVec.normalize();
+                normal(currentNorm.xCoord, currentNorm.yCoord, currentNorm.zCoord);
+                vertex(currentFinal.xCoord, currentFinal.yCoord, currentFinal.zCoord, currentUV[0], currentUV[1]);
+                normal(nextNorm.xCoord, nextNorm.yCoord, nextNorm.zCoord);
+                vertex(nextFinal.xCoord, nextFinal.yCoord, nextFinal.zCoord, nextUV[0], nextUV[1]);
             }
             end();
         }
@@ -67,8 +67,8 @@ public class CMSphere
             double ulength = this.textureUV.u2 - this.textureUV.u1;
             double vmid = (this.textureUV.v1 + this.textureUV.v2) / 2.0D;
             double vlength = this.textureUV.v1 - this.textureUV.v2;
-            uvs[0] = (umid - ulength * (Math.atan2(needPos.field_72449_c, needPos.field_72450_a) / 2.0D / 3.141592653589793D));
-            uvs[1] = (vmid - vlength * (Math.sin(needPos.field_72448_b) / 3.141592653589793D));
+            uvs[0] = (umid - ulength * (Math.atan2(needPos.zCoord, needPos.xCoord) / 2.0D / 3.141592653589793D));
+            uvs[1] = (vmid - vlength * (Math.sin(needPos.yCoord) / 3.141592653589793D));
         }
         return uvs;
     }

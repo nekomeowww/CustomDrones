@@ -29,7 +29,7 @@ public class CMBox
 
     public CMBox(double xw, double yw, double zw, Vec3d mid)
     {
-        this(-xw / 2.0D + (mid == null ? 0.0D : mid.field_72450_a), -yw / 2.0D + (mid == null ? 0.0D : mid.field_72448_b), -zw / 2.0D + (mid == null ? 0.0D : mid.field_72449_c), xw / 2.0D + (mid == null ? 0.0D : mid.field_72450_a), yw / 2.0D + (mid == null ? 0.0D : mid.field_72448_b), zw / 2.0D + (mid == null ? 0.0D : mid.field_72449_c));
+        this(-xw / 2.0D + (mid == null ? 0.0D : mid.xCoord), -yw / 2.0D + (mid == null ? 0.0D : mid.yCoord), -zw / 2.0D + (mid == null ? 0.0D : mid.zCoord), xw / 2.0D + (mid == null ? 0.0D : mid.xCoord), yw / 2.0D + (mid == null ? 0.0D : mid.yCoord), zw / 2.0D + (mid == null ? 0.0D : mid.zCoord));
     }
 
     public CMBox(double x, double y, double z, double xx, double yy, double zz)
