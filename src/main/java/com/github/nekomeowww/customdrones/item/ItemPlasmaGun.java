@@ -257,7 +257,7 @@ public class ItemPlasmaGun
         AxisAlignedBB aabb = player.getEntityBoundingBox().expandXyz(range);
         Vec3d pLook = player.getLookVec();
         Vec3d pEye = EntityHelper.getEyeVec(player);
-        return WorldHelper.getEntityBestInAngle(player.world, pEye, pLook, aabb, maxAngle, player, filter);
+        return WorldHelper.getEntityBestInAngle(player.getEntityWorld(), pEye, pLook, aabb, maxAngle, player, filter);
     }
 
     public EnumRarity getRarity(ItemStack stack)

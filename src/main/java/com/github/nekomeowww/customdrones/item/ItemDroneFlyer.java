@@ -42,7 +42,7 @@ public class ItemDroneFlyer
         }
         else
         {
-            playerIn.openGui(DronesMod.instance, 0, worldIn, 0, 0, 0);
+            playerIn.openGui(CustomDrones.instance, 0, worldIn, 0, 0, 0);
         }
         return new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
     }
@@ -85,7 +85,7 @@ public class ItemDroneFlyer
     {
         if ((entityLiving instanceof EntityPlayer))
         {
-            EntityDrone drone = getControllingDrone(entityLiving.world, stack);
+            EntityDrone drone = getControllingDrone(entityLiving.getEntityWorld(), stack);
             if ((drone != null) && (drone.recordingPath != null))
             {
                 drone.applyRecordPath(true);
@@ -108,7 +108,7 @@ public class ItemDroneFlyer
         int dw = buttonCombination -= (le << 2) >> 1;
         int up = buttonCombination -= (dw << 1);
 
-        EntityDrone drone = getControllingDrone(p.world, flyerIS);
+        EntityDrone drone = getControllingDrone(p.getEntityWorld(), flyerIS);
         if ((drone != null) && (drone.isControllerFlying()))
         {
             Vec3d vecJS = p.getLookVec();
@@ -203,7 +203,7 @@ public class ItemDroneFlyer
         }
         if (drone == null)
         {
-            EntityDrone prevDrone = getControllingDrone(player.world, stack);
+            EntityDrone prevDrone = getControllingDrone(player.getEntityWorld(), stack);
             if (prevDrone != null) {
                 prevDrone.setControllingPlayer(null);
             }
