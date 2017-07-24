@@ -56,11 +56,11 @@ public class DroneAppearance
         List<String> strings = new ArrayList();
         String fileName = file.getName();
         strings.add(fileName.substring(0, fileName.indexOf(".")));
-        try
-        {
+        try {
             BufferedReader buffer = new BufferedReader(new FileReader(file));
-            label47:
             String s;
+            label47:
+            //
             for (; (s = buffer.readLine()) != null; strings.add(s)) {
                 if ((!s.contains("=")) || (!s.contains(","))) {
                     break label47;
@@ -95,18 +95,18 @@ public class DroneAppearance
 
     public void writeToNBT(NBTTagCompound tag)
     {
-        tag.func_74768_a("Model ID", this.modelID);
+        tag.setInteger("Model ID", this.modelID);
 
         NBTTagCompound paletteColorsTag = new NBTTagCompound();
         this.palette.writePalette(paletteColorsTag);
-        tag.func_74782_a("Palette", paletteColorsTag);
+        tag.setTag("Palette", paletteColorsTag);
     }
 
     public void readFromNBT(NBTTagCompound tag)
     {
-        this.modelID = tag.func_74762_e("Model ID");
+        this.modelID = tag.getInteger("Model ID");
 
-        NBTTagCompound paletteColorsTag = tag.func_74775_l("Palette");
+        NBTTagCompound paletteColorsTag = tag.getCompoundTag("Palette");
         this.palette = new ColorPalette();
         this.palette.readPalette(paletteColorsTag);
     }
@@ -270,28 +270,28 @@ public class DroneAppearance
 
         public void writePalette(NBTTagCompound tag)
         {
-            tag.func_74778_a("Name", this.paletteName == null ? "$NAN$" : this.paletteName);
+            tag.setString("Name", this.paletteName == null ? "$NAN$" : this.paletteName);
             NBTTagCompound values = new NBTTagCompound();
             for (Map.Entry<String, Color> entry : this.paletteColors.entrySet())
             {
                 String s = (String)entry.getKey();
                 Color c = (Color)entry.getValue();
-                values.func_74772_a(s, c.toLong());
+                values.setLong(s, c.toLong());
             }
-            tag.func_74782_a("Palette", values);
+            tag.setTag("Palette", values);
         }
 
         public void readPalette(NBTTagCompound tag)
         {
-            this.paletteName = tag.func_74779_i("Name");
+            this.paletteName = tag.getString("Name");
             if (this.paletteName.equals("$NAN$")) {
                 this.paletteName = null;
             }
-            NBTTagCompound values = tag.func_74775_l("Palette");
-            Set<String> valuesString = values.func_150296_c();
+            NBTTagCompound values = tag.getCompoundTag("Palette");
+            Set<String> valuesString = values.getKeySet();
             for (String s : valuesString)
             {
-                Color color = new Color(values.func_74763_f(s));
+                Color color = new Color(values.getLong(s));
                 this.paletteColors.put(s, color);
             }
         }
