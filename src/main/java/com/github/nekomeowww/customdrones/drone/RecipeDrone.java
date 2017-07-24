@@ -12,10 +12,10 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
-import williamle.drones.DronesMod;
-import williamle.drones.DronesMod.RecipeType;
-import williamle.drones.item.ItemDronePart;
-import williamle.drones.item.ItemDroneSpawn;
+import com.github.nekomeowww.customdrones.CustomDrones;
+import com.github.nekomeowww.customdrones.CustomDrones.RecipeType;
+import com.github.nekomeowww.customdrones.item.ItemDronePart;
+import com.github.nekomeowww.customdrones.item.ItemDroneSpawn;
 
 public class RecipeDrone
         implements IRecipe
@@ -27,24 +27,24 @@ public class RecipeDrone
         GameRegistry.addRecipe(this);
         LinkedList<ItemDronePart> cases = new LinkedList();
         cases.addAll(
-                Arrays.asList(new ItemDronePart[] { DronesMod.case1, DronesMod.case2, DronesMod.case3, DronesMod.case4 }));
+                Arrays.asList(new ItemDronePart[] { CustomDrones.case1, CustomDrones.case2, CustomDrones.case3, CustomDrones.case4 }));
         List<ItemDronePart> chips = new LinkedList();
         chips.addAll(
-                Arrays.asList(new ItemDronePart[] { DronesMod.chip1, DronesMod.chip2, DronesMod.chip3, DronesMod.chip4 }));
+                Arrays.asList(new ItemDronePart[] { CustomDrones.chip1, CustomDrones.chip2, CustomDrones.chip3, CustomDrones.chip4 }));
         List<ItemDronePart> cores = new LinkedList();
         cores.addAll(
-                Arrays.asList(new ItemDronePart[] { DronesMod.core1, DronesMod.core2, DronesMod.core3, DronesMod.core4 }));
+                Arrays.asList(new ItemDronePart[] { CustomDrones.core1, CustomDrones.core2, CustomDrones.core3, CustomDrones.core4 }));
         List<ItemDronePart> engines = new LinkedList();
-        engines.addAll(Arrays.asList(new ItemDronePart[] { DronesMod.engine1, DronesMod.engine2, DronesMod.engine3, DronesMod.engine4 }));
+        engines.addAll(Arrays.asList(new ItemDronePart[] { CustomDrones.engine1, CustomDrones.engine2, CustomDrones.engine3, CustomDrones.engine4 }));
         for (ItemDronePart theCase : cases)
         {
-            iscase = new ItemStack(theCase, 3);
+            ItemStack iscase = new ItemStack(theCase, 3);
             for (ItemDronePart theChip : chips)
             {
-                ischip = new ItemStack(theChip, 1);
+                ItemStack ischip = new ItemStack(theChip, 1);
                 for (ItemDronePart theCore : cores)
                 {
-                    iscore = new ItemStack(theCore, 1);
+                    ItemStack iscore = new ItemStack(theCore, 1);
                     for (ItemDronePart theEngine : engines)
                     {
                         ItemStack isengine = new ItemStack(theEngine, 4);
@@ -53,11 +53,11 @@ public class RecipeDrone
                         shapelessList.add(ischip);
                         shapelessList.add(iscore);
                         shapelessList.add(isengine);
-                        ItemStack is = new ItemStack(DronesMod.droneSpawn);
+                        ItemStack is = new ItemStack(CustomDrones.droneSpawn);
 
                         DroneInfo di = new DroneInfo(chipLevel(ischip), coreLevel(iscore), casingLevel(iscase), engineLevel(isengine));
-                        DronesMod.droneSpawn.setDroneInfo(is, di);
-                        DronesMod.addRecipeToList(new ShapelessRecipes(is, shapelessList), DronesMod.RecipeType.Drones);
+                        CustomDrones.droneSpawn.setDroneInfo(is, di);
+                        CustomDrones.addRecipeToList(new ShapelessRecipes(is, shapelessList), CustomDrones.RecipeType.Drones);
                     }
                 }
             }
@@ -71,16 +71,16 @@ public class RecipeDrone
     {
         if (is != null)
         {
-            if (is.func_77973_b() == DronesMod.chip1) {
+            if (is.getItem() == CustomDrones.chip1) {
                 return 1;
             }
-            if (is.func_77973_b() == DronesMod.chip2) {
+            if (is.getItem() == CustomDrones.chip2) {
                 return 2;
             }
-            if (is.func_77973_b() == DronesMod.chip3) {
+            if (is.getItem() == CustomDrones.chip3) {
                 return 3;
             }
-            if (is.func_77973_b() == DronesMod.chip4) {
+            if (is.getItem() == CustomDrones.chip4) {
                 return 4;
             }
         }
@@ -91,16 +91,16 @@ public class RecipeDrone
     {
         if (is != null)
         {
-            if (is.func_77973_b() == DronesMod.core1) {
+            if (is.getItem() == CustomDrones.core1) {
                 return 1;
             }
-            if (is.func_77973_b() == DronesMod.core2) {
+            if (is.getItem() == CustomDrones.core2) {
                 return 2;
             }
-            if (is.func_77973_b() == DronesMod.core3) {
+            if (is.getItem() == CustomDrones.core3) {
                 return 3;
             }
-            if (is.func_77973_b() == DronesMod.core4) {
+            if (is.getItem() == CustomDrones.core4) {
                 return 4;
             }
         }
@@ -111,16 +111,16 @@ public class RecipeDrone
     {
         if (is != null)
         {
-            if (is.func_77973_b() == DronesMod.case1) {
+            if (is.getItem() == CustomDrones.case1) {
                 return 1;
             }
-            if (is.func_77973_b() == DronesMod.case2) {
+            if (is.getItem() == CustomDrones.case2) {
                 return 2;
             }
-            if (is.func_77973_b() == DronesMod.case3) {
+            if (is.getItem() == CustomDrones.case3) {
                 return 3;
             }
-            if (is.func_77973_b() == DronesMod.case4) {
+            if (is.getItem() == CustomDrones.case4) {
                 return 4;
             }
         }
@@ -131,59 +131,59 @@ public class RecipeDrone
     {
         if (is != null)
         {
-            if (is.func_77973_b() == DronesMod.engine1) {
+            if (is.getItem() == CustomDrones.engine1) {
                 return 1;
             }
-            if (is.func_77973_b() == DronesMod.engine2) {
+            if (is.getItem() == CustomDrones.engine2) {
                 return 2;
             }
-            if (is.func_77973_b() == DronesMod.engine3) {
+            if (is.getItem() == CustomDrones.engine3) {
                 return 3;
             }
-            if (is.func_77973_b() == DronesMod.engine4) {
+            if (is.getItem() == CustomDrones.engine4) {
                 return 4;
             }
         }
         return -1;
     }
 
-    public boolean func_77569_a(InventoryCrafting inv, World worldIn)
+    public boolean matches(InventoryCrafting inv, World worldIn)
     {
-        if (inv.func_70302_i_() >= 9) {
-            if ((chipLevel(inv.func_70301_a(4)) > 0) && (coreLevel(inv.func_70301_a(1)) > 0) &&
-                    (casingLevel(inv.func_70301_a(3)) > 0) &&
-                    (casingLevel(inv.func_70301_a(3)) == casingLevel(inv.func_70301_a(5))) &&
-                    (casingLevel(inv.func_70301_a(5)) == casingLevel(inv.func_70301_a(7))) &&
-                    (engineLevel(inv.func_70301_a(0)) > 0) &&
-                    (engineLevel(inv.func_70301_a(0)) == engineLevel(inv.func_70301_a(2))) &&
-                    (engineLevel(inv.func_70301_a(2)) == engineLevel(inv.func_70301_a(6))) &&
-                    (engineLevel(inv.func_70301_a(6)) == engineLevel(inv.func_70301_a(8)))) {
+        if (inv.getSizeInventory() >= 9) {
+            if ((chipLevel(inv.getStackInSlot(4)) > 0) && (coreLevel(inv.getStackInSlot(1)) > 0) &&
+                    (casingLevel(inv.getStackInSlot(3)) > 0) &&
+                    (casingLevel(inv.getStackInSlot(3)) == casingLevel(inv.getStackInSlot(5))) &&
+                    (casingLevel(inv.getStackInSlot(5)) == casingLevel(inv.getStackInSlot(7))) &&
+                    (engineLevel(inv.getStackInSlot(0)) > 0) &&
+                    (engineLevel(inv.getStackInSlot(0)) == engineLevel(inv.getStackInSlot(2))) &&
+                    (engineLevel(inv.getStackInSlot(2)) == engineLevel(inv.getStackInSlot(6))) &&
+                    (engineLevel(inv.getStackInSlot(6)) == engineLevel(inv.getStackInSlot(8)))) {
                 return true;
             }
         }
         return false;
     }
 
-    public ItemStack func_77572_b(InventoryCrafting inv)
+    public ItemStack getCraftingResult(InventoryCrafting inv)
     {
-        ItemStack is = new ItemStack(DronesMod.droneSpawn);
+        ItemStack is = new ItemStack(CustomDrones.droneSpawn);
 
-        DroneInfo di = new DroneInfo(chipLevel(inv.func_70301_a(4)), coreLevel(inv.func_70301_a(1)), casingLevel(inv.func_70301_a(3)), engineLevel(inv.func_70301_a(0)));
-        DronesMod.droneSpawn.setDroneInfo(is, di);
+        DroneInfo di = new DroneInfo(chipLevel(inv.getStackInSlot(4)), coreLevel(inv.getStackInSlot(1)), casingLevel(inv.getStackInSlot(3)), engineLevel(inv.getStackInSlot(0)));
+        CustomDrones.droneSpawn.setDroneInfo(is, di);
         return is;
     }
 
-    public int func_77570_a()
+    public int getRecipeSize()
     {
         return 9;
     }
 
-    public ItemStack func_77571_b()
+    public ItemStack getRecipeOutput()
     {
-        return new ItemStack(DronesMod.droneSpawn);
+        return new ItemStack(CustomDrones.droneSpawn);
     }
 
-    public ItemStack[] func_179532_b(InventoryCrafting inv)
+    public ItemStack[] getRemainingItems(InventoryCrafting inv)
     {
         return ForgeHooks.defaultRecipeGetRemainingItems(inv);
     }

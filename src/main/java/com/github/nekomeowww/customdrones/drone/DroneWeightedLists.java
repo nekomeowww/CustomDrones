@@ -8,7 +8,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.WeightedRandom.Item;
+import net.minecraft.util.WeightedRandom;
+//import net.minecraft.util.WeightedRandom.Item;
 import com.github.nekomeowww.customdrones.CustomDrones;
 import com.github.nekomeowww.customdrones.drone.module.Module;
 import com.github.nekomeowww.customdrones.item.ItemDroneModule;
@@ -26,43 +27,43 @@ public class DroneWeightedLists
 
     static
     {
-        bitsList.add(new WeightedItemStack(DronesMod.droneBit, 16));
-        bitsList.add(new WeightedItemStack(new ItemStack(DronesMod.droneBit, 1, 1), 2));
-        matsList.add(new WeightedItemStack(Items.field_151137_ax, 16));
-        matsList.add(new WeightedItemStack(Items.field_151042_j, 16));
-        matsList.add(new WeightedItemStack(Items.field_151043_k, 8));
-        matsList.add(new WeightedItemStack(Items.field_151045_i, 2));
-        matsList.add(new WeightedItemStack(Items.field_151166_bC, 2));
-        matsList.add(new WeightedItemStack(Items.field_151065_br, 2));
-        matsList.add(new WeightedItemStack(Items.field_151079_bi, 2));
-        matsList.add(new WeightedItemStack(Items.field_151123_aH, 2));
-        partsList.add(new WeightedItemStack(DronesMod.cfPlate1, 4));
-        partsList.add(new WeightedItemStack(DronesMod.cfPlate2, 3));
-        partsList.add(new WeightedItemStack(DronesMod.cfPlate3, 2));
-        partsList.add(new WeightedItemStack(DronesMod.cfPlate4, 1));
-        partsList.add(new WeightedItemStack(DronesMod.chip1, 4));
-        partsList.add(new WeightedItemStack(DronesMod.chip2, 3));
-        partsList.add(new WeightedItemStack(DronesMod.chip3, 2));
-        partsList.add(new WeightedItemStack(DronesMod.chip4, 1));
-        partsList.add(new WeightedItemStack(DronesMod.case1, 4));
-        partsList.add(new WeightedItemStack(DronesMod.case2, 3));
-        partsList.add(new WeightedItemStack(DronesMod.case3, 2));
-        partsList.add(new WeightedItemStack(DronesMod.case4, 1));
-        partsList.add(new WeightedItemStack(DronesMod.chip1, 4));
-        partsList.add(new WeightedItemStack(DronesMod.chip2, 3));
-        partsList.add(new WeightedItemStack(DronesMod.chip3, 2));
-        partsList.add(new WeightedItemStack(DronesMod.chip4, 1));
-        partsList.add(new WeightedItemStack(DronesMod.engine1, 4));
-        partsList.add(new WeightedItemStack(DronesMod.engine2, 3));
-        partsList.add(new WeightedItemStack(DronesMod.engine3, 2));
-        partsList.add(new WeightedItemStack(DronesMod.engine4, 1));
+        bitsList.add(new WeightedItemStack(CustomDrones.droneBit, 16));
+        bitsList.add(new WeightedItemStack(new ItemStack(CustomDrones.droneBit, 1, 1), 2));
+        matsList.add(new WeightedItemStack(Items.REDSTONE, 16));
+        matsList.add(new WeightedItemStack(Items.IRON_INGOT, 16));
+        matsList.add(new WeightedItemStack(Items.GOLD_INGOT, 8));
+        matsList.add(new WeightedItemStack(Items.DIAMOND, 2));
+        matsList.add(new WeightedItemStack(Items.EMERALD, 2));
+        matsList.add(new WeightedItemStack(Items.BLAZE_POWDER, 2));
+        matsList.add(new WeightedItemStack(Items.ENDER_PEARL, 2));
+        matsList.add(new WeightedItemStack(Items.SLIME_BALL, 2));
+        partsList.add(new WeightedItemStack(CustomDrones.cfPlate1, 4));
+        partsList.add(new WeightedItemStack(CustomDrones.cfPlate2, 3));
+        partsList.add(new WeightedItemStack(CustomDrones.cfPlate3, 2));
+        partsList.add(new WeightedItemStack(CustomDrones.cfPlate4, 1));
+        partsList.add(new WeightedItemStack(CustomDrones.chip1, 4));
+        partsList.add(new WeightedItemStack(CustomDrones.chip2, 3));
+        partsList.add(new WeightedItemStack(CustomDrones.chip3, 2));
+        partsList.add(new WeightedItemStack(CustomDrones.chip4, 1));
+        partsList.add(new WeightedItemStack(CustomDrones.case1, 4));
+        partsList.add(new WeightedItemStack(CustomDrones.case2, 3));
+        partsList.add(new WeightedItemStack(CustomDrones.case3, 2));
+        partsList.add(new WeightedItemStack(CustomDrones.case4, 1));
+        partsList.add(new WeightedItemStack(CustomDrones.chip1, 4));
+        partsList.add(new WeightedItemStack(CustomDrones.chip2, 3));
+        partsList.add(new WeightedItemStack(CustomDrones.chip3, 2));
+        partsList.add(new WeightedItemStack(CustomDrones.chip4, 1));
+        partsList.add(new WeightedItemStack(CustomDrones.engine1, 4));
+        partsList.add(new WeightedItemStack(CustomDrones.engine2, 3));
+        partsList.add(new WeightedItemStack(CustomDrones.engine3, 2));
+        partsList.add(new WeightedItemStack(CustomDrones.engine4, 1));
         for (Module m : Module.modules) {
             modsList.add(new WeightedItemStack(ItemDroneModule.itemModule(m), 5 - m.level));
         }
         for (ItemGunUpgrade.GunUpgrade m : ItemGunUpgrade.GunUpgrade.upgrades.values()) {
             gunUpgradesList.add(new WeightedItemStack(ItemGunUpgrade.itemGunUpgrade(m), 1));
         }
-        wildHoldingList.add(new WeightedItemStack(Blocks.field_150335_W, 16));
+        wildHoldingList.add(new WeightedItemStack(Blocks.TNT, 16));
         wildHoldingList.addAll(bitsList);
         wildHoldingList.addAll(matsList);
         wildHoldingList.addAll(partsList);
@@ -87,7 +88,7 @@ public class DroneWeightedLists
             this.is = i;
         }
 
-        public WeightedItemStack(Item i, int weight)
+        public WeightedItemStack(net.minecraft.item.Item i, int weight)
         {
             this(new ItemStack(i), weight);
         }

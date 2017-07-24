@@ -21,6 +21,7 @@ import com.github.nekomeowww.customdrones.drone.module.ModulePlaceHolder;
 import com.github.nekomeowww.customdrones.drone.module.ModuleRecharge;
 import com.github.nekomeowww.customdrones.drone.module.ModuleWeapon;
 import com.github.nekomeowww.customdrones.entity.EntityDrone;
+import com.github.nekomeowww.customdrones.entity.EntityDrone.*;
 import com.github.nekomeowww.customdrones.item.ItemDroneModule;
 import com.github.nekomeowww.customdrones.network.PacketDispatcher;
 import com.github.nekomeowww.customdrones.network.client.PacketDroneInfo;
@@ -33,15 +34,15 @@ public class DroneInfo
 
     static
     {
-        batteryFuel.put(Items.field_151044_h, Double.valueOf(10.0D));
-        batteryFuel.put(Items.field_151042_j, Double.valueOf(100.0D));
-        batteryFuel.put(Items.field_151043_k, Double.valueOf(200.0D));
-        batteryFuel.put(Items.field_151045_i, Double.valueOf(1000.0D));
-        batteryFuel.put(Items.field_151166_bC, Double.valueOf(2000.0D));
-        damageRecover.put(Blocks.field_150339_S, Double.valueOf(10.0D));
-        damageRecover.put(Blocks.field_150340_R, Double.valueOf(20.0D));
-        damageRecover.put(Blocks.field_150484_ah, Double.valueOf(40.0D));
-        damageRecover.put(Blocks.field_150475_bE, Double.valueOf(60.0D));
+        batteryFuel.put(Items.COAL, Double.valueOf(10.0D));
+        batteryFuel.put(Items.IRON_INGOT, Double.valueOf(100.0D));
+        batteryFuel.put(Items.GOLD_INGOT, Double.valueOf(200.0D));
+        batteryFuel.put(Items.DIAMOND, Double.valueOf(1000.0D));
+        batteryFuel.put(Items.EMERALD, Double.valueOf(2000.0D));
+        damageRecover.put(Blocks.IRON_BLOCK, Double.valueOf(10.0D));
+        damageRecover.put(Blocks.GOLD_BLOCK, Double.valueOf(20.0D));
+        damageRecover.put(Blocks.DIAMOND_BLOCK, Double.valueOf(40.0D));
+        damageRecover.put(Blocks.EMERALD_BLOCK, Double.valueOf(60.0D));
     }
 
     public static int nextID = 1;
@@ -105,15 +106,15 @@ public class DroneInfo
     {
         this.prevBattery = this.battery;
         if ((this.battery == 0.0D) && (hasInventory())) {
-            for (int a = 0; a < this.inventory.func_70302_i_(); a++)
+            for (int a = 0; a < this.inventory.getSizeInventory(); a++)
             {
-                ItemStack is = this.inventory.func_70301_a(a);
+                ItemStack is = this.inventory.getStackInSlot(a);
                 ApplyResult applyResult = canApplyStack(is);
                 if ((applyResult.type == ApplyType.BATTERY) && (applyResult.successful))
                 {
-                    is.field_77994_a -= 1;
+                    is.stackSize -= 1;
                     is = applyItem(drone, is);
-                    this.inventory.func_70299_a(a, is);
+                    this.inventory.setInventorySlotContents(a, is);
                 }
             }
         }
@@ -222,7 +223,7 @@ public class DroneInfo
 
     public Object getItemStackObject(ItemStack is)
     {
-        return (is.func_77973_b() instanceof ItemBlock) ? ((ItemBlock)is.func_77973_b()).func_179223_d() : is == null ? null : is.func_77973_b();
+        return (is.getItem() instanceof ItemBlock) ? ((ItemBlock)is.getItem()).getBlock() : is == null ? null : is.getItem();
     }
 
     public static class ApplyResult
@@ -281,7 +282,7 @@ public class DroneInfo
             return new ApplyResult(ApplyType.NONE, false);
         }
         Object isO = getItemStackObject(is);
-        if (isO == DronesMod.droneModule) {
+        if (isO == CustomDrones.droneModule) {
             return canAddModule(ItemDroneModule.getModule(is));
         }
         if (batteryFuel.containsKey(isO)) {
@@ -349,8 +350,8 @@ public class DroneInfo
             if (recov.successful)
             {
                 reduceBattery(-recov.effect);
-                is.field_77994_a -= recov.consume;
-                if (is.field_77994_a == 0) {
+                is.stackSize -= recov.consume;
+                if (is.stackSize == 0) {
                     is = null;
                 }
             }
@@ -361,8 +362,8 @@ public class DroneInfo
             if (recov.successful)
             {
                 reduceDamage(e, -recov.effect);
-                is.field_77994_a -= recov.consume;
-                if (is.field_77994_a == 0) {
+                is.stackSize -= recov.consume;
+                if (is.stackSize == 0) {
                     is = null;
                 }
             }
@@ -374,7 +375,7 @@ public class DroneInfo
     {
         double maxNeedRecover = getMaxBattery() - getBattery(false);
         double eachItemRecover = ((Double)batteryFuel.getOrDefault(getItemStackObject(is), Double.valueOf(0.0D))).doubleValue();
-        double maxCanRecover = eachItemRecover * is.field_77994_a;
+        double maxCanRecover = eachItemRecover * is.stackSize;
         double maxToRecover = Math.min(maxNeedRecover, maxCanRecover);
         int stackUse = eachItemRecover > 0.0D ? (int)Math.ceil(maxToRecover / eachItemRecover) : 0;
         return new ApplyResult(ApplyType.BATTERY, stackUse > 0, stackUse, maxToRecover, TextFormatting.GREEN + "Recovered " + (int)maxToRecover + " battery");
@@ -384,7 +385,7 @@ public class DroneInfo
     {
         double maxNeedRecover = getMaxDamage(null) - getDamage(false);
         double eachItemRecover = ((Double)damageRecover.getOrDefault(getItemStackObject(is), Double.valueOf(0.0D))).doubleValue();
-        double maxCanRecover = eachItemRecover * is.field_77994_a;
+        double maxCanRecover = eachItemRecover * is.stackSize;
         double maxToRecover = Math.min(maxNeedRecover, maxCanRecover);
         int stackUse = eachItemRecover > 0.0D ? (int)Math.ceil(maxToRecover / eachItemRecover) : 0;
         return new ApplyResult(ApplyType.DAMAGE, stackUse > 0, stackUse, maxToRecover, TextFormatting.GREEN + "Recovered " + (int)maxToRecover + " health");
@@ -513,9 +514,9 @@ public class DroneInfo
     public double getFlyingBatteryConsumption(EntityDrone e, boolean idle)
     {
         double d = this.chip * 0.5D + this.engine * this.engineLevel + (this.core + this.casing) * 0.25D;
-        for (int a = 0; a < this.inventory.func_70302_i_(); a++)
+        for (int a = 0; a < this.inventory.getSizeInventory(); a++)
         {
-            ItemStack is = this.inventory.func_70301_a(a);
+            ItemStack is = this.inventory.getStackInSlot(a);
             if (is != null) {
                 d += 0.2D;
             }
@@ -696,7 +697,7 @@ public class DroneInfo
         this.damage = Math.max(Math.min(damage, getMaxDamage(e)), 0.0D);
         this.isChanged = true;
         if (e != null) {
-            e.func_70606_j((float)damage);
+            e.setHealth((float)damage);
         }
     }
 
@@ -758,17 +759,17 @@ public class DroneInfo
     {
         NBTTagCompound info = new NBTTagCompound();
 
-        info.func_74778_a("Name", this.name);
-        info.func_74768_a("ID", this.id);
-        info.func_74768_a("Chip", this.chip);
-        info.func_74768_a("Core", this.core);
-        info.func_74768_a("Casing", this.casing);
-        info.func_74768_a("Engine", this.engine);
-        info.func_74780_a("Battery", this.battery);
-        info.func_74780_a("PrevBattery", this.prevBattery);
-        info.func_74780_a("Damage", this.damage);
-        info.func_74780_a("EngineLevel", this.engineLevel);
-        info.func_74768_a("Controller Frequency", this.droneFreq);
+        info.setString("Name", this.name);
+        info.setInteger("ID", this.id);
+        info.setInteger("Chip", this.chip);
+        info.setInteger("Core", this.core);
+        info.setInteger("Casing", this.casing);
+        info.setInteger("Engine", this.engine);
+        info.setDouble("Battery", this.battery);
+        info.setDouble("PrevBattery", this.prevBattery);
+        info.setDouble("Damage", this.damage);
+        info.setDouble("EngineLevel", this.engineLevel);
+        info.setInteger("Controller Frequency", this.droneFreq);
 
         int count = 0;
         for (int a = 0; a < this.mods.size(); a++)
@@ -777,11 +778,11 @@ public class DroneInfo
             if (m != null)
             {
                 count++;
-                this.modsNBT.func_74778_a(String.valueOf(a), m.getID());
+                this.modsNBT.setString(String.valueOf(a), m.getID());
             }
         }
-        this.modsNBT.func_74768_a("Count", count);
-        info.func_74782_a("Modules", this.modsNBT);
+        this.modsNBT.setInteger("Count", count);
+        info.setTag("Modules", this.modsNBT);
 
         NBTTagCompound disabledModTag = new NBTTagCompound();
         count = 0;
@@ -791,78 +792,78 @@ public class DroneInfo
             if (m != null)
             {
                 count++;
-                disabledModTag.func_74778_a(String.valueOf(a), m.getID());
+                disabledModTag.setString(String.valueOf(a), m.getID());
             }
         }
-        disabledModTag.func_74768_a("Count", count);
-        info.func_74782_a("Disabled Modules", disabledModTag);
+        disabledModTag.setInteger("Count", count);
+        info.setTag("Disabled Modules", disabledModTag);
 
         NBTTagCompound invTag = new NBTTagCompound();
         for (int a = 0; a < 36; a++)
         {
-            ItemStack is = this.inventory.func_70301_a(a);
+            ItemStack is = this.inventory.getStackInSlot(a);
             if (is != null)
             {
                 NBTTagCompound istag = new NBTTagCompound();
-                is.func_77955_b(istag);
-                invTag.func_74782_a("IS " + a, istag);
+                is.writeToNBT(istag);
+                invTag.setTag("IS " + a, istag);
             }
         }
-        info.func_74782_a("Inv", invTag);
+        info.setTag("Inv", invTag);
 
         NBTTagCompound appearanceTag = new NBTTagCompound();
         this.appearance.writeToNBT(appearanceTag);
-        info.func_74782_a("Appearance", appearanceTag);
+        info.setTag("Appearance", appearanceTag);
 
-        tag.func_74782_a("Drone Info", info);
+        tag.setTag("Drone Info", info);
     }
 
     public void readFromNBT(NBTTagCompound tag)
     {
         this.mods.clear();
-        NBTTagCompound info = tag.func_74775_l("Drone Info");
+        NBTTagCompound info = tag.getCompoundTag("Drone Info");
 
-        this.name = (info.func_74764_b("Name") ? info.func_74779_i("Name") : "#$Drone");
-        this.id = (info.func_74764_b("ID") ? info.func_74762_e("ID") : 0);
+        this.name = (info.hasKey("Name") ? info.getString("Name") : "#$Drone");
+        this.id = (info.hasKey("ID") ? info.getInteger("ID") : 0);
         nextID = Math.max(nextID, this.id + 1);
-        this.chip = (info.func_74764_b("Chip") ? info.func_74762_e("Chip") : 1);
-        this.core = (info.func_74764_b("Core") ? info.func_74762_e("Core") : 1);
-        this.casing = (info.func_74764_b("Casing") ? info.func_74762_e("Casing") : 1);
-        this.engine = (info.func_74764_b("Engine") ? info.func_74762_e("Engine") : 1);
-        setBattery(info.func_74764_b("Battery") ? info.func_74769_h("Battery") : getMaxBattery());
-        this.prevBattery = (info.func_74764_b("PrevBattery") ? info.func_74769_h("PrevBattery") : this.battery);
-        setDamage(null, info.func_74764_b("Damage") ? info.func_74769_h("Damage") : getMaxDamage(null));
-        this.engineLevel = (info.func_74764_b("EngineLevel") ? info.func_74769_h("EngineLevel") : 1.0D);
-        this.droneFreq = (info.func_74764_b("Controller Frequency") ? info.func_74762_e("Controller Frequency") : -1);
+        this.chip = (info.hasKey("Chip") ? info.getInteger("Chip") : 1);
+        this.core = (info.hasKey("Core") ? info.getInteger("Core") : 1);
+        this.casing = (info.hasKey("Casing") ? info.getInteger("Casing") : 1);
+        this.engine = (info.hasKey("Engine") ? info.getInteger("Engine") : 1);
+        setBattery(info.hasKey("Battery") ? info.getDouble("Battery") : getMaxBattery());
+        this.prevBattery = (info.hasKey("PrevBattery") ? info.getDouble("PrevBattery") : this.battery);
+        setDamage(null, info.hasKey("Damage") ? info.getDouble("Damage") : getMaxDamage(null));
+        this.engineLevel = (info.hasKey("EngineLevel") ? info.getDouble("EngineLevel") : 1.0D);
+        this.droneFreq = (info.hasKey("Controller Frequency") ? info.getInteger("Controller Frequency") : -1);
 
-        readModulesNBT(info.func_74775_l("Modules"));
+        readModulesNBT(info.getCompoundTag("Modules"));
 
-        NBTTagCompound disabledModTag = info.func_74775_l("Disabled Modules");
-        int disModCount = disabledModTag.func_74762_e("Count");
+        NBTTagCompound disabledModTag = info.getCompoundTag("Disabled Modules");
+        int disModCount = disabledModTag.getInteger("Count");
         for (int a = 0; a < disModCount; a++) {
-            this.disabledMods.add(Module.getModuleByID(disabledModTag.func_74779_i(String.valueOf(a))));
+            this.disabledMods.add(Module.getModuleByID(disabledModTag.getString(String.valueOf(a))));
         }
-        NBTTagCompound invTag = info.func_74775_l("Inv");
+        NBTTagCompound invTag = info.getCompoundTag("Inv");
         for (int a = 0; a < 36; a++) {
-            if (invTag.func_74764_b("IS " + a))
+            if (invTag.hasKey("IS " + a))
             {
-                NBTTagCompound istag = invTag.func_74775_l("IS " + a);
-                this.inventory.func_70299_a(a, ItemStack.func_77949_a(istag));
+                NBTTagCompound istag = invTag.getCompoundTag("IS " + a);
+                this.inventory.setInventorySlotContents(a, ItemStack.loadItemStackFromNBT(istag));
             }
             else
             {
-                this.inventory.func_70299_a(a, null);
+                this.inventory.setInventorySlotContents(a, null);
             }
         }
-        this.appearance.readFromNBT(info.func_74775_l("Appearance"));
+        this.appearance.readFromNBT(info.getCompoundTag("Appearance"));
     }
 
     public void readModulesNBT(NBTTagCompound tag)
     {
         this.modsNBT = tag;
-        int modCount = this.modsNBT.func_74762_e("Count");
+        int modCount = this.modsNBT.getInteger("Count");
         for (int a = 0; a < modCount; a++) {
-            this.mods.add(Module.getModuleByID(this.modsNBT.func_74779_i(String.valueOf(a))));
+            this.mods.add(Module.getModuleByID(this.modsNBT.getString(String.valueOf(a))));
         }
     }
 

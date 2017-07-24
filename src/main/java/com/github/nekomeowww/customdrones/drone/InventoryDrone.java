@@ -19,62 +19,62 @@ public class InventoryDrone
         if (stack0 == null) {
             return false;
         }
-        ItemStack stack = stack0.func_77946_l();
-        if (func_70302_i_() <= 0) {
+        ItemStack stack = stack0.copy();
+        if (getSizeInventory() <= 0) {
             return false;
         }
-        for (int a = 0; a < func_70302_i_(); a++)
+        for (int a = 0; a < getSizeInventory(); a++)
         {
-            ItemStack is2 = func_70301_a(a);
+            ItemStack is2 = getStackInSlot(a);
             if (is2 == null) {
                 return true;
             }
-            if (ItemStack.func_179545_c(stack, is2))
+            if (ItemStack.areItemsEqual(stack, is2))
             {
-                int maxAdd = is2.func_77976_d() - is2.field_77994_a;
-                int canAdd = Math.min(maxAdd, stack.field_77994_a);
-                stack.field_77994_a -= canAdd;
+                int maxAdd = is2.getMaxStackSize() - is2.stackSize;
+                int canAdd = Math.min(maxAdd, stack.stackSize);
+                stack.stackSize -= canAdd;
                 if ((!mustAddAll) && (canAdd > 0)) {
                     return true;
                 }
-                if (stack.field_77994_a <= 0) {
+                if (stack.stackSize <= 0) {
                     break;
                 }
             }
         }
-        return stack.field_77994_a == 0;
+        return stack.stackSize == 0;
     }
 
     public ItemStack addToInv(ItemStack stack0)
     {
-        if ((stack0 == null) || (func_70302_i_() <= 0)) {
+        if ((stack0 == null) || (getSizeInventory() <= 0)) {
             return stack0;
         }
-        ItemStack stack = stack0.func_77946_l();
-        for (int a = 0; a < func_70302_i_(); a++)
+        ItemStack stack = stack0.copy();
+        for (int a = 0; a < getSizeInventory(); a++)
         {
-            ItemStack is2 = func_70301_a(a);
-            if (ItemStack.func_179545_c(stack, is2))
+            ItemStack is2 = getStackInSlot(a);
+            if (ItemStack.areItemsEqual(stack, is2))
             {
-                int maxAdd = is2.func_77976_d() - is2.field_77994_a;
-                int canAdd = Math.min(maxAdd, stack.field_77994_a);
-                is2.field_77994_a += canAdd;
-                func_70299_a(a, is2);
-                stack.field_77994_a -= canAdd;
-                if (stack.field_77994_a <= 0)
+                int maxAdd = is2.getMaxStackSize() - is2.stackSize;
+                int canAdd = Math.min(maxAdd, stack.stackSize);
+                is2.stackSize += canAdd;
+                setInventorySlotContents(a, is2);
+                stack.stackSize -= canAdd;
+                if (stack.stackSize <= 0)
                 {
                     stack = null;
                     break;
                 }
             }
         }
-        if ((stack != null) && (stack.field_77994_a > 0)) {
-            for (int a = 0; a < func_70302_i_(); a++)
+        if ((stack != null) && (stack.stackSize > 0)) {
+            for (int a = 0; a < getSizeInventory(); a++)
             {
-                ItemStack is2 = func_70301_a(a);
+                ItemStack is2 = getStackInSlot(a);
                 if (is2 == null)
                 {
-                    func_70299_a(a, stack.func_77946_l());
+                    setInventorySlotContents(a, stack.copy());
                     stack = null;
                     break;
                 }
@@ -84,47 +84,47 @@ public class InventoryDrone
         return stack;
     }
 
-    public void func_70299_a(int index, ItemStack stack)
+    public void setInventorySlotContents(int index, ItemStack stack)
     {
-        if (index >= func_70302_i_()) {
+        if (index >= getSizeInventory()) {
             return;
         }
         this.drone.isChanged = true;
-        super.func_70299_a(index, stack);
+        super.setInventorySlotContents(index, stack);
     }
 
-    public ItemStack func_70301_a(int index)
+    public ItemStack getStackInSlot(int index)
     {
-        if (index >= func_70302_i_()) {
+        if (index >= getSizeInventory()) {
             return null;
         }
-        return super.func_70301_a(index);
+        return super.getStackInSlot(index);
     }
 
-    public ItemStack func_70298_a(int index, int count)
+    public ItemStack decrStackSize(int index, int count)
     {
-        if (index >= func_70302_i_()) {
-            return null;
-        }
-        this.drone.isChanged = true;
-        return super.func_70298_a(index, count);
-    }
-
-    public ItemStack func_70304_b(int index)
-    {
-        if (index >= func_70302_i_()) {
+        if (index >= getSizeInventory()) {
             return null;
         }
         this.drone.isChanged = true;
-        return super.func_70304_b(index);
+        return super.decrStackSize(index, count);
     }
 
-    public String func_70005_c_()
+    public ItemStack removeStackFromSlot(int index)
+    {
+        if (index >= getSizeInventory()) {
+            return null;
+        }
+        this.drone.isChanged = true;
+        return super.removeStackFromSlot(index);
+    }
+
+    public String getName()
     {
         return this.drone.name;
     }
 
-    public int func_70302_i_()
+    public int getSizeInventory()
     {
         if (!this.drone.hasInventory()) {
             return 0;
