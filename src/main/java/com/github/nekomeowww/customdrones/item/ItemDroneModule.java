@@ -14,13 +14,13 @@ public class ItemDroneModule
 {
     public ItemDroneModule()
     {
-        func_77625_d(16);
-        func_77627_a(true);
+        setMaxStackSize(16);
+        setHasSubtypes(true);
     }
 
-    public void func_77624_a(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
     {
-        super.func_77624_a(stack, playerIn, tooltip, advanced);
+        super.addInformation(stack, playerIn, tooltip, advanced);
         Module mod = getModule(stack);
         if (mod != null)
         {
@@ -40,10 +40,10 @@ public class ItemDroneModule
         return super.getMetadata(stack);
     }
 
-    public void func_150895_a(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
+    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
     {
-        super.func_150895_a(itemIn, tab, subItems);
-        if ((tab == DronesMod.droneTab) || (tab == null)) {
+        super.getSubItems(itemIn, tab, subItems);
+        if ((tab == CustomDrones.droneTab) || (tab == null)) {
             for (int a = 1; a < Module.modules.size(); a++) {
                 subItems.add(itemModule((Module)Module.modules.get(a)));
             }
@@ -52,24 +52,24 @@ public class ItemDroneModule
 
     public static void setModule(ItemStack stack, Module mod)
     {
-        if (!stack.func_77942_o()) {
-            stack.func_77982_d(new NBTTagCompound());
+        if (!stack.hasTagCompound()) {
+            stack.setTagCompound(new NBTTagCompound());
         }
-        stack.func_77978_p().func_74778_a("Drone Module", mod.getID());
+        stack.getTagCompound().setString("Drone Module", mod.getID());
     }
 
     public static Module getModule(ItemStack stack)
     {
-        if (!stack.func_77942_o()) {
-            stack.func_77982_d(new NBTTagCompound());
+        if (!stack.hasTagCompound()) {
+            stack.setTagCompound(new NBTTagCompound());
         }
-        Module m = Module.getModuleByID(stack.func_77978_p().func_74779_i("Drone Module"));
+        Module m = Module.getModuleByID(stack.getTagCompound().getString("Drone Module"));
         return m == null ? Module.useless1 : m;
     }
 
     public static ItemStack itemModule(Module m)
     {
-        ItemStack is = new ItemStack(DronesMod.droneModule);
+        ItemStack is = new ItemStack(CustomDrones.droneModule);
         setModule(is, m);
         return is;
     }

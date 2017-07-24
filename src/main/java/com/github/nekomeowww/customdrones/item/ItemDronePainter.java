@@ -21,12 +21,12 @@ public class ItemDronePainter
 {
     public ItemDronePainter()
     {
-        func_77625_d(1);
+        setMaxStackSize(1);
     }
 
-    public void func_77624_a(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
     {
-        super.func_77624_a(stack, playerIn, tooltip, advanced);
+        super.addInformation(stack, playerIn, tooltip, advanced);
         tooltip.add("Used to recolor drones");
     }
 
@@ -34,7 +34,7 @@ public class ItemDronePainter
     {
         if (drone.playerHasCorrespondingController(player, false))
         {
-            player.openGui(DronesMod.instance, 4, world, drone.droneInfo.id, 0, 0);
+            player.openGui(CustomDrones.instance, 4, world, drone.droneInfo.id, 0, 0);
             return EnumActionResult.SUCCESS;
         }
         String s = "Not your drone!";

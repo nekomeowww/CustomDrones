@@ -9,7 +9,7 @@ public class ItemDronePart
 
     public ItemDronePart(int i, int rank)
     {
-        func_77625_d(i);
+        setMaxStackSize(i);
         this.rank = rank;
     }
 

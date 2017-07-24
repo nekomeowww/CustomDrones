@@ -21,12 +21,12 @@ public class ItemDroneScrew
 {
     public ItemDroneScrew()
     {
-        func_77625_d(1);
+        setMaxStackSize(1);
     }
 
-    public void func_77624_a(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
     {
-        super.func_77624_a(stack, playerIn, tooltip, advanced);
+        super.addInformation(stack, playerIn, tooltip, advanced);
         tooltip.add("Used to change drone model");
     }
 
@@ -34,7 +34,7 @@ public class ItemDroneScrew
     {
         if (drone.playerHasCorrespondingController(player, false))
         {
-            player.openGui(DronesMod.instance, 5, world, drone.droneInfo.id, 0, 0);
+            player.openGui(CustomDrones.instance, 5, world, drone.droneInfo.id, 0, 0);
             return EnumActionResult.SUCCESS;
         }
         String s = "Not your drone!";
