@@ -27,7 +27,7 @@ public class PacketDroneGuiApplyItem
 
     public PacketDroneGuiApplyItem(EntityDrone drone)
     {
-        this.dim = drone.field_70170_p.field_73011_w.getDimension();
+        this.dim = drone.worldObj.provider.getDimension();
         this.droneID = drone.getDroneID();
     }
 
@@ -48,24 +48,24 @@ public class PacketDroneGuiApplyItem
     {
         public IMessage handleServerMessage(EntityPlayer player, PacketDroneGuiApplyItem message, MessageContext ctx)
         {
-            World world = FMLCommonHandler.instance().getMinecraftServerInstance().func_71218_a(message.dim);
+            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.dim);
             if (world != null)
             {
                 EntityDrone drone = EntityDrone.getDroneFromID(world, message.droneID);
                 if (drone != null)
                 {
-                    ContainerDrone c = (ContainerDrone)((player.field_71070_bA instanceof ContainerDrone) ? player.field_71070_bA : null);
+                    ContainerDrone c = (ContainerDrone)((player.openContainer instanceof ContainerDrone) ? player.openContainer : null);
 
-                    Slot itemApply = c.func_75147_a(c.module, 0);
-                    ItemStack is = itemApply.func_75211_c();
+                    Slot itemApply = c.getSlotFromInventory(c.module, 0);
+                    ItemStack is = itemApply.getStack();
                     if (is != null)
                     {
-                        Item i = is.func_77973_b();
-                        if (i == DronesMod.droneModule)
+                        Item i = is.getItem();
+                        if (i == CustomDrones.droneModule)
                         {
                             drone.droneInfo.applyModule(ItemDroneModule.getModule(is));
-                            is.field_77994_a -= 1;
-                            if (is.field_77994_a <= 0) {
+                            is.stackSize -= 1;
+                            if (is.stackSize <= 0) {
                                 is = null;
                             }
                         }
@@ -75,7 +75,7 @@ public class PacketDroneGuiApplyItem
                         }
                     }
                     drone.droneInfo.updateDroneInfoToClient(player);
-                    itemApply.func_75215_d(is);
+                    itemApply.putStack(is);
                 }
             }
             return null;

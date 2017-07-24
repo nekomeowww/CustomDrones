@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.world.World;
 import com.github.nekomeowww.customdrones.CustomDrones;
 import com.github.nekomeowww.customdrones.api.path.Path;
 import com.github.nekomeowww.customdrones.drone.DroneInfo;
@@ -41,21 +42,21 @@ public class PacketDroneControllerChange
         public IMessage handleServerMessage(EntityPlayer player, PacketDroneControllerChange message, MessageContext ctx)
         {
             boolean unbindDrone = false;
-            EntityDrone drone = DronesMod.droneFlyer.getControllingDrone(player.field_70170_p, player.func_184614_ca());
+            EntityDrone drone = CustomDrones.droneFlyer.getControllingDrone(player.worldObj, player.getHeldItemMainhand()); //worldObj used to be world
             if (message.encoded <= 0)
             {
                 int newFreq = message.encoded * -1;
-                int oldFreq = DronesMod.droneFlyer.getControllerFreq(player.func_184614_ca());
+                int oldFreq = CustomDrones.droneFlyer.getControllerFreq(player.getHeldItemMainhand());
                 if (drone != null)
                 {
                     drone.droneInfo.droneFreq = newFreq;
                     drone.droneInfo.isChanged = true;
                 }
-                DronesMod.droneFlyer.setControllerFreq(player.func_184614_ca(), newFreq);
+                CustomDrones.droneFlyer.setControllerFreq(player.getHeldItemMainhand(), newFreq);
             }
             else if (message.encoded == 2)
             {
-                DronesMod.droneFlyer.setNextFlyMode(player.func_184614_ca());
+                CustomDrones.droneFlyer.setNextFlyMode(player.getHeldItemMainhand());
             }
             else if (message.encoded == 3)
             {
@@ -84,7 +85,7 @@ public class PacketDroneControllerChange
                     drone.droneInfo.droneFreq = -1;
                     drone.droneInfo.isChanged = true;
                 }
-                DronesMod.droneFlyer.setControllingDrone(player, player.func_184614_ca(), null);
+                CustomDrones.droneFlyer.setControllingDrone(player, player.getHeldItemMainhand(), null);
             }
             if ((drone != null) && (drone.droneInfo.isChanged)) {
                 drone.droneInfo.updateDroneInfoToClient(player);

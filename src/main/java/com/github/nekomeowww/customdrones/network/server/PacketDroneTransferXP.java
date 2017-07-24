@@ -23,7 +23,7 @@ public class PacketDroneTransferXP
 
     public PacketDroneTransferXP(EntityDrone drone)
     {
-        this.dim = drone.field_70170_p.field_73011_w.getDimension();
+        this.dim = drone.getEntityWorld().provider.getDimension();
         this.droneID = drone.getDroneID();
     }
 
@@ -44,13 +44,13 @@ public class PacketDroneTransferXP
     {
         public IMessage handleServerMessage(EntityPlayer player, PacketDroneTransferXP message, MessageContext ctx)
         {
-            World world = FMLCommonHandler.instance().getMinecraftServerInstance().func_71218_a(message.dim);
+            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.dim);
             if (world != null)
             {
                 EntityDrone drone = EntityDrone.getDroneFromID(world, message.droneID);
                 if (drone != null)
                 {
-                    player.func_71023_q(((ModuleCollect)drone.droneInfo.getModuleWithFunctionOf(Module.xpCollect))
+                    player.addExperience(((ModuleCollect)drone.droneInfo.getModuleWithFunctionOf(Module.xpCollect))
                             .getCollectedXP(drone));
                     ((ModuleCollect)drone.droneInfo.getModuleWithFunctionOf(Module.xpCollect)).setCollectedXP(drone, 0);
 

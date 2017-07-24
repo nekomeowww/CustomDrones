@@ -40,7 +40,7 @@ public class PacketDroneSetCameraMode
         {
             if (player != null)
             {
-                World world = player.field_70170_p;
+                World world = player.getEntityWorld();
                 if (world != null)
                 {
                     EntityDrone drone = EntityDrone.getDroneFromID(world, message.droneID);

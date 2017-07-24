@@ -40,7 +40,7 @@ public class PacketDroneModuleNBT
     {
         public IMessage handleClientMessage(EntityPlayer player, PacketDroneModuleNBT message, MessageContext ctx)
         {
-            EntityDrone drone = EntityDrone.getDroneFromID(player.field_70170_p, message.id);
+            EntityDrone drone = EntityDrone.getDroneFromID(player.getEntityWorld(), message.id); //getEntityWorld() used to be world
             if (drone != null) {
                 drone.droneInfo.readModulesNBT(message.tag);
             }

@@ -37,14 +37,14 @@ public class PacketDroneSetReturnPos
     {
         public IMessage handleServerMessage(EntityPlayer player, PacketDroneSetReturnPos message, MessageContext ctx)
         {
-            World world = player.field_70170_p;
+            World world = player.getEntityWorld();
             if (world != null)
             {
                 EntityDrone drone = EntityDrone.getDroneFromID(world, message.droneID);
                 if (drone != null)
                 {
                     ((ModuleReturn)drone.droneInfo.getModuleWithFunctionOf(Module.autoReturn)).setReturnPos(drone, drone
-                            .func_174791_d());
+                            .getPositionVector());
                     drone.droneInfo.updateDroneInfoToClient(player);
                 }
             }

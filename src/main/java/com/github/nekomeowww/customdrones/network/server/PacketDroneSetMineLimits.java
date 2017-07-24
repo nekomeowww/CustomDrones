@@ -30,7 +30,7 @@ public class PacketDroneSetMineLimits
 
     public PacketDroneSetMineLimits(EntityDrone drone, boolean dis, int a, int b, int c, int d, int e, int f)
     {
-        this.dim = drone.field_70170_p.field_73011_w.getDimension();
+        this.dim = drone.getEntityWorld().provider.getDimension();
         this.droneID = drone.getDroneID();
         this.disable = dis;
         this.x0 = a;
@@ -72,7 +72,7 @@ public class PacketDroneSetMineLimits
     {
         public IMessage handleServerMessage(EntityPlayer player, PacketDroneSetMineLimits message, MessageContext ctx)
         {
-            World world = FMLCommonHandler.instance().getMinecraftServerInstance().func_71218_a(message.dim);
+            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.dim);
             if (world != null)
             {
                 EntityDrone drone = EntityDrone.getDroneFromID(world, message.droneID);

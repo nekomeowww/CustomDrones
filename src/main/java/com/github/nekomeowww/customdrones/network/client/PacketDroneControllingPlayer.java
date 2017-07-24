@@ -19,7 +19,7 @@ public class PacketDroneControllingPlayer
     public PacketDroneControllingPlayer(EntityDrone drone)
     {
         this.droneID = drone.getDroneID();
-        this.player = (drone.getControllingPlayer() == null ? "" : drone.getControllingPlayer().func_70005_c_());
+        this.player = (drone.getControllingPlayer() == null ? "" : drone.getControllingPlayer().getName());
     }
 
     public void fromBytes(ByteBuf buffer)
@@ -41,11 +41,11 @@ public class PacketDroneControllingPlayer
         {
             if (player != null)
             {
-                World world = player.field_70170_p;
+                World world = player.getEntityWorld(); //getEntityWorld() used to be world
                 if (world != null)
                 {
                     EntityDrone drone = EntityDrone.getDroneFromID(world, message.droneID);
-                    EntityPlayer eplayer = world.func_72924_a(message.player);
+                    EntityPlayer eplayer = world.getPlayerEntityByName(message.player);
                     if (drone != null) {
                         drone.setControllingPlayer(eplayer);
                     }

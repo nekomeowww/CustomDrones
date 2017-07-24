@@ -36,7 +36,7 @@ public class PacketDroneDropRider
         {
             if (player != null)
             {
-                World world = player.field_70170_p;
+                World world = player.worldObj;
                 if (world != null)
                 {
                     EntityDrone drone = EntityDrone.getDroneFromID(world, message.droneID);
