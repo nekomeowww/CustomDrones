@@ -254,7 +254,7 @@ public class GuiPainter
         }
         else
         {
-            this.buttonModel.visible = (this.buttonReset.visible = this.buttonApply.visible = this.buttonSelectBlue.visible = this.buttonSelectGreen.visible = this.buttonSelectRed.visible = 0);
+            this.buttonModel.visible = (this.buttonReset.visible = this.buttonApply.visible = this.buttonSelectBlue.visible = this.buttonSelectGreen.visible = this.buttonSelectRed.visible = false);
             ModelDrone cm = DroneModels.instance.getModelOrDefault(this.drone);
             if (cm != null)
             {

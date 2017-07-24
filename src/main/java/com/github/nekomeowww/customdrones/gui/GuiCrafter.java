@@ -1,12 +1,8 @@
 package com.github.nekomeowww.customdrones.gui;
 
 import java.io.IOException;
+import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map.Entry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -139,6 +135,7 @@ public class GuiCrafter
 
     public void craft()
     {
+        PI pi;
         int count = Integer.parseInt(this.craftCount.getText());
         PI selectedOutput = this.panelOutputs.getFirstSelectedItem();
         if ((count > 0) && (selectedOutput != null))
@@ -158,7 +155,6 @@ public class GuiCrafter
                         requirements.add(isr);
                     }
                 }
-                PI pi;
                 Object decreaseIndexes = new ArrayList();
                 for (ItemStack decrease : requirements)
                 {
