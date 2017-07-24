@@ -25,13 +25,13 @@ public class ItemDroneFlyer
 {
     public ItemDroneFlyer()
     {
-        func_77625_d(1);
+        setMaxStackSize(1);
     }
 
-    public ActionResult<ItemStack> func_77659_a(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
+    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
     {
         EntityDrone drone = getControllingDrone(worldIn, itemStackIn);
-        if ((!worldIn.field_72995_K) && (drone != null) && (drone.droneInfo.isChanged)) {
+        if ((!worldIn.isRemote) && (drone != null) && (drone.droneInfo.isChanged)) {
             drone.droneInfo.updateDroneInfoToClient(playerIn);
         }
         if ((drone != null) && (drone.recordingPath != null))
@@ -49,7 +49,7 @@ public class ItemDroneFlyer
 
     public EnumActionResult interactWithDrone(World world, EntityDrone drone, EntityPlayer playerIn, Vec3d vec, ItemStack itemStackIn, EnumHand hand)
     {
-        String controllerPrefix = playerIn.getDisplayNameString() + " - slot " + (playerIn.field_71071_by.field_70461_c + 1) + ": ";
+        String controllerPrefix = playerIn.getDisplayNameString() + " - slot " + (playerIn.inventory.currentItem + 1) + ": ";
 
         int freq = getControllerFreq(itemStackIn);
         if (drone.droneInfo.droneFreq == -1)
@@ -85,7 +85,7 @@ public class ItemDroneFlyer
     {
         if ((entityLiving instanceof EntityPlayer))
         {
-            EntityDrone drone = getControllingDrone(entityLiving.field_70170_p, stack);
+            EntityDrone drone = getControllingDrone(entityLiving.world, stack);
             if ((drone != null) && (drone.recordingPath != null))
             {
                 drone.applyRecordPath(true);
@@ -100,7 +100,7 @@ public class ItemDroneFlyer
 
     public void flyDroneWithButton(EntityPlayer p, int buttonCombination)
     {
-        ItemStack flyerIS = p.func_184614_ca();
+        ItemStack flyerIS = p.getHeldItemMainhand();
         int ba = buttonCombination >> 5;
         int fo = buttonCombination -= (ba << 5) >> 4;
         int ri = buttonCombination -= (fo << 4) >> 3;
@@ -108,41 +108,41 @@ public class ItemDroneFlyer
         int dw = buttonCombination -= (le << 2) >> 1;
         int up = buttonCombination -= (dw << 1);
 
-        EntityDrone drone = getControllingDrone(p.field_70170_p, flyerIS);
+        EntityDrone drone = getControllingDrone(p.world, flyerIS);
         if ((drone != null) && (drone.isControllerFlying()))
         {
-            Vec3d vecJS = p.func_70040_Z();
-            Vec3d vecLR = VecHelper.rotateAround(new Vec3d(0.0D, 0.0D, -1.0D), new Vec3d(0.0D, 1.0D, 0.0D), (90.0F + p.field_70177_z) / 180.0F * 3.141592653589793D);
+            Vec3d vecJS = p.getLookVec();
+            Vec3d vecLR = VecHelper.rotateAround(new Vec3d(0.0D, 0.0D, -1.0D), new Vec3d(0.0D, 1.0D, 0.0D), (90.0F + p.rotationYaw) / 180.0F * 3.141592653589793D);
 
             Vec3d vecUD = VecHelper.rotateAround(
-                    VecHelper.rotateAround(new Vec3d(0.0D, 1.0D, 0.0D), new Vec3d(-1.0D, 0.0D, 0.0D), p.field_70125_A / 180.0F * 3.141592653589793D), new Vec3d(0.0D, 1.0D, 0.0D), p.field_70177_z / 180.0F * 3.141592653589793D);
+                    VecHelper.rotateAround(new Vec3d(0.0D, 1.0D, 0.0D), new Vec3d(-1.0D, 0.0D, 0.0D), p.rotationPitch / 180.0F * 3.141592653589793D), new Vec3d(0.0D, 1.0D, 0.0D), p.rotationYaw / 180.0F * 3.141592653589793D);
 
             int i = 0;
             if (drone.getCameraMode())
             {
                 vecJS = new Vec3d(0.0D, 1.0D, 0.0D);
                 vecUD = drone.getHorizontalLookVec();
-                vecLR = VecHelper.rotateAround(new Vec3d(0.0D, 0.0D, -1.0D), new Vec3d(0.0D, 1.0D, 0.0D), (90.0F + drone.field_70177_z) / 180.0F * 3.141592653589793D);
+                vecLR = VecHelper.rotateAround(new Vec3d(0.0D, 0.0D, -1.0D), new Vec3d(0.0D, 1.0D, 0.0D), (90.0F + drone.rotationYaw) / 180.0F * 3.141592653589793D);
             }
-            else if (drone.func_184179_bs() == p)
+            else if (drone.getControllingPassenger() == p)
             {
                 vecUD = new Vec3d(0.0D, 1.0D, 0.0D);
 
-                vecJS = new Vec3d(-Math.sin(p.field_70177_z / 180.0D * 3.141592653589793D), 0.0D, Math.cos(p.field_70177_z / 180.0D * 3.141592653589793D));
+                vecJS = new Vec3d(-Math.sin(p.rotationYaw / 180.0D * 3.141592653589793D), 0.0D, Math.cos(p.rotationYaw / 180.0D * 3.141592653589793D));
             }
-            Vec3d lookMotion = VecHelper.scale(vecJS, fo).func_178787_e(VecHelper.scale(vecJS, -ba));
-            Vec3d lrMotion = VecHelper.scale(vecLR, le).func_178787_e(VecHelper.scale(vecLR, -ri));
-            Vec3d udMotion = VecHelper.scale(vecUD, up).func_178787_e(VecHelper.scale(vecUD, -dw));
-            Vec3d motion = VecHelper.setLength(lookMotion.func_178787_e(lrMotion).func_178787_e(udMotion), drone.getSpeedMultiplication());
-            drone.field_70159_w += motion.field_72450_a;
-            drone.field_70181_x += motion.field_72448_b;
-            drone.field_70179_y += motion.field_72449_c;
+            Vec3d lookMotion = VecHelper.scale(vecJS, fo).add(VecHelper.scale(vecJS, -ba));
+            Vec3d lrMotion = VecHelper.scale(vecLR, le).add(VecHelper.scale(vecLR, -ri));
+            Vec3d udMotion = VecHelper.scale(vecUD, up).add(VecHelper.scale(vecUD, -dw));
+            Vec3d motion = VecHelper.setLength(lookMotion.add(lrMotion).add(udMotion), drone.getSpeedMultiplication());
+            drone.motionX += motion.xCoord;
+            drone.motionY += motion.yCoord;
+            drone.motionZ += motion.zCoord;
         }
     }
 
-    public void func_77624_a(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
     {
-        super.func_77624_a(stack, playerIn, tooltip, advanced);
+        super.addInformation(stack, playerIn, tooltip, advanced);
 
         tooltip.add(TextFormatting.AQUA + "Controller frequency: " + getControllerFreq(stack) + "GHz.");
         int controllingID = getControllingDroneID(stack);
@@ -160,21 +160,21 @@ public class ItemDroneFlyer
         if (stack == null) {
             return;
         }
-        if (!stack.func_77942_o()) {
-            stack.func_77982_d(new NBTTagCompound());
+        if (!stack.hasTagCompound()) {
+            stack.setTagCompound(new NBTTagCompound());
         }
-        stack.func_77978_p().func_74768_a("Controller Frequency", i);
+        stack.getTagCompound().setInteger("Controller Frequency", i);
     }
 
     public int getControllerFreq(ItemStack stack)
     {
-        if ((stack == null) || (!(stack.func_77973_b() instanceof ItemDroneFlyer))) {
+        if ((stack == null) || (!(stack.getItem() instanceof ItemDroneFlyer))) {
             return -2;
         }
-        if ((!stack.func_77942_o()) || (!stack.func_77978_p().func_74764_b("Controller Frequency"))) {
+        if ((!stack.hasTagCompound()) || (!stack.getTagCompound().hasKey("Controller Frequency"))) {
             return 0;
         }
-        return stack.func_77978_p().func_74762_e("Controller Frequency");
+        return stack.getTagCompound().getInteger("Controller Frequency");
     }
 
     public boolean isDroneInFrequency(ItemStack is, EntityDrone d)
@@ -187,10 +187,10 @@ public class ItemDroneFlyer
         if (stack == null) {
             return;
         }
-        if (!stack.func_77942_o()) {
-            stack.func_77982_d(new NBTTagCompound());
+        if (!stack.hasTagCompound()) {
+            stack.setTagCompound(new NBTTagCompound());
         }
-        stack.func_77978_p().func_74768_a("Drone Controlling", -2);
+        stack.getTagCompound().setInteger("Drone Controlling", -2);
     }
 
     public void setControllingDrone(EntityPlayer player, ItemStack stack, EntityDrone drone)
@@ -198,12 +198,12 @@ public class ItemDroneFlyer
         if (stack == null) {
             return;
         }
-        if (!stack.func_77942_o()) {
-            stack.func_77982_d(new NBTTagCompound());
+        if (!stack.hasTagCompound()) {
+            stack.setTagCompound(new NBTTagCompound());
         }
         if (drone == null)
         {
-            EntityDrone prevDrone = getControllingDrone(player.field_70170_p, stack);
+            EntityDrone prevDrone = getControllingDrone(player.world, stack);
             if (prevDrone != null) {
                 prevDrone.setControllingPlayer(null);
             }
@@ -212,7 +212,7 @@ public class ItemDroneFlyer
         {
             drone.setControllingPlayer(player);
         }
-        stack.func_77978_p().func_74768_a("Drone Controlling", drone == null ? -1 : drone.getDroneID());
+        stack.getTagCompound().setInteger("Drone Controlling", drone == null ? -1 : drone.getDroneID());
     }
 
     public int getControllingDroneID(ItemStack stack)
@@ -220,10 +220,10 @@ public class ItemDroneFlyer
         if (stack == null) {
             return -1;
         }
-        if ((!stack.func_77942_o()) || (!stack.func_77978_p().func_74764_b("Drone Controlling"))) {
+        if ((!stack.hasTagCompound()) || (!stack.getTagCompound().hasKey("Drone Controlling"))) {
             return -1;
         }
-        return stack.func_77978_p().func_74762_e("Drone Controlling");
+        return stack.getTagCompound().getInteger("Drone Controlling");
     }
 
     public EntityDrone getControllingDrone(World world, ItemStack is)
@@ -251,10 +251,10 @@ public class ItemDroneFlyer
 
     public void setFlyMode(ItemStack stack, int i)
     {
-        if (!stack.func_77942_o()) {
-            stack.func_77982_d(new NBTTagCompound());
+        if (!stack.hasTagCompound()) {
+            stack.setTagCompound(new NBTTagCompound());
         }
-        stack.func_77978_p().func_74768_a("Drone Flying Mode", i);
+        stack.getTagCompound().setInteger("Drone Flying Mode", i);
     }
 
     public int getFlyMode(ItemStack stack)
@@ -262,8 +262,8 @@ public class ItemDroneFlyer
         if (stack == null) {
             return 0;
         }
-        if (stack.func_77942_o()) {
-            return stack.func_77978_p().func_74762_e("Drone Flying Mode");
+        if (stack.hasTagCompound()) {
+            return stack.getTagCompound().getInteger("Drone Flying Mode");
         }
         return 0;
     }

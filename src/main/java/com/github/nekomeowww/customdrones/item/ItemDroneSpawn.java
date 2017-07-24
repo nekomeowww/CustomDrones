@@ -29,16 +29,16 @@ public class ItemDroneSpawn
 {
     public ItemDroneSpawn()
     {
-        func_77625_d(1);
+        setMaxStackSize(1);
     }
 
-    public EnumActionResult func_180614_a(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-        if (!worldIn.field_72995_K)
+        if (!worldIn.isRemote)
         {
             DroneInfo di = getDroneInfo(stack).copy();
             boolean allSameHigh = (di.chip == di.core) && (di.core == di.casing) && (di.casing == di.engine) && (di.chip > 1);
-            if ((allSameHigh) && (playerIn.field_71075_bZ.field_75098_d) && (playerIn.func_70093_af()))
+            if ((allSameHigh) && (playerIn.capabilities.isCreativeMode) && (playerIn.isSneaking()))
             {
                 EntityDroneMob drone = null;
                 if (di.chip == 2) {
@@ -51,26 +51,26 @@ public class ItemDroneSpawn
                 if (drone != null)
                 {
                     drone.setDroneInfo(new DroneInfo(drone).newID());
-                    drone.func_70107_b(pos.func_177958_n() + 0.5D, pos.func_177956_o() + 1, pos.func_177952_p() + 0.5D);
+                    drone.setPosition(pos.getX() + 0.5D, pos.getY() + 1, pos.getZ() + 0.5D);
                     drone.onInitSpawn();
-                    worldIn.func_72838_d(drone);
+                    worldIn.spawnEntityInWorld(drone);
                 }
             }
             else
             {
                 EntityDrone drone = new EntityDrone(worldIn);
                 drone.setDroneInfo(getDroneInfo(stack).newID());
-                drone.func_70107_b(pos.func_177958_n() + 0.5D, pos.func_177956_o() + 1, pos.func_177952_p() + 0.5D);
-                worldIn.func_72838_d(drone);
-                stack.field_77994_a -= 1;
+                drone.setPosition(pos.getX() + 0.5D, pos.getY() + 1, pos.getZ() + 0.5D);
+                worldIn.spawnEntityInWorld(drone);
+                stack.stackSize -= 1;
             }
         }
         return EnumActionResult.SUCCESS;
     }
 
-    public void func_77624_a(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
     {
-        super.func_77624_a(stack, playerIn, tooltip, advanced);
+        super.addInformation(stack, playerIn, tooltip, advanced);
         DroneInfo di = getDroneInfo(stack);
         if (!di.name.equals("#$Drone"))
         {
@@ -90,32 +90,32 @@ public class ItemDroneSpawn
 
     public void setDroneInfo(ItemStack stack, DroneInfo info)
     {
-        if (!stack.func_77942_o()) {
-            stack.func_77982_d(new NBTTagCompound());
+        if (!stack.hasTagCompound()) {
+            stack.setTagCompound(new NBTTagCompound());
         }
-        info.writeToNBT(stack.func_77978_p());
+        info.writeToNBT(stack.getTagCompound());
     }
 
     public DroneInfo getDroneInfo(ItemStack stack)
     {
-        if (stack.func_77942_o()) {
-            return DroneInfo.fromNBT(stack.func_77978_p());
+        if (stack.hasTagCompound()) {
+            return DroneInfo.fromNBT(stack.getTagCompound());
         }
-        stack.func_77982_d(new NBTTagCompound());
+        stack.setTagCompound(new NBTTagCompound());
         return new DroneInfo();
     }
 
-    public void func_150895_a(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
+    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
     {
-        super.func_150895_a(itemIn, tab, subItems);
-        if ((tab == DronesMod.droneTab) && (FMLClientHandler.instance().getClient().field_71474_y.field_82882_x)) {
+        super.getSubItems(itemIn, tab, subItems);
+        if ((tab == CustomDrones.droneTab) && (FMLClientHandler.instance().getClient().gameSettings.advancedItemTooltips)) {
             for (int a = 1; a < 5; a++) {
                 for (int b = 1; b < 5; b++) {
                     for (int c = 1; c < 5; c++) {
                         for (int d = 1; d < 5; d++) {
                             if ((a != 1) || (b != 1) || (c != 1) || (d != 1))
                             {
-                                ItemStack is = new ItemStack(DronesMod.droneSpawn);
+                                ItemStack is = new ItemStack(CustomDrones.droneSpawn);
                                 setDroneInfo(is, new DroneInfo(b, c, a, d));
                                 subItems.add(is);
                             }

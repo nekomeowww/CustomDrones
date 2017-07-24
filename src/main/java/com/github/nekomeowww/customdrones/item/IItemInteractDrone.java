@@ -10,5 +10,5 @@ import com.github.nekomeowww.customdrones.entity.EntityDrone;
 
 public abstract interface IItemInteractDrone
 {
-    public abstract EnumActionResult interactWithDrone(World paramWorld, EntityDrone paramEntityDrone, EntityPlayer paramEntityPlayer, Vec3d paramVec3d, ItemStack paramItemStack, EnumHand paramEnumHand);
+    public abstract EnumActionResult interactWithDrone(World nameWorld, EntityDrone nameEntityDrone, EntityPlayer nameEntityPlayer, Vec3d nameVec3d, ItemStack nameItemStack, EnumHand nameEnumHand);
 }

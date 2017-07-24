@@ -71,7 +71,7 @@ public class ItemGunUpgrade
         public static List<GunUpgrade> getUpgrades(NBTTagCompound tag, String upgradeKey)
         {
             List<GunUpgrade> list = new ArrayList();
-            String[] ss = tag.func_74779_i(upgradeKey).split(";");
+            String[] ss = tag.getString(upgradeKey).split(";");
             for (String s : ss)
             {
                 GunUpgrade upgrade = (GunUpgrade)upgrades.get(s);
@@ -85,12 +85,12 @@ public class ItemGunUpgrade
 
     public ItemGunUpgrade()
     {
-        func_77625_d(16);
+        setMaxStackSize(16);
     }
 
-    public void func_77624_a(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
     {
-        super.func_77624_a(stack, playerIn, tooltip, advanced);
+        super.addInformation(stack, playerIn, tooltip, advanced);
         GunUpgrade gu = getGunUpgrade(stack);
         if (gu != null)
         {
@@ -115,27 +115,27 @@ public class ItemGunUpgrade
         }
     }
 
-    public ActionResult<ItemStack> func_77659_a(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
+    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
     {
         EnumHand otherHand = hand == EnumHand.MAIN_HAND ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND;
-        ItemStack otherHandIS = playerIn.func_184586_b(otherHand);
-        if ((otherHandIS != null) && ((otherHandIS.func_77973_b() instanceof ItemPlasmaGun)))
+        ItemStack otherHandIS = playerIn.getHeldItem(otherHand);
+        if ((otherHandIS != null) && ((otherHandIS.getItem() instanceof ItemPlasmaGun)))
         {
             GunUpgrade gu = getGunUpgrade(itemStackIn);
             if (gu != null)
             {
                 boolean canAdd = ItemPlasmaGun.addUpgrade(otherHandIS, gu);
                 if (canAdd) {
-                    itemStackIn.field_77994_a -= 1;
+                    itemStackIn.stackSize -= 1;
                 }
             }
         }
         return new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
     }
 
-    public void func_150895_a(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
+    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
     {
-        if ((tab == DronesMod.droneTab) || (tab == null)) {
+        if ((tab == CustomDrones.droneTab) || (tab == null)) {
             for (GunUpgrade gu : GunUpgrade.upgrades.values()) {
                 subItems.add(itemGunUpgrade(gu));
             }
@@ -144,24 +144,24 @@ public class ItemGunUpgrade
 
     public static void setGunUpgrade(ItemStack stack, GunUpgrade mod)
     {
-        if (!stack.func_77942_o()) {
-            stack.func_77982_d(new NBTTagCompound());
+        if (!stack.hasTagCompound()) {
+            stack.setTagCompound(new NBTTagCompound());
         }
-        stack.func_77978_p().func_74778_a("Gun Upgrade", mod.id);
+        stack.getTagCompound().setString("Gun Upgrade", mod.id);
     }
 
     public static GunUpgrade getGunUpgrade(ItemStack stack)
     {
-        if (!stack.func_77942_o()) {
-            stack.func_77982_d(new NBTTagCompound());
+        if (!stack.hasTagCompound()) {
+            stack.setTagCompound(new NBTTagCompound());
         }
-        GunUpgrade m = (GunUpgrade)GunUpgrade.upgrades.get(stack.func_77978_p().func_74779_i("Gun Upgrade"));
+        GunUpgrade m = (GunUpgrade)GunUpgrade.upgrades.get(stack.getTagCompound().getString("Gun Upgrade"));
         return m;
     }
 
     public static ItemStack itemGunUpgrade(GunUpgrade m)
     {
-        ItemStack is = new ItemStack(DronesMod.gunUpgrade);
+        ItemStack is = new ItemStack(CustomDrones.gunUpgrade);
         setGunUpgrade(is, m);
         return is;
     }

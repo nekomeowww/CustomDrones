@@ -7,21 +7,21 @@ import net.minecraft.item.ItemStack;
 public class ItemDroneBit
         extends Item
 {
-    public boolean func_77636_d(ItemStack stack)
+    public boolean hasEffect(ItemStack stack)
     {
         return false;
     }
 
-    public boolean func_77614_k()
+    public boolean getHasSubtypes()
     {
         return true;
     }
 
-    public EnumRarity func_77613_e(ItemStack stack)
+    public EnumRarity getRarity(ItemStack stack)
     {
-        if (stack.func_77952_i() == 1) {
+        if (stack.getItemDamage() == 1) {
             return EnumRarity.RARE;
         }
-        return super.func_77613_e(stack);
+        return super.getRarity(stack);
     }
 }
