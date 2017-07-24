@@ -59,21 +59,21 @@ public class CMPolygon3d
                 Vec3d uv1 = (this.uvs == null) || (!shouldApplyTexture()) ? vec0 : (Vec3d)this.uvs.get(Math.min(a * 2, this.uvs.size() - 1));
                 Vec3d uv2 = (this.uvs == null) || (!shouldApplyTexture()) ? vec0 : (Vec3d)this.uvs.get(Math.min(a * 2 + 1, this.uvs.size() - 1));
 
-                Vec3d sideNormal = VecHelper.fromTo(polyCenter, pos).func_72432_b();
-                double skewAffectNormal = sideNormal.func_72430_b(this.skew);
+                Vec3d sideNormal = VecHelper.fromTo(polyCenter, pos).normalize();
+                double skewAffectNormal = sideNormal.dotProduct(this.skew);
                 if (skewAffectNormal != 0.0D) {
                     skewAffectNormal /= Math.abs(skewAffectNormal);
                 }
-                sideNormal = sideNormal.func_178787_e(VecHelper.scale(this.skew, -skewAffectNormal)).func_72432_b();
+                sideNormal = sideNormal.add(VecHelper.scale(this.skew, -skewAffectNormal)).normalize();
 
-                normal(sideNormal.field_72450_a, sideNormal.field_72448_b, sideNormal.field_72449_c);
-                vertex(pos.field_72450_a, pos.field_72448_b, pos.field_72449_c, uv1.field_72450_a, uv1.field_72448_b);
-                pos = pos.func_178787_e(this.skew);
-                vertex(pos.field_72450_a, pos.field_72448_b, pos.field_72449_c, uv2.field_72450_a, uv2.field_72448_b);
+                normal(sideNormal.xCoord, sideNormal.yCoord, sideNormal.zCoord);
+                vertex(pos.xCoord, pos.yCoord, pos.zCoord, uv1.xCoord, uv1.yCoord);
+                pos = pos.add(this.skew);
+                vertex(pos.xCoord, pos.yCoord, pos.zCoord, uv2.xCoord, uv2.yCoord);
             }
             end();
         }
-        translate(this.skew.field_72450_a, this.skew.field_72448_b, this.skew.field_72449_c);
+        translate(this.skew.xCoord, this.skew.yCoord, this.skew.zCoord);
         this.renderFront = false;
         this.renderBack = true;
         this.uvs = this.backFaceUVs;

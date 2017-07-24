@@ -39,7 +39,7 @@ public class CMCurve
                 Vec3d thisVec = vec3s[a];
                 Vec3d prevVec = vec3s[(a - 1)];
                 Vec3d nextVec = vec3s[(a + 1)];
-                Vec3d pull = scale(fromTo(prevVec, thisVec).func_178787_e(fromTo(nextVec, thisVec)), this.pullMult);
+                Vec3d pull = scale(fromTo(prevVec, thisVec).add(fromTo(nextVec, thisVec)), this.pullMult);
                 vecs[(a * 2)] = thisVec;
                 vecs[(a * 2 + 1)] = pull;
             }
@@ -47,18 +47,18 @@ public class CMCurve
             vecs[0] = firstVec;
             Vec3d secondVec = vec3s[1];
             Vec3d secondPull = vecs[3];
-            Vec3d firstMid = scale(firstVec.func_178787_e(secondVec), 0.5D);
+            Vec3d firstMid = scale(firstVec.add(secondVec), 0.5D);
             Vec3d firstToSecond = fromTo(firstVec, secondVec);
-            if (secondPull.func_72430_b(firstToSecond) == 0.0D)
+            if (secondPull.dotProduct(firstToSecond) == 0.0D)
             {
                 vecs[1] = secondPull;
             }
             else
             {
-                double d = fromTo(secondVec, firstMid).func_72430_b(firstToSecond) / firstToSecond.func_72430_b(secondPull);
-                Vec3d intersect = secondVec.func_178787_e(scale(secondPull, d));
-                Vec3d firstPull = setLength(fromTo(firstVec, intersect), secondPull.func_72433_c());
-                if (firstPull.func_72430_b(fromTo(firstVec, intersect)) * secondPull.func_72430_b(fromTo(secondVec, intersect)) < 0.0D) {
+                double d = fromTo(secondVec, firstMid).dotProduct(firstToSecond) / firstToSecond.dotProduct(secondPull);
+                Vec3d intersect = secondVec.add(scale(secondPull, d));
+                Vec3d firstPull = setLength(fromTo(firstVec, intersect), secondPull.lengthVector());
+                if (firstPull.dotProduct(fromTo(firstVec, intersect)) * secondPull.dotProduct(fromTo(secondVec, intersect)) < 0.0D) {
                     firstPull = scale(firstPull, -1.0D);
                 }
                 vecs[1] = firstPull;
@@ -67,18 +67,18 @@ public class CMCurve
             vecs[(vecs.length - 2)] = lastVec;
             Vec3d secondlastVec = vec3s[(vec3s.length - 2)];
             Vec3d secondLastPull = vecs[(vec3s.length * 2 - 3)];
-            Vec3d lastMid = scale(lastVec.func_178787_e(secondlastVec), 0.5D);
+            Vec3d lastMid = scale(lastVec.add(secondlastVec), 0.5D);
             Vec3d lastToSecond = fromTo(firstVec, secondVec);
-            if (secondLastPull.func_72430_b(lastToSecond) == 0.0D)
+            if (secondLastPull.dotProduct(lastToSecond) == 0.0D)
             {
                 vecs[(vecs.length - 1)] = secondLastPull;
             }
             else
             {
-                double d = fromTo(secondlastVec, lastMid).func_72430_b(lastToSecond) / lastToSecond.func_72430_b(secondLastPull);
-                Vec3d intersect = secondlastVec.func_178787_e(scale(secondLastPull, d));
-                Vec3d lastPull = setLength(fromTo(lastVec, intersect), secondLastPull.func_72433_c());
-                if (lastPull.func_72430_b(fromTo(lastVec, intersect)) * secondLastPull.func_72430_b(fromTo(secondlastVec, intersect)) > 0.0D) {
+                double d = fromTo(secondlastVec, lastMid).dotProduct(lastToSecond) / lastToSecond.dotProduct(secondLastPull);
+                Vec3d intersect = secondlastVec.add(scale(secondLastPull, d));
+                Vec3d lastPull = setLength(fromTo(lastVec, intersect), secondLastPull.lengthVector());
+                if (lastPull.dotProduct(fromTo(lastVec, intersect)) * secondLastPull.dotProduct(fromTo(secondlastVec, intersect)) > 0.0D) {
                     lastPull = scale(lastPull, -1.0D);
                 }
                 vecs[(vecs.length - 1)] = lastPull;
@@ -122,7 +122,7 @@ public class CMCurve
             {
                 thisVec = this.vecs[a];
                 nextVec = this.vecs[(a + 2)];
-                length += fromTo(thisVec, nextVec).func_72433_c();
+                length += fromTo(thisVec, nextVec).lengthVector();
             }
         }
         else
@@ -148,7 +148,7 @@ public class CMCurve
             Vec3d thisVec = this.vecs[a];
             Vec3d nextVec = this.vecs[(a + 2)];
             Vec3d thisToNextVec = fromTo(thisVec, nextVec);
-            double nextLength = thisToNextVec.func_72433_c();
+            double nextLength = thisToNextVec.lengthVector();
             if (currentLength == neededLength) {
                 return thisVec;
             }

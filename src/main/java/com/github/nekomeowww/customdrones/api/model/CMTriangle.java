@@ -34,7 +34,7 @@ public class CMTriangle
     {
         Vec3d mid = VecHelper.getMid(new Vec3d[] { this.v1.pos, this.v2.pos, this.v3.pos });
         Vec3d currentNormal = getNormal();
-        if (VecHelper.fromTo(innerPoint, mid).func_72430_b(currentNormal) < 0.0D)
+        if (VecHelper.fromTo(innerPoint, mid).dotProduct(currentNormal) < 0.0D)
         {
             CMVertex v4 = this.v2;
             this.v2 = this.v3;
@@ -67,7 +67,7 @@ public class CMTriangle
 
     public Vec3d getNormal()
     {
-        return VecHelper.getPerpendicularVec(this.v1.pos.func_178788_d(this.v2.pos), this.v1.pos.func_178788_d(this.v3.pos));
+        return VecHelper.getPerpendicularVec(this.v1.pos.subtract(this.v2.pos), this.v1.pos.subtract(this.v3.pos));
     }
 
     public void render()

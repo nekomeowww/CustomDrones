@@ -2,6 +2,7 @@ package com.github.nekomeowww.customdrones.api.model;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
@@ -30,12 +31,12 @@ public class CMItemStack
         if ((this.is != null) && (this.world != null))
         {
             push();
-            translate(this.origin.field_72450_a, this.origin.field_72448_b, this.origin.field_72449_c);
+            translate(this.origin.xCoord, this.origin.yCoord, this.origin.zCoord);
             scale(this.scale, this.scale, this.scale);
             enableTexture(true);
-            RenderItem itemRenderer = Minecraft.func_71410_x().func_175599_af();
+            RenderItem itemRenderer = Minecraft.getMinecraft().getRenderItem();
             if (itemRenderer != null) {
-                itemRenderer.func_181564_a(this.is, ItemCameraTransforms.TransformType.NONE);
+                itemRenderer.renderItem(this.is, ItemCameraTransforms.TransformType.NONE);
             }
             pop();
         }

@@ -35,7 +35,7 @@ public class CMVertex
             return total;
         }
         for (CMVertex vec : verts) {
-            total = total.func_178787_e(vec.pos);
+            total = total.add(vec.pos);
         }
         return scale(total, 1.0D / verts.size());
     }
@@ -45,11 +45,11 @@ public class CMVertex
         if (verts.size() > 0)
         {
             CMVertex v0 = (CMVertex)verts.get(0);
-            double distSqr = this.pos.func_72436_e(v0.pos);
+            double distSqr = this.pos.squareDistanceTo(v0.pos);
             for (int a = 0; a < verts.size(); a++)
             {
                 CMVertex v1 = (CMVertex)verts.get(a);
-                double thisDistSqr = this.pos.func_72436_e(v1.pos);
+                double thisDistSqr = this.pos.squareDistanceTo(v1.pos);
                 if (thisDistSqr < distSqr)
                 {
                     v0 = v1;
@@ -72,9 +72,9 @@ public class CMVertex
     public void addToDrawing()
     {
         if (this.normal != null) {
-            normal(this.normal.field_72450_a, this.normal.field_72448_b, this.normal.field_72449_c);
+            normal(this.normal.xCoord, this.normal.yCoord, this.normal.zCoord);
         }
-        vertex(this.pos.field_72450_a, this.pos.field_72448_b, this.pos.field_72449_c, this.uv != null ? this.uv.field_72450_a : 0.0D, this.uv != null ? this.uv.field_72448_b : 0.0D);
+        vertex(this.pos.xCoord, this.pos.yCoord, this.pos.zCoord, this.uv != null ? this.uv.xCoord : 0.0D, this.uv != null ? this.uv.yCoord : 0.0D);
     }
 
     public String toString()

@@ -48,18 +48,18 @@ public class CMPipeLine
             if (a > 0)
             {
                 Vec3d prevVec = this.positions[(a - 1)];
-                Vec3d prevToThis = fromTo(prevVec, thisVec).func_72432_b();
-                Vec3d nextToThis = fromTo(nextVec, thisVec).func_72432_b();
-                Vec3d paraToPlane = prevToThis.func_178787_e(nextToThis);
+                Vec3d prevToThis = fromTo(prevVec, thisVec).normalize();
+                Vec3d nextToThis = fromTo(nextVec, thisVec).normalize();
+                Vec3d paraToPlane = prevToThis.add(nextToThis);
                 Vec3d perpHelper = getPerpendicularVec(prevToThis, nextToThis);
                 thisPerp = getPerpendicularVec(paraToPlane, perpHelper);
             }
             if (a < this.positions.length - 2)
             {
                 Vec3d nextNextVec = this.positions[(a + 2)];
-                Vec3d thisToNext = fromTo(thisVec, nextVec).func_72432_b();
-                Vec3d next2ToNext = fromTo(nextNextVec, nextVec).func_72432_b();
-                Vec3d paraToPlane = thisToNext.func_178787_e(next2ToNext);
+                Vec3d thisToNext = fromTo(thisVec, nextVec).normalize();
+                Vec3d next2ToNext = fromTo(nextNextVec, nextVec).normalize();
+                Vec3d paraToPlane = thisToNext.add(next2ToNext);
                 Vec3d perpHelper = getPerpendicularVec(thisToNext, next2ToNext);
                 nextPerp = getPerpendicularVec(paraToPlane, perpHelper);
             }

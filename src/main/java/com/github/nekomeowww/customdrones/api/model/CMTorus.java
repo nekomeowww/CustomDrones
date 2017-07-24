@@ -19,7 +19,7 @@ public class CMTorus
         this.radi = filledDouble(thick, segs + 1);
         this.initRot = rot;
         this.origin = (ori == null ? vec(0.0D, 0.0D, 0.0D) : ori);
-        this.normal = ((nor == null) || (isZeroVec(nor)) ? vec(0.0D, 1.0D, 0.0D) : nor.func_72432_b());
+        this.normal = ((nor == null) || (isZeroVec(nor)) ? vec(0.0D, 1.0D, 0.0D) : nor.normalize());
         fullCalculate();
     }
 
@@ -27,7 +27,7 @@ public class CMTorus
     {
         this.positions = calculatePositions();
         this.endCapsDirection[0] = fromTo(this.positions[0], this.positions[1])
-                .func_178787_e(fromTo(this.positions[(this.positions.length - 2)], this.positions[(this.positions.length - 1)]));
+                .add(fromTo(this.positions[(this.positions.length - 2)], this.positions[(this.positions.length - 1)]));
         this.endCapsDirection[1] = this.endCapsDirection[0];
         this.pipes = calculatePipes();
         for (CMPipe pipe : this.pipes) {
@@ -39,11 +39,11 @@ public class CMTorus
     {
         Vec3d[] pos = new Vec3d[this.segments + 1];
         Vec3d baseRot = setLength(rotateAround(
-                getPerpendicularVec(this.normal, (this.normal.field_72450_a == 0.0D) && (this.normal.field_72449_c == 0.0D) ? vec(0.0D, 0.0D, 1.0D) : vec(0.0D, 1.0D, 0.0D)), this.normal, this.initRot), this.torusRa);
+                getPerpendicularVec(this.normal, (this.normal.xCoord == 0.0D) && (this.normal.zCoord == 0.0D) ? vec(0.0D, 0.0D, 1.0D) : vec(0.0D, 1.0D, 0.0D)), this.normal, this.initRot), this.torusRa);
 
         double rotAngle = 6.283185307179586D / this.segments;
         for (int a = 0; a < pos.length; a++) {
-            pos[a] = rotateAround(baseRot, this.normal, rotAngle * a).func_178787_e(this.origin);
+            pos[a] = rotateAround(baseRot, this.normal, rotAngle * a).add(this.origin);
         }
         return pos;
     }

@@ -1,10 +1,6 @@
 package com.github.nekomeowww.customdrones.api.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
 import net.minecraft.util.math.Vec3d;
 import com.github.nekomeowww.customdrones.api.helpers.VecHelper;
@@ -34,12 +30,12 @@ public class CMTriangleMountain
             Vec3d topMid = VecHelper.getMidList(topLayer);
             if (cap != CapType.BOTTOM)
             {
-                this.topCap = new CMPolygon((Vec3d[])topLayer.toArray(new Vec3d[0]), null, topMid.func_178788_d(bottomMid).func_72432_b());
+                this.topCap = new CMPolygon((Vec3d[])topLayer.toArray(new Vec3d[0]), null, topMid.subtract(bottomMid).normalize());
                 addChild(this.topCap);
             }
             if (cap != CapType.TOP)
             {
-                this.bottomCap = new CMPolygon(VecHelper.reverse((Vec3d[])bottomLayer.toArray(new Vec3d[0])), null, bottomMid.func_178788_d(topMid).func_72432_b());
+                this.bottomCap = new CMPolygon(VecHelper.reverse((Vec3d[])bottomLayer.toArray(new Vec3d[0])), null, bottomMid.subtract(topMid).normalize());
                 addChild(this.bottomCap);
             }
         }

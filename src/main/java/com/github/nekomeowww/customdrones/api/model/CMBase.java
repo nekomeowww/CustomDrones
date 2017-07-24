@@ -15,7 +15,7 @@ import com.github.nekomeowww.customdrones.api.helpers.VecHelper;
 public class CMBase
         extends VecHelper
 {
-    public static Minecraft mc = ;
+    public static Minecraft mc = null;
     public static boolean USEGLSM = true;
     public static boolean USECOLORSPRITE = true;
     public static final int COLORWIDTH = 24;
@@ -193,17 +193,17 @@ public class CMBase
         enableBlend(true);
         blendFunc(770, 771);
         applyColorOrTexture(this.texture, this.color);
-        translate(this.localTranslate.field_72450_a, this.localTranslate.field_72448_b, this.localTranslate.field_72449_c);
-        scale(this.localScale.field_72450_a, this.localScale.field_72448_b, this.localScale.field_72449_c);
+        translate(this.localTranslate.xCoord, this.localTranslate.yCoord, this.localTranslate.zCoord);
+        scale(this.localScale.xCoord, this.localScale.yCoord, this.localScale.zCoord);
         if (!this.centerRots.isEmpty())
         {
-            translate(this.localCenter.field_72450_a, this.localCenter.field_72448_b, this.localCenter.field_72449_c);
+            translate(this.localCenter.xCoord, this.localCenter.yCoord, this.localCenter.zCoord);
             for (int a = this.centerRots.size() - 1; a >= 0; a--)
             {
                 RotateVec rot = (RotateVec)this.centerRots.get(a);
-                rotate(rot.rotation, rot.vec.field_72450_a, rot.vec.field_72448_b, rot.vec.field_72449_c);
+                rotate(rot.rotation, rot.vec.xCoord, rot.vec.yCoord, rot.vec.zCoord);
             }
-            translate(-this.localCenter.field_72450_a, -this.localCenter.field_72448_b, -this.localCenter.field_72449_c);
+            translate(-this.localCenter.xCoord, -this.localCenter.yCoord, -this.localCenter.zCoord);
         }
         if ((this.visible == 2) || (this.visible == 3)) {
             render();
@@ -244,13 +244,13 @@ public class CMBase
     public static void bindTexture(ResourceLocation location)
     {
         if (mc == null) {
-            mc = Minecraft.func_71410_x();
+            mc = Minecraft.getMinecraft();
         }
         if ((mc != null) && (location != null))
         {
-            TextureManager texturemanager = mc.field_71446_o;
+            TextureManager texturemanager = mc.renderEngine;
             if (texturemanager != null) {
-                texturemanager.func_110577_a(location);
+                texturemanager.bindTexture(location);
             }
         }
     }
@@ -263,7 +263,7 @@ public class CMBase
     public static void push()
     {
         if (USEGLSM) {
-            GlStateManager.func_179094_E();
+            GlStateManager.pushMatrix();
         } else {
             GL11.glPushMatrix();
         }
@@ -272,7 +272,7 @@ public class CMBase
     public static void pop()
     {
         if (USEGLSM) {
-            GlStateManager.func_179121_F();
+            GlStateManager.popMatrix();
         } else {
             GL11.glPopMatrix();
         }
@@ -296,7 +296,7 @@ public class CMBase
         }
         else if (USEGLSM)
         {
-            GlStateManager.func_179131_c((float)r, (float)g, (float)b, (float)a);
+            GlStateManager.color((float)r, (float)g, (float)b, (float)a);
         }
         else
         {
@@ -312,7 +312,7 @@ public class CMBase
     public static void clearColor(double r, double g, double b, double a)
     {
         if (USEGLSM) {
-            GlStateManager.func_179082_a((float)r, (float)g, (float)b, (float)a);
+            GlStateManager.clearColor((float)r, (float)g, (float)b, (float)a);
         } else {
             GL11.glClearColor((float)r, (float)g, (float)b, (float)a);
         }
@@ -323,13 +323,13 @@ public class CMBase
         if (enable)
         {
             if (USEGLSM) {
-                GlStateManager.func_179108_z();
+                GlStateManager.enableNormalize();
             } else {
                 GL11.glEnable(2977);
             }
         }
         else if (USEGLSM) {
-            GlStateManager.func_179133_A();
+            GlStateManager.disableNormalize();
         } else {
             GL11.glDisable(2977);
         }
@@ -340,13 +340,13 @@ public class CMBase
         if (enable)
         {
             if (USEGLSM) {
-                GlStateManager.func_179145_e();
+                GlStateManager.enableLighting();
             } else {
                 GL11.glEnable(2896);
             }
         }
         else if (USEGLSM) {
-            GlStateManager.func_179140_f();
+            GlStateManager.disableLighting();
         } else {
             GL11.glDisable(2896);
         }
@@ -357,13 +357,13 @@ public class CMBase
         if (enable)
         {
             if (USEGLSM) {
-                GlStateManager.func_179127_m();
+                GlStateManager.enableFog();
             } else {
                 GL11.glEnable(2912);
             }
         }
         else if (USEGLSM) {
-            GlStateManager.func_179106_n();
+            GlStateManager.disableFog();
         } else {
             GL11.glDisable(2912);
         }
@@ -374,7 +374,7 @@ public class CMBase
         if ((enable) || ((USECOLORSPRITE) && (!enable)))
         {
             if (USEGLSM) {
-                GlStateManager.func_179098_w();
+                GlStateManager.enableTexture2D();
             } else {
                 GL11.glEnable(3553);
             }
@@ -384,7 +384,7 @@ public class CMBase
         }
         else if (USEGLSM)
         {
-            GlStateManager.func_179090_x();
+            GlStateManager.disableTexture2D();
         }
         else
         {
@@ -397,13 +397,13 @@ public class CMBase
         if (enable)
         {
             if (USEGLSM) {
-                GlStateManager.func_179142_g();
+                GlStateManager.enableColorMaterial();
             } else {
                 GL11.glEnable(2903);
             }
         }
         else if (USEGLSM) {
-            GlStateManager.func_179119_h();
+            GlStateManager.disableColorMaterial();
         } else {
             GL11.glDisable(2903);
         }
@@ -414,13 +414,13 @@ public class CMBase
         if (enable)
         {
             if (USEGLSM) {
-                GlStateManager.func_179141_d();
+                GlStateManager.enableAlpha();
             } else {
                 GL11.glEnable(3008);
             }
         }
         else if (USEGLSM) {
-            GlStateManager.func_179118_c();
+            GlStateManager.disableAlpha();
         } else {
             GL11.glDisable(3008);
         }
@@ -431,13 +431,13 @@ public class CMBase
         if (enable)
         {
             if (USEGLSM) {
-                GlStateManager.func_179147_l();
+                GlStateManager.enableBlend();
             } else {
                 GL11.glEnable(3042);
             }
         }
         else if (USEGLSM) {
-            GlStateManager.func_179084_k();
+            GlStateManager.disableBlend();
         } else {
             GL11.glDisable(3042);
         }
@@ -448,13 +448,13 @@ public class CMBase
         if (enable)
         {
             if (USEGLSM) {
-                GlStateManager.func_179089_o();
+                GlStateManager.enableCull();
             } else {
                 GL11.glEnable(2884);
             }
         }
         else if (USEGLSM) {
-            GlStateManager.func_179129_p();
+            GlStateManager.disableCull();
         } else {
             GL11.glDisable(2884);
         }
@@ -463,7 +463,7 @@ public class CMBase
     public static void blendFunc(int i1, int i2)
     {
         if (USEGLSM) {
-            GlStateManager.func_179112_b(i1, i2);
+            GlStateManager.blendFunc(i1, i2);
         } else {
             GL11.glBlendFunc(i1, i2);
         }
@@ -472,7 +472,7 @@ public class CMBase
     public static void translate(double x, double y, double z)
     {
         if (USEGLSM) {
-            GlStateManager.func_179137_b(x, y, z);
+            GlStateManager.translate(x, y, z);
         } else {
             GL11.glTranslated(x, y, z);
         }
@@ -481,7 +481,7 @@ public class CMBase
     public static void scale(double x, double y, double z)
     {
         if (USEGLSM) {
-            GlStateManager.func_179139_a(x, y, z);
+            GlStateManager.scale(x, y, z);
         } else {
             GL11.glScaled(x, y, z);
         }
@@ -490,7 +490,7 @@ public class CMBase
     public static void rotate(double angle, double x, double y, double z)
     {
         if (USEGLSM) {
-            GlStateManager.func_179114_b((float)angle, (float)x, (float)y, (float)z);
+            GlStateManager.rotate((float)angle, (float)x, (float)y, (float)z);
         } else {
             GL11.glRotated(angle, x, y, z);
         }
@@ -499,7 +499,7 @@ public class CMBase
     public static void lineWidth(double w)
     {
         if (USEGLSM) {
-            GlStateManager.func_187441_d((float)w);
+            GlStateManager.glLineWidth((float)w);
         } else {
             GL11.glLineWidth((float)w);
         }
@@ -508,7 +508,7 @@ public class CMBase
     public static void begin(int mode)
     {
         if (USEGLSM) {
-            GlStateManager.func_187447_r(mode);
+            GlStateManager.glBegin(mode);
         } else {
             GL11.glBegin(mode);
         }
@@ -517,7 +517,7 @@ public class CMBase
     public static void enable(int enable)
     {
         if (USEGLSM) {
-            GlStateManager.func_187410_q(enable);
+            GlStateManager.glEnableClientState(enable);
         } else {
             GL11.glEnable(enable);
         }
@@ -529,7 +529,7 @@ public class CMBase
             texCoord(u, v);
         }
         if (USEGLSM) {
-            GlStateManager.func_187435_e((float)x, (float)y, (float)z);
+            GlStateManager.glVertex3f((float)x, (float)y, (float)z);
         } else {
             GL11.glVertex3d(x, y, z);
         }
@@ -538,7 +538,7 @@ public class CMBase
     public static void texCoord(double u, double v)
     {
         if (USEGLSM) {
-            GlStateManager.func_187426_b((float)u, (float)v);
+            GlStateManager.glTexCoord2f((float)u, (float)v);
         } else {
             GL11.glTexCoord2d(u, v);
         }
@@ -547,7 +547,7 @@ public class CMBase
     public static void normal(double x, double y, double z)
     {
         if (USEGLSM) {
-            GlStateManager.func_187432_a((float)x, (float)y, (float)z);
+            GlStateManager.glNormal3f((float)x, (float)y, (float)z);
         } else {
             GL11.glNormal3d(x, y, z);
         }
@@ -556,7 +556,7 @@ public class CMBase
     public static void end()
     {
         if (USEGLSM) {
-            GlStateManager.func_187437_J();
+            GlStateManager.glEnd();
         } else {
             GL11.glEnd();
         }
