@@ -1,4 +1,4 @@
-package com.github.nekomeowww.customdrones.api.geometry
+package com.github.nekomeowww.customdrones.api.geometry;
 
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
@@ -13,7 +13,7 @@ public class Plane3d
     {
         this.aPoint = p;
         this.normal = n;
-        this.normalNorm = this.normal.func_72432_b();
+        this.normalNorm = this.normal.normalize();
     }
 
     public Vec3d intersectInAABB(Line3d line, AxisAlignedBB aabb)
@@ -21,23 +21,23 @@ public class Plane3d
         Vec3d vec = intersect(line);
         if (vec != null)
         {
-            if (aabb.func_72318_a(vec)) return vec;
+            if (aabb.isVecInside(vec)) return vec;
         }
         return null;
     }
 
     public Vec3d intersect(Line3d line)
     {
-        if (line.unitNorm.func_72430_b(this.normal) == 0.0D) return null;
-        Vec3d wVec = line.aPoint.func_178788_d(this.aPoint);
-        double unitScale = -this.normalNorm.func_72430_b(wVec) / this.normalNorm.func_72430_b(line.unitNorm);
-        return line.aPoint.func_178787_e(line.unitNorm.func_186678_a(unitScale));
+        if (line.unitNorm.dotProduct(this.normal) == 0.0D) return null;
+        Vec3d wVec = line.aPoint.subtract(this.aPoint);
+        double unitScale = -this.normalNorm.dotProduct(wVec) / this.normalNorm.dotProduct(line.unitNorm);
+        return line.aPoint.add(line.unitNorm.scale(unitScale));
     }
 
 
     public Vec3d getAVecOnPlane()
     {
-        Vec3d secondVector = this.normalNorm.field_72448_b == 1.0D ? this.normalNorm.func_178789_a(1.5707964F) : this.normalNorm.func_178785_b(1.5707964F);
-        return williamle.drones.api.helpers.VecHelper.getPerpendicularVec(this.normalNorm, secondVector);
+        Vec3d secondVector = this.normalNorm.yCoord == 1.0D ? this.normalNorm.rotatePitch(1.5707964F) : this.normalNorm.rotateYaw(1.5707964F);
+        return com.github.nekomeowww.customdrones.api.helpers.VecHelper.getPerpendicularVec(this.normalNorm, secondVector);
     }
 }

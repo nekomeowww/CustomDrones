@@ -10,7 +10,7 @@ public class Segment3d
 
     public Segment3d(Vec3d vec1, Vec3d vec2)
     {
-        super(vec1, vec2.func_178788_d(vec1));
+        super(vec1, vec2.subtract(vec1));
         this.bPoint = vec2;
     }
 
@@ -18,9 +18,9 @@ public class Segment3d
     {
         Random rnd = new Random();
         double rndRate = rnd.nextDouble();
-        double x = (this.bPoint.field_72450_a - this.aPoint.field_72450_a) * rndRate + this.aPoint.field_72450_a;
-        double y = (this.bPoint.field_72448_b - this.aPoint.field_72448_b) * rndRate + this.aPoint.field_72448_b;
-        double z = (this.bPoint.field_72449_c - this.aPoint.field_72449_c) * rndRate + this.aPoint.field_72449_c;
+        double x = (this.bPoint.xCoord - this.aPoint.xCoord) * rndRate + this.aPoint.xCoord;
+        double y = (this.bPoint.yCoord - this.aPoint.yCoord) * rndRate + this.aPoint.yCoord;
+        double z = (this.bPoint.zCoord - this.aPoint.zCoord) * rndRate + this.aPoint.zCoord;
         Vec3d vec = new Vec3d(x, y, z);
         return vec;
     }
@@ -59,7 +59,7 @@ public class Segment3d
         if ((vec.equals(this.aPoint)) || (vec.equals(this.bPoint))) return true;
         if (inBoundBox(vec))
         {
-            return vec.func_178788_d(this.aPoint).func_72431_c(this.unit).func_72433_c() < 1.0E-18D;
+            return vec.subtract(this.aPoint).crossProduct(this.unit).lengthVector() < 1.0E-18D;
         }
         return false;
     }
@@ -67,13 +67,13 @@ public class Segment3d
     public boolean inBoundBox(Vec3d vec)
     {
         if (vec == null) return false;
-        double xmin = Math.min(this.aPoint.field_72450_a, this.bPoint.field_72450_a);
-        double xmax = Math.max(this.aPoint.field_72450_a, this.bPoint.field_72450_a);
-        double ymin = Math.min(this.aPoint.field_72448_b, this.bPoint.field_72448_b);
-        double ymax = Math.max(this.aPoint.field_72448_b, this.bPoint.field_72448_b);
-        double zmin = Math.min(this.aPoint.field_72449_c, this.bPoint.field_72449_c);
-        double zmax = Math.max(this.aPoint.field_72449_c, this.bPoint.field_72449_c);
-        return (vec.field_72450_a >= xmin) && (vec.field_72450_a <= xmax) && (vec.field_72448_b >= ymin) && (vec.field_72448_b <= ymax) && (vec.field_72449_c >= zmin) && (vec.field_72449_c <= zmax);
+        double xmin = Math.min(this.aPoint.xCoord, this.bPoint.xCoord);
+        double xmax = Math.max(this.aPoint.xCoord, this.bPoint.xCoord);
+        double ymin = Math.min(this.aPoint.yCoord, this.bPoint.yCoord);
+        double ymax = Math.max(this.aPoint.yCoord, this.bPoint.yCoord);
+        double zmin = Math.min(this.aPoint.zCoord, this.bPoint.zCoord);
+        double zmax = Math.max(this.aPoint.zCoord, this.bPoint.zCoord);
+        return (vec.xCoord >= xmin) && (vec.xCoord <= xmax) && (vec.yCoord >= ymin) && (vec.yCoord <= ymax) && (vec.zCoord >= zmin) && (vec.zCoord <= zmax);
     }
 
 

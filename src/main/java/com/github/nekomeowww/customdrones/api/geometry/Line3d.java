@@ -11,42 +11,42 @@ public class Line3d
     public Line3d(Vec3d point, Vec3d vec)
     {
         this.unit = vec;
-        this.unitNorm = vec.func_72432_b();
+        this.unitNorm = vec.normalize();
         this.aPoint = point;
     }
 
     public Vec3d getPointFromX(double x)
     {
-        double y = this.aPoint.field_72448_b + (x - this.aPoint.field_72450_a) * this.unit.field_72448_b / this.unit.field_72450_a;
-        double z = this.aPoint.field_72449_c + (x - this.aPoint.field_72450_a) * this.unit.field_72449_c / this.unit.field_72450_a;
+        double y = this.aPoint.yCoord + (x - this.aPoint.xCoord) * this.unit.yCoord / this.unit.xCoord;
+        double z = this.aPoint.zCoord + (x - this.aPoint.xCoord) * this.unit.zCoord / this.unit.xCoord;
         return new Vec3d(x, y, z);
     }
 
     public Vec3d getPointFromY(double y)
     {
-        double x = this.aPoint.field_72450_a + (y - this.aPoint.field_72448_b) * this.unit.field_72450_a / this.unit.field_72448_b;
-        double z = this.aPoint.field_72449_c + (y - this.aPoint.field_72448_b) * this.unit.field_72449_c / this.unit.field_72448_b;
+        double x = this.aPoint.xCoord + (y - this.aPoint.yCoord) * this.unit.xCoord / this.unit.yCoord;
+        double z = this.aPoint.zCoord + (y - this.aPoint.yCoord) * this.unit.zCoord / this.unit.yCoord;
         return new Vec3d(x, y, z);
     }
 
     public Vec3d getPointFromZ(double z)
     {
-        double x = this.aPoint.field_72450_a + (z - this.aPoint.field_72449_c) * this.unit.field_72450_a / this.unit.field_72449_c;
-        double y = this.aPoint.field_72448_b + (z - this.aPoint.field_72449_c) * this.unit.field_72448_b / this.unit.field_72449_c;
+        double x = this.aPoint.xCoord + (z - this.aPoint.zCoord) * this.unit.xCoord / this.unit.zCoord;
+        double y = this.aPoint.yCoord + (z - this.aPoint.zCoord) * this.unit.yCoord / this.unit.zCoord;
         return new Vec3d(x, y, z);
     }
 
     public Vec3d intersect(Line3d line)
     {
-        if (this.unit.func_72431_c(line.unit).func_72433_c() == 0.0D) return null;
-        Vec3d leftSide = this.unit.func_72431_c(line.unit);
-        Vec3d rightSide = line.aPoint.func_178788_d(this.aPoint).func_72431_c(line.unit);
-        if (Double.compare(leftSide.func_72431_c(rightSide).func_72433_c(), 0.0D) == 0)
+        if (this.unit.crossProduct(line.unit).lengthVector() == 0.0D) return null;
+        Vec3d leftSide = this.unit.crossProduct(line.unit);
+        Vec3d rightSide = line.aPoint.subtract(this.aPoint).crossProduct(line.unit);
+        if (Double.compare(leftSide.crossProduct(rightSide).lengthVector(), 0.0D) == 0)
         {
-            double a = leftSide.field_72449_c != 0.0D ? rightSide.field_72449_c / leftSide.field_72449_c : leftSide.field_72448_b != 0.0D ? rightSide.field_72448_b / leftSide.field_72448_b : leftSide.field_72450_a != 0.0D ? rightSide.field_72450_a / leftSide.field_72450_a : 0.0D;
+            double a = leftSide.zCoord != 0.0D ? rightSide.zCoord / leftSide.zCoord : leftSide.yCoord != 0.0D ? rightSide.yCoord / leftSide.yCoord : leftSide.xCoord != 0.0D ? rightSide.xCoord / leftSide.xCoord : 0.0D;
 
 
-            return this.aPoint.func_178787_e(williamle.drones.api.helpers.VecHelper.scale(this.unit, a));
+            return this.aPoint.add(com.github.nekomeowww.customdrones.api.helpers.VecHelper.scale(this.unit, a));
         }
         return null;
     }
