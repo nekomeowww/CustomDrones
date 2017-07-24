@@ -17,15 +17,15 @@ public class DroneAITargetPlayer
         this.range = range;
     }
 
-    public boolean func_75250_a()
+    public boolean shouldExecute()
     {
         return (this.drone.hostile) && (this.drone.getDroneAttackTarget() == null);
     }
 
-    public void func_75246_d()
+    public void updateTask()
     {
-        super.func_75246_d();
-        EntityPlayer p = this.drone.field_70170_p.func_184136_b(this.drone, this.range);
+        super.updateTask();
+        EntityPlayer p = this.drone.world.getNearestPlayerNotCreative(this.drone, this.range);
         if (p != null) {
             this.drone.setDroneAttackTarget(p, true);
         }
