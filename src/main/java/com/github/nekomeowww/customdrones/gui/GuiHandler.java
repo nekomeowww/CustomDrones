@@ -19,7 +19,7 @@ public class GuiHandler
                 if (d != null)
                 {
                     d.droneInfo.updateDroneInfoToClient(player);
-                    return new ContainerDrone(player.field_71071_by, d.droneInfo.inventory);
+                    return new ContainerDrone(player.inventory, d.droneInfo.inventory);
                 }
             }
             else if (ID == 2)
@@ -32,7 +32,7 @@ public class GuiHandler
             else
             {
                 if (ID == 3) {
-                    return new ContainerCrafter(player.field_71071_by);
+                    return new ContainerCrafter(player.inventory);
                 }
                 if (ID == 4) {
                     return new ContainerNothing();

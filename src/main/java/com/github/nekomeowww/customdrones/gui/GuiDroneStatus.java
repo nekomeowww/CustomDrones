@@ -32,13 +32,13 @@ public class GuiDroneStatus
         this.drone = d;
     }
 
-    public void func_73866_w_()
+    public void initGui()
     {
-        super.func_73866_w_();
-        this.field_146292_n.add(new GuiButton(0, this.field_146294_l / 2 - 90, this.field_146295_m / 2 - 115, 90, 20, "Flyer screen"));
-        GuiButton b = new GuiButton(1, this.field_146294_l / 2 - 0, this.field_146295_m / 2 - 115, 90, 20, "Remote screen");
-        b.field_146124_l = false;
-        this.field_146292_n.add(b);
+        super.initGui();
+        this.buttonList.add(new GuiButton(0, this.width / 2 - 90, this.height / 2 - 115, 90, 20, "Flyer screen"));
+        GuiButton b = new GuiButton(1, this.width / 2 - 0, this.height / 2 - 115, 90, 20, "Remote screen");
+        b.enabled = false;
+        this.buttonList.add(b);
 
         int mms = this.drone.droneInfo.getMaxModSlots();
         for (int a = 0; a < mms; a++) {
@@ -46,47 +46,47 @@ public class GuiDroneStatus
         }
     }
 
-    protected void func_146284_a(GuiButton button)
+    protected void actionPerformed(GuiButton button)
             throws IOException
     {
-        if ((this.player == null) || (this.player.field_70128_L) || (this.player.func_184614_ca() == null))
+        if ((this.player == null) || (this.player.isDead) || (this.player.getHeldItemMainhand() == null))
         {
-            this.field_146297_k.func_147108_a(null);
+            this.mc.displayGuiScreen(null);
             return;
         }
-        super.func_146284_a(button);
-        if (button.field_146127_k == 0)
+        super.actionPerformed(button);
+        if (button.id == 0)
         {
-            EntityDrone drone = DronesMod.droneFlyer.getControllingDrone(this.player.field_70170_p, this.player.func_184614_ca());
+            EntityDrone drone = CustomDrones.droneFlyer.getControllingDrone(this.player.getEntityWorld(), this.player.getHeldItemMainhand());
             if (drone != null) {
-                this.player.openGui(DronesMod.instance, 0, this.player.field_70170_p, drone.droneInfo.id, 0, 0);
+                this.player.openGui(CustomDrones.instance, 0, this.player.getEntityWorld(), drone.droneInfo.id, 0, 0);
             }
         }
     }
 
-    public void func_73876_c()
+    public void updateScreen()
     {
-        super.func_73876_c();
+        super.updateScreen();
         if (this.selectedModGui != null) {
-            this.selectedModGui.func_73876_c();
+            this.selectedModGui.updateScreen();
         }
     }
 
-    public void func_146274_d()
+    public void handleMouseInput()
             throws IOException
     {
-        super.func_146274_d();
+        super.handleMouseInput();
         if (this.selectedModGui != null) {
-            this.selectedModGui.func_146274_d();
+            this.selectedModGui.handleMouseInput();
         }
     }
 
-    public void func_146282_l()
+    public void handleKeyboardInput()
             throws IOException
     {
-        super.func_146282_l();
+        super.handleKeyboardInput();
         if (this.selectedModGui != null) {
-            this.selectedModGui.func_146282_l();
+            this.selectedModGui.handleKeyboardInput();
         }
     }
 
@@ -95,60 +95,60 @@ public class GuiDroneStatus
         super.modClicked(slot, mX, mY, mB);
         if ((slot != null) && (slot.module != null) && (this.selectedModSlot != slot))
         {
-            ScaledResolution sr = new ScaledResolution(this.field_146297_k);
+            ScaledResolution sr = new ScaledResolution(this.mc);
             if (this.selectedModSlot != null) {
                 this.selectedModSlot.overlayColor = -1;
             }
             this.selectedModSlot = slot;
             this.selectedModGui = slot.module.getModuleGui(this);
             this.selectedModGui.modSlot = slot;
-            this.selectedModGui.func_73866_w_();
-            this.selectedModGui.func_146280_a(this.field_146297_k, sr.func_78326_a(), sr.func_78328_b());
+            this.selectedModGui.initGui();
+            this.selectedModGui.setWorldAndResolution(this.mc, sr.getScaledWidth(), sr.getScaledHeight());
             if (this.selectedModSlot != null) {
                 this.selectedModSlot.overlayColor = -2013265920;
             }
         }
     }
 
-    public void func_146280_a(Minecraft mc, int width, int height)
+    public void setWorldAndResolution(Minecraft mc, int width, int height)
     {
-        super.func_146280_a(mc, width, height);
+        super.setWorldAndResolution(mc, width, height);
         if (this.selectedModGui != null) {
-            this.selectedModGui.func_146280_a(mc, width, height);
+            this.selectedModGui.setWorldAndResolution(mc, width, height);
         }
     }
 
     public static ResourceLocation texture = new ResourceLocation("drones", "textures/guis/droneStatus.png");
 
-    public void func_146278_c(int tint) {}
+    public void drawBackground(int tint) {}
 
-    public void func_146276_q_() {}
+    public void drawDefaultBackground() {}
 
-    protected void func_146976_a(float partialTicks, int mouseX, int mouseY) {}
+    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {}
 
-    public void func_73863_a(int mouseX, int mouseY, float partialTicks)
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        ScaledResolution sr = new ScaledResolution(this.field_146297_k);
-        int sclW = sr.func_78326_a();
-        int sclH = sr.func_78328_b();
-        this.field_146297_k.func_110434_K().func_110577_a(texture);
-        func_146110_a(sclW / 2 - 150, sclH / 2 - 120, 0.0F, 0.0F, 300, 220, 300.0F, 220.0F);
+        ScaledResolution sr = new ScaledResolution(this.mc);
+        int sclW = sr.getScaledWidth();
+        int sclH = sr.getScaledHeight();
+        this.mc.getTextureManager().bindTexture(texture);
+        drawModalRectWithCustomSizedTexture(sclW / 2 - 150, sclH / 2 - 120, 0.0F, 0.0F, 300, 220, 300.0F, 220.0F);
 
         DroneInfo di = this.drone.droneInfo;
 
         String line1 = TextFormatting.BOLD + di.getDisplayName() + "\n";
         line1 = line1 + TextFormatting.AQUA + "Parts: " + DroneInfo.greekNumber[di.casing] + " , " + DroneInfo.greekNumber[di.chip] + " , " + DroneInfo.greekNumber[di.core] + " , " + DroneInfo.greekNumber[di.engine] + "\n";
 
-        line1 = line1 + TextFormatting.LIGHT_PURPLE + "Pos: " + Math.round(this.drone.field_70165_t) + " , " + Math.round(this.drone.field_70163_u) + " , " + Math.round(this.drone.field_70161_v) + "\n";
+        line1 = line1 + TextFormatting.LIGHT_PURPLE + "Pos: " + Math.round(this.drone.posX) + " , " + Math.round(this.drone.posY) + " , " + Math.round(this.drone.posZ) + "\n";
         line1 = line1 + TextFormatting.GREEN + "Battery: " + di.getBattery(true) + "\n";
         line1 = line1 + TextFormatting.YELLOW + "EFT: " + di.getEstimatedFlyTimeString(this.drone);
-        List<String> splitLine1 = this.field_146289_q.func_78271_c(line1, 115);
+        List<String> splitLine1 = this.fontRendererObj.listFormattedStringToWidth(line1, 115);
         for (int a = 0; a < splitLine1.size(); a++) {
-            this.field_146289_q.func_78276_b((String)splitLine1.get(a), sclW / 2 - 140, sclH / 2 - 88 + a * 10, 16777215);
+            this.fontRendererObj.drawString((String)splitLine1.get(a), sclW / 2 - 140, sclH / 2 - 88 + a * 10, 16777215);
         }
         if (this.selectedModGui != null) {
-            this.selectedModGui.func_73863_a(mouseX, mouseY, partialTicks);
+            this.selectedModGui.drawScreen(mouseX, mouseY, partialTicks);
         }
-        super.func_73863_a(mouseX, mouseY, partialTicks);
+        super.drawScreen(mouseX, mouseY, partialTicks);
     }
 }

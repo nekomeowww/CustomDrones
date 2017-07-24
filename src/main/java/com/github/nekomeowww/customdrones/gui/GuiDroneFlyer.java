@@ -39,58 +39,58 @@ public class GuiDroneFlyer
     public GuiDroneFlyer(World w, EntityPlayer p)
     {
         this.player = p;
-        this.world = this.player.field_70170_p;
+        this.world = this.player.getEntityWorld();
     }
 
-    public boolean func_73868_f()
+    public boolean doesGuiPauseGame()
     {
         return false;
     }
 
-    public void func_73866_w_()
+    public void initGui()
     {
-        super.func_73866_w_();
-        EntityDrone drone = DronesMod.droneFlyer.getControllingDrone(this.world, this.player.func_184614_ca());
+        super.initGui();
+        EntityDrone drone = CustomDrones.droneFlyer.getControllingDrone(this.world, this.player.getHeldItemMainhand());
 
-        this.textNewFrequency = new GuiTextField(0, this.field_146289_q, this.field_146294_l / 2 - 90, this.field_146295_m / 2 - 88, 44, 20);
-        this.textNewFrequency.func_146180_a(String.valueOf(DronesMod.droneFlyer.getControllerFreq(this.player.func_184614_ca())));
-        this.textNewFrequency.func_146195_b(true);
-        this.textNewFrequency.func_146203_f(6);
-        this.field_146292_n.add(new GuiButton(1, this.field_146294_l / 2 - 45, this.field_146295_m / 2 - 88, 55, 20, "Set freq"));
-        this.field_146292_n.add(new GuiButton(2, this.field_146294_l / 2 + 16, this.field_146295_m / 2 - 88, 75, 20, "Switch mode"));
+        this.textNewFrequency = new GuiTextField(0, this.fontRendererObj, this.width / 2 - 90, this.height / 2 - 88, 44, 20);
+        this.textNewFrequency.setText(String.valueOf(CustomDrones.droneFlyer.getControllerFreq(this.player.getHeldItemMainhand())));
+        this.textNewFrequency.setFocused(true);
+        this.textNewFrequency.setMaxStringLength(6);
+        this.buttonList.add(new GuiButton(1, this.width / 2 - 45, this.height / 2 - 88, 55, 20, "Set freq"));
+        this.buttonList.add(new GuiButton(2, this.width / 2 + 16, this.height / 2 - 88, 75, 20, "Switch mode"));
 
-        this.field_146292_n.add(new GuiButton(3, this.field_146294_l / 2 - 90, this.field_146295_m / 2 + 68, 75, 20, "Unbind drone"));
-        this.field_146292_n.add(new GuiButton(4, this.field_146294_l / 2 - 10, this.field_146295_m / 2 + 68, 100, 20, "Switch drone mode"));
+        this.buttonList.add(new GuiButton(3, this.width / 2 - 90, this.height / 2 + 68, 75, 20, "Unbind drone"));
+        this.buttonList.add(new GuiButton(4, this.width / 2 - 10, this.height / 2 + 68, 100, 20, "Switch drone mode"));
 
-        this.field_146292_n.add(this.recordButton = new GuiButton(5, this.field_146294_l / 2 - 10, this.field_146295_m / 2 + 90, 100, 20, "Record path"));
+        this.buttonList.add(this.recordButton = new GuiButton(5, this.width / 2 - 10, this.height / 2 + 90, 100, 20, "Record path"));
 
-        this.field_146292_n.add(this.statusScreenButton = new GuiButton(6, this.field_146294_l / 2 + 0, this.field_146295_m / 2 - 110, 90, 20, "Remote screen"));
+        this.buttonList.add(this.statusScreenButton = new GuiButton(6, this.width / 2 + 0, this.height / 2 - 110, 90, 20, "Remote screen"));
 
-        this.field_146292_n.add(
-                this.engineLevelSlider = new GuiSlider(7, this.field_146294_l / 2 - 90, this.field_146295_m / 2 + 90, 74, 20, "Engine ", "", 0.0D, 1.0D, drone != null ? Math.round(drone.droneInfo.getEngineLevel() * 100.0D) / 100.0D : 1.0D, true, true));
+        this.buttonList.add(
+                this.engineLevelSlider = new GuiSlider(7, this.width / 2 - 90, this.height / 2 + 90, 74, 20, "Engine ", "", 0.0D, 1.0D, drone != null ? Math.round(drone.droneInfo.getEngineLevel() * 100.0D) / 100.0D : 1.0D, true, true));
         this.engineLevelSlider.precision = 2;
 
-        GuiButton b = new GuiButton(8, this.field_146294_l / 2 - 90, this.field_146295_m / 2 - 110, 90, 20, "Flyer screen");
-        b.field_146124_l = false;
-        this.field_146292_n.add(b);
+        GuiButton b = new GuiButton(8, this.width / 2 - 90, this.height / 2 - 110, 90, 20, "Flyer screen");
+        b.enabled = false;
+        this.buttonList.add(b);
     }
 
-    protected void func_73869_a(char typedChar, int keyCode)
+    protected void keyTyped(char typedChar, int keyCode)
             throws IOException
     {
-        super.func_73869_a(typedChar, keyCode);
-        if (this.textNewFrequency.func_146206_l()) {
+        super.keyTyped(typedChar, keyCode);
+        if (this.textNewFrequency.isFocused()) {
             if ((Character.isDigit(typedChar)) || (keyCode == 14) || (keyCode == 211)) {
-                this.textNewFrequency.func_146201_a(typedChar, keyCode);
+                this.textNewFrequency.textboxKeyTyped(typedChar, keyCode);
             }
         }
     }
 
-    protected void func_73864_a(int mouseX, int mouseY, int mouseButton)
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
             throws IOException
     {
-        super.func_73864_a(mouseX, mouseY, mouseButton);
-        EntityDrone drone = DronesMod.droneFlyer.getControllingDrone(this.world, this.player.func_184614_ca());
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        EntityDrone drone = CustomDrones.droneFlyer.getControllingDrone(this.world, this.player.getHeldItemMainhand());
         if (drone != null) {
             if (drone.droneInfo.getEngineLevel() != this.engineLevelSlider.getValue()) {
                 updateEngineLevel(drone);
@@ -98,10 +98,10 @@ public class GuiDroneFlyer
         }
     }
 
-    protected void func_146286_b(int mouseX, int mouseY, int state)
+    protected void mouseReleased(int mouseX, int mouseY, int state)
     {
-        super.func_146286_b(mouseX, mouseY, state);
-        EntityDrone drone = DronesMod.droneFlyer.getControllingDrone(this.world, this.player.func_184614_ca());
+        super.mouseReleased(mouseX, mouseY, state);
+        EntityDrone drone = CustomDrones.droneFlyer.getControllingDrone(this.world, this.player.getHeldItemMainhand());
         if (drone != null) {
             if (drone.droneInfo.getEngineLevel() != this.engineLevelSlider.getValue()) {
                 updateEngineLevel(drone);
@@ -114,21 +114,21 @@ public class GuiDroneFlyer
         PacketDispatcher.sendToServer(new PacketDroneSetEngineLevel(drone, this.engineLevelSlider.getValue()));
     }
 
-    protected void func_146284_a(GuiButton button)
+    protected void actionPerformed(GuiButton button)
             throws IOException
     {
-        if ((this.player == null) || (this.player.field_70128_L) || (this.player.func_184614_ca() == null))
+        if ((this.player == null) || (this.player.isDead) || (this.player.getHeldItemMainhand() == null))
         {
-            this.field_146297_k.func_147108_a(null);
+            this.mc.displayGuiScreen(null);
             return;
         }
-        super.func_146284_a(button);
+        super.actionPerformed(button);
 
-        int encode = button.field_146127_k == 1 ? Integer.valueOf(this.textNewFrequency.func_146179_b()).intValue() * -1 : button.field_146127_k;
+        int encode = button.id == 1 ? Integer.valueOf(this.textNewFrequency.getText()).intValue() * -1 : button.id;
         PacketDispatcher.sendToServer(new PacketDroneControllerChange(encode));
         if (button == this.recordButton)
         {
-            EntityDrone drone = DronesMod.droneFlyer.getControllingDrone(this.world, this.player.func_184614_ca());
+            EntityDrone drone = CustomDrones.droneFlyer.getControllingDrone(this.world, this.player.getHeldItemMainhand());
             if (drone != null)
             {
                 drone.recordingPath = new Path();
@@ -138,57 +138,57 @@ public class GuiDroneFlyer
 
             EntityHelper.addChat(this.player, 1, TextFormatting.BOLD + "Left click" + TextFormatting.RESET + " to add loop path.");
 
-            this.field_146297_k.func_147108_a(null);
+            this.mc.displayGuiScreen(null);
         }
         else if (button == this.statusScreenButton)
         {
-            EntityDrone drone = DronesMod.droneFlyer.getControllingDrone(this.world, this.player.func_184614_ca());
+            EntityDrone drone = CustomDrones.droneFlyer.getControllingDrone(this.world, this.player.getHeldItemMainhand());
             if (drone != null) {
-                this.player.openGui(DronesMod.instance, 2, this.world, drone.droneInfo.id, 0, 0);
+                this.player.openGui(CustomDrones.instance, 2, this.world, drone.droneInfo.id, 0, 0);
             }
         }
     }
 
-    public void func_73876_c()
+    public void updateScreen()
     {
-        super.func_73876_c();
-        if ((this.player == null) || (this.player.field_70128_L) || (this.player.func_184614_ca() == null))
+        super.updateScreen();
+        if ((this.player == null) || (this.player.isDead) || (this.player.getHeldItemMainhand() == null))
         {
-            this.field_146297_k.func_147108_a(null);
+            this.mc.displayGuiScreen(null);
             return;
         }
-        EntityDrone drone = DronesMod.droneFlyer.getControllingDrone(this.world, this.player.func_184614_ca());
+        EntityDrone drone = CustomDrones.droneFlyer.getControllingDrone(this.world, this.player.getHeldItemMainhand());
         if (drone != null)
         {
             int droneModeI = drone.getFlyingMode();
-            this.recordButton.field_146124_l = ((droneModeI == 3) || (droneModeI == 2));
-            this.statusScreenButton.field_146124_l = true;
+            this.recordButton.enabled = ((droneModeI == 3) || (droneModeI == 2));
+            this.statusScreenButton.enabled = true;
         }
         else
         {
-            this.recordButton.field_146124_l = false;
-            this.statusScreenButton.field_146124_l = false;
+            this.recordButton.enabled = false;
+            this.statusScreenButton.enabled = false;
         }
     }
 
     public static ResourceLocation texture = new ResourceLocation("drones", "textures/guis/droneFlyer.png");
 
-    public void func_73863_a(int mouseX, int mouseY, float partialTicks)
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        ScaledResolution sr = new ScaledResolution(this.field_146297_k);
-        int sclW = sr.func_78326_a();
-        int sclH = sr.func_78328_b();
-        this.field_146297_k.func_110434_K().func_110577_a(texture);
-        func_146110_a(sclW / 2 - 100, sclH / 2 - 115, 0.0F, 0.0F, 200, 230, 200.0F, 230.0F);
+        ScaledResolution sr = new ScaledResolution(this.mc);
+        int sclW = sr.getScaledWidth();
+        int sclH = sr.getScaledHeight();
+        this.mc.getTextureManager().bindTexture(texture);
+        drawModalRectWithCustomSizedTexture(sclW / 2 - 100, sclH / 2 - 115, 0.0F, 0.0F, 200, 230, 200.0F, 230.0F);
 
-        super.func_73863_a(mouseX, mouseY, partialTicks);
+        super.drawScreen(mouseX, mouseY, partialTicks);
 
-        this.textNewFrequency.func_146194_f();
+        this.textNewFrequency.drawTextBox();
 
-        ItemStack flyerIS = this.player.func_184614_ca();
-        int frequency = DronesMod.droneFlyer.getControllerFreq(flyerIS);
+        ItemStack flyerIS = this.player.getHeldItemMainhand();
+        int frequency = CustomDrones.droneFlyer.getControllerFreq(flyerIS);
         String frequencyS = TextFormatting.RESET + "Frequency: " + TextFormatting.BOLD + frequency + "GHz";
-        int flyModeI = DronesMod.droneFlyer.getFlyMode(flyerIS);
+        int flyModeI = CustomDrones.droneFlyer.getFlyMode(flyerIS);
         String flyMode = TextFormatting.RESET + "Controller mode: " + TextFormatting.BOLD;
         if (flyModeI == 0) {
             flyMode = flyMode + "off";
@@ -213,31 +213,31 @@ public class GuiDroneFlyer
         } else {
             flyModeDesc = flyModeDesc + "";
         }
-        func_73731_b(this.field_146289_q, frequencyS, sr.func_78326_a() / 2 - 85, sr.func_78328_b() / 2 - 62, 16777215);
-        func_73731_b(this.field_146289_q, flyMode, sr.func_78326_a() / 2 - 85, sr.func_78328_b() / 2 - 51, 16777215);
-        func_73731_b(this.field_146289_q, flyModeDesc, sr.func_78326_a() / 2 - 85, sr.func_78328_b() / 2 - 40, 16777215);
+        drawString(this.fontRendererObj, frequencyS, sr.getScaledWidth() / 2 - 85, sr.getScaledHeight() / 2 - 62, 16777215);
+        drawString(this.fontRendererObj, flyMode, sr.getScaledWidth() / 2 - 85, sr.getScaledHeight() / 2 - 51, 16777215);
+        drawString(this.fontRendererObj, flyModeDesc, sr.getScaledWidth() / 2 - 85, sr.getScaledHeight() / 2 - 40, 16777215);
 
-        func_73732_a(this.field_146289_q, TextFormatting.BOLD + "Controller switches", sr.func_78326_a() / 2, sr
-                .func_78328_b() / 2 - 17, 16777215);
-        func_73732_a(this.field_146289_q, TextFormatting.BOLD + "Drone switches", sr.func_78326_a() / 2, sr
-                .func_78328_b() / 2 + 9, 16777215);
+        drawCenteredString(this.fontRendererObj, TextFormatting.BOLD + "Controller switches", sr.getScaledWidth() / 2, sr
+                .getScaledHeight() / 2 - 17, 16777215);
+        drawCenteredString(this.fontRendererObj, TextFormatting.BOLD + "Drone switches", sr.getScaledWidth() / 2, sr
+                .getScaledHeight() / 2 + 9, 16777215);
 
-        EntityDrone drone = DronesMod.droneFlyer.getControllingDrone(this.world, flyerIS);
+        EntityDrone drone = CustomDrones.droneFlyer.getControllingDrone(this.world, flyerIS);
         String controllingDrone = "";
         if (drone == null) {
             controllingDrone = TextFormatting.RED + "Control not bound to drone";
         } else {
             controllingDrone = TextFormatting.RESET + "Controlling drone " + drone.droneInfo.getDisplayName();
         }
-        func_73731_b(this.field_146289_q, controllingDrone, sr.func_78326_a() / 2 - 85, sr.func_78328_b() / 2 + 28, 16777215);
+        drawString(this.fontRendererObj, controllingDrone, sr.getScaledWidth() / 2 - 85, sr.getScaledHeight() / 2 + 28, 16777215);
         if (drone != null)
         {
             BlockPos pos = new BlockPos(drone);
-            String posStr = "At [" + pos.func_177958_n() + " , " + pos.func_177956_o() + " , " + pos.func_177952_p() + "]";
-            posStr = posStr + " - " + Math.floor(drone.func_70032_d(this.player) * 10.0D) / 10.0D + "m away";
+            String posStr = "At [" + pos.getX() + " , " + pos.getY() + " , " + pos.getZ() + "]";
+            posStr = posStr + " - " + Math.floor(drone.getDistanceToEntity(this.player) * 10.0D) / 10.0D + "m away";
             String droneMode = "Drone mode: " + drone.getFlyingModeString();
-            func_73731_b(this.field_146289_q, posStr, sr.func_78326_a() / 2 - 85, sr.func_78328_b() / 2 + 39, 16777215);
-            func_73731_b(this.field_146289_q, droneMode, sr.func_78326_a() / 2 - 85, sr.func_78328_b() / 2 + 50, 16777215);
+            drawString(this.fontRendererObj, posStr, sr.getScaledWidth() / 2 - 85, sr.getScaledHeight() / 2 + 39, 16777215);
+            drawString(this.fontRendererObj, droneMode, sr.getScaledWidth() / 2 - 85, sr.getScaledHeight() / 2 + 50, 16777215);
         }
     }
 }

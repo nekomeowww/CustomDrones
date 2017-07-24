@@ -16,7 +16,7 @@ import com.github.nekomeowww.customdrones.entity.EntityDrone;
 
 public class SlotModule
 {
-    public static Minecraft mc = ;
+    public static Minecraft mc = null;
     public int id;
     public int posX;
     public int posY;
@@ -76,11 +76,11 @@ public class SlotModule
     public void drawModule(double x0, double y0, double x1, double y1)
     {
         if (mc == null) {
-            mc = Minecraft.func_71410_x();
+            mc = Minecraft.getMinecraft();
         }
         if (mc != null)
         {
-            mc.field_71446_o.func_110577_a((this.module == null ? Module.useless1 : this.module).texture);
+            mc.renderEngine.bindTexture((this.module == null ? Module.useless1 : this.module).texture);
             GL11.glPushMatrix();
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             GL11.glEnable(3553);
@@ -102,14 +102,14 @@ public class SlotModule
             if (this.overlayColor != -1)
             {
                 GL11.glPushMatrix();
-                GlStateManager.func_179131_c(1.0F, 1.0F, 1.0F, 1.0F);
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 drawRect(this.posX + marginX, this.posY + marginY, this.posX + this.sizeX - marginX, this.posY + this.sizeY - marginY, this.overlayColor);
                 GL11.glPopMatrix();
             }
             if (this.hovering)
             {
                 GL11.glPushMatrix();
-                GlStateManager.func_179131_c(1.0F, 1.0F, 1.0F, 1.0F);
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 drawRect(this.posX + marginX, this.posY + marginY, this.posX + this.sizeX - marginX, this.posY + this.sizeY - marginY, this.hoveringColor);
                 GL11.glPopMatrix();
             }
@@ -134,19 +134,19 @@ public class SlotModule
         float f = (color >> 16 & 0xFF) / 255.0F;
         float f1 = (color >> 8 & 0xFF) / 255.0F;
         float f2 = (color & 0xFF) / 255.0F;
-        Tessellator tessellator = Tessellator.func_178181_a();
-        VertexBuffer worldrenderer = tessellator.func_178180_c();
-        GlStateManager.func_179147_l();
-        GlStateManager.func_179090_x();
-        GlStateManager.func_179120_a(770, 771, 1, 0);
-        GlStateManager.func_179131_c(f, f1, f2, f3);
-        worldrenderer.func_181668_a(7, DefaultVertexFormats.field_181705_e);
-        worldrenderer.func_181662_b(left, bottom, 0.0D).func_181675_d();
-        worldrenderer.func_181662_b(right, bottom, 0.0D).func_181675_d();
-        worldrenderer.func_181662_b(right, top, 0.0D).func_181675_d();
-        worldrenderer.func_181662_b(left, top, 0.0D).func_181675_d();
-        tessellator.func_78381_a();
-        GlStateManager.func_179098_w();
-        GlStateManager.func_179084_k();
+        Tessellator tessellator = Tessellator.getInstance();
+        VertexBuffer worldrenderer = tessellator.getBuffer();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.color(f, f1, f2, f3);
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION);
+        worldrenderer.pos(left, bottom, 0.0D).endVertex();
+        worldrenderer.pos(right, bottom, 0.0D).endVertex();
+        worldrenderer.pos(right, top, 0.0D).endVertex();
+        worldrenderer.pos(left, top, 0.0D).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
     }
 }

@@ -45,28 +45,28 @@ public class GuiCrafter
 
     public GuiCrafter(EntityPlayer p)
     {
-        super(new ContainerCrafter(p.field_71071_by));
-        this.invp = p.field_71071_by;
+        super(new ContainerCrafter(p.inventory));
+        this.invp = p.inventory;
     }
 
-    public void func_73866_w_()
+    public void initGui()
     {
-        super.func_73866_w_();
-        this.field_146292_n.add(new GuiButton(1, this.field_146294_l / 2 + 77, this.field_146295_m / 2 - 10, 60, 20, "Craft"));
-        this.craftCount = new GuiTextField(0, this.field_146289_q, this.field_146294_l / 2 + 78, this.field_146295_m / 2 - 35, 58, 20);
-        this.craftCount.func_146195_b(true);
-        this.craftCount.func_146203_f(6);
-        this.craftCount.func_146180_a("0");
-        this.panelTypes = new Panel(this, this.field_146294_l / 2 - 133, this.field_146295_m / 2 - 82, 50, 95);
-        this.panelOutputs = new Panel(this, this.field_146294_l / 2 - 73, this.field_146295_m / 2 - 82, 70, 95);
-        this.panelRecipes = new Panel(this, this.field_146294_l / 2 + 7, this.field_146295_m / 2 - 82, 60, 95);
+        super.initGui();
+        this.buttonList.add(new GuiButton(1, this.width / 2 + 77, this.height / 2 - 10, 60, 20, "Craft"));
+        this.craftCount = new GuiTextField(0, this.fontRendererObj, this.width / 2 + 78, this.height / 2 - 35, 58, 20);
+        this.craftCount.setFocused(true);
+        this.craftCount.setMaxStringLength(6);
+        this.craftCount.setText("0");
+        this.panelTypes = new Panel(this, this.width / 2 - 133, this.height / 2 - 82, 50, 95);
+        this.panelOutputs = new Panel(this, this.width / 2 - 73, this.height / 2 - 82, 70, 95);
+        this.panelRecipes = new Panel(this, this.width / 2 + 7, this.height / 2 - 82, 60, 95);
         this.panels.add(this.panelTypes);
         this.panels.add(this.panelOutputs);
         this.panels.add(this.panelRecipes);
 
-        DronesMod.RecipeType[] rts = DronesMod.RecipeType.values();
-        for (DronesMod.RecipeType rt : rts) {
-            if (rt != DronesMod.RecipeType.None)
+        CustomDrones.RecipeType[] rts = CustomDrones.RecipeType.values();
+        for (CustomDrones.RecipeType rt : rts) {
+            if (rt != CustomDrones.RecipeType.None)
             {
                 PI pi = new PI(this.panelTypes);
                 pi.yw = 20.0D;
@@ -77,24 +77,24 @@ public class GuiCrafter
         }
     }
 
-    protected void func_73864_a(int mouseX, int mouseY, int mouseButton)
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
             throws IOException
     {
-        super.func_73864_a(mouseX, mouseY, mouseButton);
-        this.craftCount.func_146192_a(mouseX, mouseY, mouseButton);
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        this.craftCount.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
-    protected void func_73869_a(char typedChar, int keyCode)
+    protected void keyTyped(char typedChar, int keyCode)
             throws IOException
     {
-        super.func_73869_a(typedChar, keyCode);
-        if (this.craftCount.func_146206_l())
+        super.keyTyped(typedChar, keyCode);
+        if (this.craftCount.isFocused())
         {
             if ((Character.isDigit(typedChar)) || (keyCode == 14) || (keyCode == 211)) {
-                this.craftCount.func_146201_a(typedChar, keyCode);
+                this.craftCount.textboxKeyTyped(typedChar, keyCode);
             }
-            int i = this.craftCount.func_146179_b().isEmpty() ? 0 : Integer.parseInt(this.craftCount.func_146179_b());
-            this.craftCount.func_146180_a(Math.min(i, maxCanCraft()) + "");
+            int i = this.craftCount.getText().isEmpty() ? 0 : Integer.parseInt(this.craftCount.getText());
+            this.craftCount.setText(Math.min(i, maxCanCraft()) + "");
         }
     }
 
@@ -114,11 +114,11 @@ public class GuiCrafter
         return max;
     }
 
-    protected void func_146284_a(GuiButton button)
+    protected void actionPerformed(GuiButton button)
             throws IOException
     {
-        super.func_146284_a(button);
-        if (button.field_146127_k == 1)
+        super.actionPerformed(button);
+        if (button.id == 1)
         {
             craft();
             int max = Integer.MAX_VALUE;
@@ -132,29 +132,29 @@ public class GuiCrafter
                     max = Math.min(max, can);
                 }
             }
-            int i = this.craftCount.func_146179_b().isEmpty() ? 0 : Integer.parseInt(this.craftCount.func_146179_b());
-            this.craftCount.func_146180_a(Math.min(i, max) + "");
+            int i = this.craftCount.getText().isEmpty() ? 0 : Integer.parseInt(this.craftCount.getText());
+            this.craftCount.setText(Math.min(i, max) + "");
         }
     }
 
     public void craft()
     {
-        int count = Integer.parseInt(this.craftCount.func_146179_b());
+        int count = Integer.parseInt(this.craftCount.getText());
         PI selectedOutput = this.panelOutputs.getFirstSelectedItem();
         if ((count > 0) && (selectedOutput != null))
         {
-            ItemStack comeout = (selectedOutput instanceof PIItemStack) ? ((PIItemStack)selectedOutput).is.func_77946_l() : null;
+            ItemStack comeout = (selectedOutput instanceof PIItemStack) ? ((PIItemStack)selectedOutput).is.copy() : null;
             if (comeout != null)
             {
-                comeout.field_77994_a *= count;
+                comeout.stackSize *= count;
                 List<ItemStack> requirements = new ArrayList();
                 for (Iterator localIterator = this.panelRecipes.items.iterator(); localIterator.hasNext();)
                 {
                     pi = (PI)localIterator.next();
                     if ((pi instanceof PIItemStackRequirement))
                     {
-                        ItemStack isr = ((PIItemStackRequirement)pi).is.func_77946_l();
-                        isr.field_77994_a = (((PIItemStackRequirement)pi).require * count);
+                        ItemStack isr = ((PIItemStackRequirement)pi).is.copy();
+                        isr.stackSize = (((PIItemStackRequirement)pi).require * count);
                         requirements.add(isr);
                     }
                 }
@@ -162,14 +162,14 @@ public class GuiCrafter
                 Object decreaseIndexes = new ArrayList();
                 for (ItemStack decrease : requirements)
                 {
-                    int decreaseLeft = decrease.field_77994_a;
-                    for (int a = 0; a < this.invp.func_70302_i_(); a++)
+                    int decreaseLeft = decrease.stackSize;
+                    for (int a = 0; a < this.invp.getSizeInventory(); a++)
                     {
-                        ItemStack invItemStack = this.invp.func_70301_a(a);
-                        if ((ItemStack.func_179545_c(invItemStack, decrease)) &&
-                                (ItemStack.func_77970_a(invItemStack, decrease)))
+                        ItemStack invItemStack = this.invp.getStackInSlot(a);
+                        if ((ItemStack.areItemsEqual(invItemStack, decrease)) &&
+                                (ItemStack.areItemStackTagsEqual(invItemStack, decrease)))
                         {
-                            int canDecrease = invItemStack.field_77994_a;
+                            int canDecrease = invItemStack.stackSize;
                             int hereDecrease = Math.min(decreaseLeft, canDecrease);
                             decreaseLeft -= hereDecrease;
                             ((List)decreaseIndexes)
@@ -180,12 +180,12 @@ public class GuiCrafter
                         }
                     }
                 }
-                if (!this.invp.field_70458_d.field_71075_bZ.field_75098_d) {
+                if (!this.invp.player.capabilities.isCreativeMode) {
                     for (Map.Entry<Byte, Byte> entry : (List)decreaseIndexes) {
-                        this.invp.func_70298_a(((Byte)entry.getKey()).byteValue(), ((Byte)entry.getValue()).byteValue());
+                        this.invp.decrStackSize(((Byte)entry.getKey()).byteValue(), ((Byte)entry.getValue()).byteValue());
                     }
                 }
-                EntityHelper.addItemStackToInv(this.invp, comeout.func_77946_l());
+                EntityHelper.addItemStackToInv(this.invp, comeout.copy());
                 PacketDispatcher.sendToServer(new PacketCrafter(comeout, (List)decreaseIndexes));
             }
         }
@@ -193,17 +193,17 @@ public class GuiCrafter
 
     public static ResourceLocation texture = new ResourceLocation("drones", "textures/guis/crafter.png");
 
-    public void func_73863_a(int mouseX, int mouseY, float partialTicks)
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        ScaledResolution sr = new ScaledResolution(this.field_146297_k);
-        int sclW = sr.func_78326_a();
-        int sclH = sr.func_78328_b();
-        this.field_146297_k.func_110434_K().func_110577_a(texture);
-        func_146110_a(sclW / 2 - 150, sclH / 2 - 100, 0.0F, 0.0F, 300, 200, 300.0F, 200.0F);
+        ScaledResolution sr = new ScaledResolution(this.mc);
+        int sclW = sr.getScaledWidth();
+        int sclH = sr.getScaledHeight();
+        this.mc.getTextureManager().bindTexture(texture);
+        drawModalRectWithCustomSizedTexture(sclW / 2 - 150, sclH / 2 - 100, 0.0F, 0.0F, 300, 200, 300.0F, 200.0F);
 
-        this.field_146289_q.func_78276_b("Category", sclW / 2 - 131, sclH / 2 - 93, 0);
-        this.field_146289_q.func_78276_b("Craft", sclW / 2 - 53, sclH / 2 - 93, 0);
-        this.field_146289_q.func_78276_b("Ingredients", sclW / 2 + 9, sclH / 2 - 93, 0);
+        this.fontRendererObj.drawString("Category", sclW / 2 - 131, sclH / 2 - 93, 0);
+        this.fontRendererObj.drawString("Craft", sclW / 2 - 53, sclH / 2 - 93, 0);
+        this.fontRendererObj.drawString("Ingredients", sclW / 2 + 9, sclH / 2 - 93, 0);
 
         int max = Integer.MAX_VALUE;
         if (this.panelRecipes.items.isEmpty()) {
@@ -218,12 +218,12 @@ public class GuiCrafter
         }
         if (max >= 0)
         {
-            this.field_146289_q.func_78276_b("Can craft", sclW / 2 + 83, sclH / 2 - 75, 16777215);
+            this.fontRendererObj.drawString("Can craft", sclW / 2 + 83, sclH / 2 - 75, 16777215);
             String s1 = max + " time" + (max > 1 ? "s" : "");
-            this.field_146289_q.func_78276_b(s1, sclW / 2 + 108 - this.field_146289_q.func_78256_a(s1) / 2, sclH / 2 - 62, 16777215);
+            this.fontRendererObj.drawString(s1, sclW / 2 + 108 - this.fontRendererObj.getStringWidth(s1) / 2, sclH / 2 - 62, 16777215);
         }
-        this.craftCount.func_146194_f();
-        super.func_73863_a(mouseX, mouseY, partialTicks);
+        this.craftCount.drawTextBox();
+        super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     public void itemSelected(Panel panel, PI pi)
@@ -231,14 +231,14 @@ public class GuiCrafter
         super.itemSelected(panel, pi);
         if (panel == this.panelTypes)
         {
-            this.craftCount.func_146180_a("0");
+            this.craftCount.setText("0");
             this.currentRecipes.clear();
             this.panelOutputs.items.clear();
             this.panelOutputs.scroll = 0;
             this.panelRecipes.items.clear();
             this.panelRecipes.scroll = 0;
             String type = pi.displayString;
-            loadRecipesWithType(DronesMod.RecipeType.valueOf(type));
+            loadRecipesWithType(CustomDrones.RecipeType.valueOf(type));
             addAllRecipes();
         }
         else if ((panel == this.panelOutputs) && ((pi instanceof PIItemStack)))
@@ -249,12 +249,12 @@ public class GuiCrafter
             LinkedList<ItemStack> recipesList = (LinkedList)this.currentRecipes.get(is);
             for (ItemStack recipeIS : recipesList)
             {
-                PIItemStackRequirement piRecipe = new PIItemStackRequirement(this.panelRecipes, this.invp, recipeIS, recipeIS.field_77994_a);
+                PIItemStackRequirement piRecipe = new PIItemStackRequirement(this.panelRecipes, this.invp, recipeIS, recipeIS.stackSize);
 
                 this.panelRecipes.addItem(piRecipe);
             }
             this.panelRecipes.updatePanel();
-            this.craftCount.func_146180_a(Math.min(1, maxCanCraft()) + "");
+            this.craftCount.setText(Math.min(1, maxCanCraft()) + "");
         }
     }
 
@@ -268,40 +268,40 @@ public class GuiCrafter
         }
     }
 
-    public void loadRecipesWithType(DronesMod.RecipeType type)
+    public void loadRecipesWithType(CustomDrones.RecipeType type)
     {
         this.currentRecipes.clear();
-        List<IRecipe> recipesList = (List)DronesMod.recipes.get(type);
+        List<IRecipe> recipesList = (List)CustomDrones.recipes.get(type);
         for (int a = 0; a < recipesList.size(); a++)
         {
             IRecipe ir = (IRecipe)recipesList.get(a);
-            ItemStack is = ir.func_77571_b();
+            ItemStack is = ir.getRecipeOutput();
             LinkedList<ItemStack> requireStacks = new LinkedList();
             if ((ir instanceof ShapedRecipes))
             {
-                ItemStack[] recipeISArray = ((ShapedRecipes)ir).field_77574_d;
+                ItemStack[] recipeISArray = ((ShapedRecipes)ir).recipeItems;
                 for (ItemStack recipeIS : recipeISArray) {
                     if (recipeIS != null)
                     {
                         boolean toAdd = true;
                         for (ItemStack addedIS : requireStacks) {
-                            if ((ItemStack.func_179545_c(addedIS, recipeIS)) &&
-                                    (ItemStack.func_77970_a(addedIS, recipeIS)))
+                            if ((ItemStack.areItemsEqual(addedIS, recipeIS)) &&
+                                    (ItemStack.areItemStackTagsEqual(addedIS, recipeIS)))
                             {
-                                addedIS.field_77994_a += recipeIS.field_77994_a;
+                                addedIS.stackSize += recipeIS.stackSize;
                                 toAdd = false;
                                 break;
                             }
                         }
                         if (toAdd) {
-                            requireStacks.add(recipeIS.func_77946_l());
+                            requireStacks.add(recipeIS.copy());
                         }
                     }
                 }
             }
             else if ((ir instanceof ShapelessRecipes))
             {
-                requireStacks.addAll(((ShapelessRecipes)ir).field_77579_b);
+                requireStacks.addAll(((ShapelessRecipes)ir).recipeItems);
             }
             if (!requireStacks.isEmpty()) {
                 this.currentRecipes.put(is, requireStacks);
