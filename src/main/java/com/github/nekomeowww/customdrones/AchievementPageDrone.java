@@ -14,23 +14,23 @@ public class AchievementPageDrone
     }
 
     public static Achievement droneBit = new Achievement("drones.bit", "drones.bit", -2, 0, CustomDrones.droneBit, (Achievement)null)
-            .func_75966_h().func_75971_g();
+            .initIndependentStat().registerStat();
     public static Achievement dronePart = new Achievement("drones.part", "drones.part", 0, 0, CustomDrones.cfPlate1, droneBit)
-            .func_75987_b().func_75971_g();
+            .setSpecial().registerStat();
     public static Achievement droneSpawn = new Achievement("drones.spawn", "drones.spawn", 0, 2, CustomDrones.droneSpawn, dronePart)
-            .func_75971_g();
+            .registerStat();
     public static Achievement droneFlyer = new Achievement("drones.flyer", "drones.flyer", 2, 2, CustomDrones.droneFlyer, dronePart)
-            .func_75971_g();
+            .registerStat();
     public static Achievement droneCrafter = new Achievement("drones.crafter", "drones.crafter", 4, 2, CustomDrones.crafter, dronePart)
-            .func_75971_g();
+            .registerStat();
     public static Achievement droneScrew = new Achievement("drones.screw", "drones.screw", -2, 2, CustomDrones.droneScrew, dronePart)
-            .func_75971_g();
+            .registerStat();
     public static Achievement dronePaint = new Achievement("drones.paint", "drones.paint", -4, 2, CustomDrones.dronePainter, dronePart)
-            .func_75971_g();
+            .registerStat();
     public static Achievement droneSpawnBest = new Achievement("drones.spawnBest", "drones.spawnBest", 0, 4, CustomDrones.droneSpawn, droneSpawn)
-            .func_75987_b().func_75971_g();
+            .setSpecial().registerStat();
     public static Achievement dronePlasmaGun = new Achievement("drones.plasmagun", "drones.plasmagun", -2, -2, CustomDrones.plasmaGun, droneBit)
-            .func_75987_b().func_75971_g();
+            .setSpecial().registerStat();
 
     public static Achievement[] allAchievements()
     {
