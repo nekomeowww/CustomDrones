@@ -14,45 +14,25 @@ import com.github.nekomeowww.customdrones.network.client.AbstractClientMessageHa
 import com.github.nekomeowww.customdrones.network.client.PacketDroneControllingPlayer;
 import com.github.nekomeowww.customdrones.network.client.PacketDroneControllingPlayer.Handler;
 import com.github.nekomeowww.customdrones.network.client.PacketDroneInfo;
-import com.github.nekomeowww.customdrones.network.client.PacketDroneInfo.Handler;
 import com.github.nekomeowww.customdrones.network.client.PacketDroneModuleNBT;
-import com.github.nekomeowww.customdrones.network.client.PacketDroneModuleNBT.Handler;
 import com.github.nekomeowww.customdrones.network.server.PacketCrafter;
-import com.github.nekomeowww.customdrones.network.server.PacketCrafter.Handler;
 import com.github.nekomeowww.customdrones.network.server.PacketDroneButtonControl;
-import com.github.nekomeowww.customdrones.network.server.PacketDroneButtonControl.Handler;
 import com.github.nekomeowww.customdrones.network.server.PacketDroneControllerChange;
-import com.github.nekomeowww.customdrones.network.server.PacketDroneControllerChange.Handler;
 import com.github.nekomeowww.customdrones.network.server.PacketDroneDropRider;
-import com.github.nekomeowww.customdrones.network.server.PacketDroneDropRider.Handler;
 import com.github.nekomeowww.customdrones.network.server.PacketDroneGuiApplyItem;
-import com.github.nekomeowww.customdrones.network.server.PacketDroneGuiApplyItem.Handler;
 import com.github.nekomeowww.customdrones.network.server.PacketDroneItemize;
-import com.github.nekomeowww.customdrones.network.server.PacketDroneItemize.Handler;
 import com.github.nekomeowww.customdrones.network.server.PacketDronePaint;
-import com.github.nekomeowww.customdrones.network.server.PacketDronePaint.Handler;
 import com.github.nekomeowww.customdrones.network.server.PacketDroneRename;
-import com.github.nekomeowww.customdrones.network.server.PacketDroneRename.Handler;
 import com.github.nekomeowww.customdrones.network.server.PacketDroneRequireUpdate;
-import com.github.nekomeowww.customdrones.network.server.PacketDroneRequireUpdate.Handler;
 import com.github.nekomeowww.customdrones.network.server.PacketDroneScrew;
-import com.github.nekomeowww.customdrones.network.server.PacketDroneScrew.Handler;
 import com.github.nekomeowww.customdrones.network.server.PacketDroneSetCameraMode;
-import com.github.nekomeowww.customdrones.network.server.PacketDroneSetCameraMode.Handler;
 import com.github.nekomeowww.customdrones.network.server.PacketDroneSetCameraPitch;
-import com.github.nekomeowww.customdrones.network.server.PacketDroneSetCameraPitch.Handler;
 import com.github.nekomeowww.customdrones.network.server.PacketDroneSetEngineLevel;
-import com.github.nekomeowww.customdrones.network.server.PacketDroneSetEngineLevel.Handler;
 import com.github.nekomeowww.customdrones.network.server.PacketDroneSetMineLimits;
-import com.github.nekomeowww.customdrones.network.server.PacketDroneSetMineLimits.Handler;
 import com.github.nekomeowww.customdrones.network.server.PacketDroneSetReturnPos;
-import com.github.nekomeowww.customdrones.network.server.PacketDroneSetReturnPos.Handler;
 import com.github.nekomeowww.customdrones.network.server.PacketDroneSwitchMod;
-import com.github.nekomeowww.customdrones.network.server.PacketDroneSwitchMod.Handler;
 import com.github.nekomeowww.customdrones.network.server.PacketDroneTransferXP;
-import com.github.nekomeowww.customdrones.network.server.PacketDroneTransferXP.Handler;
 import com.github.nekomeowww.customdrones.network.server.PacketDroneUninstallMod;
-import com.github.nekomeowww.customdrones.network.server.PacketDroneUninstallMod.Handler;
 
 public class PacketDispatcher
 {
@@ -112,7 +92,7 @@ public class PacketDispatcher
 
     public static final void sendToAllAround(IMessage message, EntityPlayer player, double range)
     {
-        sendToAllAround(message, player.world.provider.getDimension(), player.posX, player.posY, player.posZ, range);
+        sendToAllAround(message, player.getEntityWorld().provider.getDimension(), player.posX, player.posY, player.posZ, range);
     }
 
     public static final void sendToDimension(IMessage message, int dimensionId)

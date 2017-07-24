@@ -1,9 +1,12 @@
 package com.github.nekomeowww.customdrones.network.server;
 
 import io.netty.buffer.ByteBuf;
+
+import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -35,7 +38,7 @@ public class PacketDronePaint
 
     public PacketDronePaint(EntityDrone drone, List<Map.Entry<String, Color>> es)
     {
-        this.dim = drone.world.provider.getDimension();
+        this.dim = drone.getEntityWorld().provider.getDimension();
         this.droneID = drone.getDroneID();
         this.entries = es;
     }
