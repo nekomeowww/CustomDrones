@@ -29,7 +29,7 @@ public class PI
     public PI(Panel p)
     {
         this.panel = p;
-        this.fontRenderer = p.parent.field_146297_k.field_71466_p;
+        this.fontRenderer = p.parent.mc.fontRendererObj;
         this.xw = p.pw;
         if (p.scrollerAlwaysOn) {
             this.xw = (p.pw - p.scrollerSize);
@@ -89,8 +89,8 @@ public class PI
         GL11.glPushMatrix();
         Minecraft mc = this.panel.mc;
         ScaledResolution sr = new ScaledResolution(mc);
-        int sclh = sr.func_78328_b();
-        int sclw = sr.func_78326_a();
+        int sclh = sr.getScaledHeight();
+        int sclw = sr.getScaledWidth();
         GL11.glColor3d(1.0D, 1.0D, 1.0D);
         DrawHelper.drawGradientRect(0.0D, 0.0D, this.xw, this.yw, this.bgColor, DrawHelper.nextColor(this.bgColor));
         DrawHelper.drawGradientRectMargin(0.0D, 0.0D, this.xw, this.yw, this.margin, this.bgMargin, DrawHelper.nextColor(this.bgMargin));
@@ -103,7 +103,7 @@ public class PI
 
     public void drawItemContent()
     {
-        int stringLength = this.fontRenderer.func_78256_a(this.displayString);
+        int stringLength = this.fontRenderer.getStringWidth(this.displayString);
         int textMargin = (int)(this.margin * 2.0D + 8.0D);
         int totalLength = stringLength + textMargin;
         int maxStringLength = (int)Math.floor(this.xw - this.margin) - textMargin;
@@ -112,25 +112,25 @@ public class PI
             GL11.glPushMatrix();
             GL11.glTranslated((this.xw - maxStringLength) / 2.0D, 0.0D, 0.0D);
             GL11.glScaled(maxStringLength / stringLength, 1.0D, 1.0D);
-            this.fontRenderer.func_175065_a(this.displayString, 0.0F, (int)(this.yw - additionalContentY()) / 2 - 5,
+            this.fontRenderer.drawString(this.displayString, 0.0F, (int)(this.yw - additionalContentY()) / 2 - 5,
                     (int)this.strColor.toLong(), this.stringShadow);
             GL11.glPopMatrix();
         }
         else
         {
             totalLength = 0;
-            List<String> strings = this.fontRenderer.func_78271_c(this.displayString, maxStringLength);
+            List<String> strings = this.fontRenderer.listFormattedStringToWidth(this.displayString, maxStringLength);
             for (String s : strings)
             {
-                int slength = this.fontRenderer.func_78256_a(s.trim());
+                int slength = this.fontRenderer.getStringWidth(s.trim());
                 totalLength = Math.max(totalLength, slength + textMargin);
             }
             this.yw = Math.max(this.yw, strings.size() * 10 + textMargin + additionalContentY());
             for (int a = 0; a < strings.size(); a++)
             {
                 String s = (String)strings.get(a);
-                int thisLength = this.fontRenderer.func_78256_a(s);
-                this.fontRenderer.func_175065_a(s, (int)(this.xw - thisLength) / 2,
+                int thisLength = this.fontRenderer.getStringWidth(s);
+                this.fontRenderer.drawString(s, (int)(this.xw - thisLength) / 2,
                         (int)(this.yw - additionalContentY()) / 2 - 5 * strings.size() + 10 * a, (int)this.strColor.toLong(), this.stringShadow);
             }
         }

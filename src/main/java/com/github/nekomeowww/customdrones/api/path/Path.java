@@ -25,15 +25,15 @@ public class Path
                     p.addNode(nowNode);
                     break;
                 }
-                Vec3d travelled = nowNode.toVec().func_178788_d(prevNode.toVec());
-                double travelledLength = travelled.func_72433_c();
+                Vec3d travelled = nowNode.toVec().subtract(prevNode.toVec());
+                double travelledLength = travelled.lengthVector();
                 for (int b = a + 1; b < this.nodes.size(); b++)
                 {
                     Node comingNode = (Node)this.nodes.get(b);
-                    Vec3d toTravel = comingNode.toVec().func_178788_d(nowNode.toVec());
+                    Vec3d toTravel = comingNode.toVec().subtract(nowNode.toVec());
                     double angleBetween = VecHelper.getAngleBetween(travelled, toTravel);
                     if ((b == this.nodes.size() - 1) || (angleBetween > 0.17453292519943295D) ||
-                            (toTravel.func_72433_c() - travelledLength * (b - a) > 8.0E-4D))
+                            (toTravel.lengthVector() - travelledLength * (b - a) > 8.0E-4D))
                     {
                         a = b;
                         p.addNode(comingNode);

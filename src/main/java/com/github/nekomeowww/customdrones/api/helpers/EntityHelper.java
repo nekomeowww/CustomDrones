@@ -3,50 +3,54 @@ package com.github.nekomeowww.customdrones.api.helpers;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.ITextComponent;
 
 public class EntityHelper
 {
+
     public static void addChat(EntityPlayer p, int worldSide, String chat)
     {
         if ((worldSide == 0) || ((worldSide == 1) && ((p instanceof EntityPlayerMP))) || ((worldSide == 2) && ((p instanceof EntityPlayerMP)))) {
-            p.func_146105_b(new TextComponentString(chat));
+            p.sendStatusMessage(new TextComponentString(chat));
         }
     }
 
     public static ItemStack addItemStackToInv(IInventory inv, ItemStack is)
     {
-        int remaining = is.field_77994_a;
-        for (int a = 0; a < inv.func_70302_i_(); a++)
+        int remaining = is.stackSize;
+        for (int a = 0; a < inv.getSizeInventory(); a++)
         {
-            ItemStack is0 = inv.func_70301_a(a);
+            ItemStack is0 = inv.getStackInSlot(a);
             int toAdd = 0;
             if (is0 == null)
             {
-                toAdd = Math.min(Math.min(is.field_77994_a, is.func_77976_d()), inv.func_70297_j_());
-                ItemStack copy = is.func_77946_l();
-                copy.field_77994_a = toAdd;
-                inv.func_70299_a(a, copy);
+                toAdd = Math.min(Math.min(is.stackSize, is.getMaxStackSize()), inv.getInventoryStackLimit());
+                ItemStack copy = is.copy();
+                copy.stackSize = toAdd;
+                inv.setInventorySlotContents(a, copy);
             }
-            else if ((ItemStack.func_179545_c(is0, is)) && (ItemStack.func_77970_a(is0, is)))
+            else if ((ItemStack.areItemsEqual(is0, is)) && (ItemStack.areItemStackTagsEqual(is0, is)))
             {
-                int isAllow = is0.func_77976_d() - is0.field_77994_a;
-                int invAllow = inv.func_70297_j_() - is0.field_77994_a;
-                toAdd = Math.min(Math.min(is.field_77994_a, isAllow), invAllow);
-                is0.field_77994_a += toAdd;
+                int isAllow = is0.getMaxStackSize() - is0.stackSize;
+                int invAllow = inv.getInventoryStackLimit() - is0.stackSize;
+                toAdd = Math.min(Math.min(is.stackSize, isAllow), invAllow);
+                is0.stackSize += toAdd;
             }
-            is.field_77994_a -= toAdd;
-            if (is.field_77994_a <= 0)
+            is.stackSize -= toAdd;
+            if (is.stackSize <= 0)
             {
                 is = null;
                 break;
             }
         }
-        inv.func_70296_d();
+        inv.markDirty();
         return is;
     }
 
@@ -54,18 +58,18 @@ public class EntityHelper
     {
         if (e != null)
         {
-            AxisAlignedBB aabb = e.func_174813_aQ();
+            AxisAlignedBB aabb = e.getEntityBoundingBox();
             if (aabb != null) {
-                return new Vec3d((aabb.field_72336_d + aabb.field_72340_a) / 2.0D, (aabb.field_72337_e + aabb.field_72338_b) / 2.0D, (aabb.field_72334_f + aabb.field_72339_c) / 2.0D);
+                return new Vec3d((aabb.maxX + aabb.minX) / 2.0D, (aabb.maxY + aabb.minY) / 2.0D, (aabb.maxZ + aabb.minZ) / 2.0D);
             }
-            return e.func_174791_d().func_72441_c(0.0D, e.field_70131_O / 2.0F, 0.0D);
+            return e.getPositionVector().addVector(0.0D, e.height / 2.0F, 0.0D);
         }
         return null;
     }
 
     public static Vec3d getEyeVec(Entity e)
     {
-        return e.func_174791_d().func_72441_c(0.0D, e.func_70047_e(), 0.0D);
+        return e.getPositionVector().addVector(0.0D, e.getEyeHeight(), 0.0D);
     }
 }
 

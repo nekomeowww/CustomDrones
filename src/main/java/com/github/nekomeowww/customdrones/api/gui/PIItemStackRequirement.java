@@ -17,9 +17,9 @@ public class PIItemStackRequirement
     {
         super(p, item);
         this.invp = inv;
-        this.is = item.func_77946_l();
-        this.is.field_77994_a = 1;
-        this.require = item.field_77994_a;
+        this.is = item.copy();
+        this.is.stackSize = 1;
+        this.require = item.stackSize;
     }
 
     public void updateItem()
@@ -28,15 +28,15 @@ public class PIItemStackRequirement
         if (this.is != null)
         {
             this.has = 0;
-            for (int a = 0; a < this.invp.func_70302_i_(); a++)
+            for (int a = 0; a < this.invp.getSizeInventory(); a++)
             {
-                ItemStack is0 = this.invp.func_70301_a(a);
-                if ((ItemStack.func_179545_c(is0, this.is)) && (ItemStack.func_77970_a(is0, this.is))) {
-                    this.has += is0.field_77994_a;
+                ItemStack is0 = this.invp.getStackInSlot(a);
+                if ((ItemStack.areItemsEqual(is0, this.is)) && (ItemStack.areItemStackTagsEqual(is0, this.is))) {
+                    this.has += is0.stackSize;
                 }
             }
         }
-        if ((this.has < this.require) && ((this.invp instanceof InventoryPlayer)) && (((InventoryPlayer)this.invp).field_70458_d.func_184812_l_())) {
+        if ((this.has < this.require) && ((this.invp instanceof InventoryPlayer)) && (((InventoryPlayer)this.invp).player.isCreative())) {
             this.has = this.require;
         }
     }

@@ -17,7 +17,7 @@ public class DrawHelper
             int i = 0;
             for (String s : textLines)
             {
-                int j = font.func_78256_a(s);
+                int j = font.getStringWidth(s);
                 if (j > i) {
                     i = j;
                 }
@@ -49,7 +49,7 @@ public class DrawHelper
             for (int k1 = 0; k1 < textLines.size(); k1++)
             {
                 String s1 = (String)textLines.get(k1);
-                font.func_175063_a(s1, l1, i2, -1);
+                font.drawStringWithShadow(s1, l1, i2, -1);
                 if (k1 == 0) {
                     i2 += 2;
                 }

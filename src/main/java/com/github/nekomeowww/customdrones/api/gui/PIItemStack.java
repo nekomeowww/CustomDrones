@@ -2,6 +2,8 @@ package com.github.nekomeowww.customdrones.api.gui;
 
 import java.util.List;
 
+import com.github.nekomeowww.customdrones.CustomDrones;
+import com.github.nekomeowww.customdrones.drone.DroneInfo;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
@@ -36,14 +38,14 @@ public class PIItemStack
     public void drawItemContent()
     {
         String desc = getDescStringForIS(this.is);
-        int stringLength = this.fontRenderer.func_78256_a(desc);
+        int stringLength = this.fontRenderer.getStringWidth(desc);
         int totalLength = 16 + stringLength + 4;
         int maxStringLength = (int)Math.floor(this.xw - this.margin) - 20;
         totalLength = 0;
-        List<String> strings = this.fontRenderer.func_78271_c(desc, maxStringLength);
+        List<String> strings = this.fontRenderer.listFormattedStringToWidth(desc, maxStringLength);
         for (String s : strings)
         {
-            int slength = this.fontRenderer.func_78256_a(s.trim());
+            int slength = this.fontRenderer.getStringWidth(s.trim());
             totalLength = Math.max(totalLength, 16 + slength + 4);
         }
         this.yw = Math.max(this.yw, strings.size() * 10 + 20);
@@ -54,7 +56,7 @@ public class PIItemStack
         for (int a = 0; a < strings.size(); a++)
         {
             String s = (String)strings.get(a);
-            this.fontRenderer.func_175065_a(s, (int)(this.xw - totalLength) / 2 + 18, (int)this.yw / 2 - 5 * strings.size() + 10 * a,
+            this.fontRenderer.drawString(s, (int)(this.xw - totalLength) / 2 + 18, (int)this.yw / 2 - 5 * strings.size() + 10 * a,
                     (int)this.strColor.toLong(), this.stringShadow);
         }
         GL11.glColor3d(1.0D, 1.0D, 1.0D);
@@ -66,50 +68,51 @@ public class PIItemStack
         if (is == null) {
             return "";
         }
-        if (is.func_77973_b() == DronesMod.droneModule) {
+        if (is.getItem() == CustomDrones.droneModule) {
             return ItemDroneModule.getModule(is).displayName;
         }
-        if (is.func_77973_b() == DronesMod.gunUpgrade)
+        if (is.getItem() == CustomDrones.gunUpgrade)
         {
-            ((ItemGunUpgrade)DronesMod.gunUpgrade);return ItemGunUpgrade.getGunUpgrade(is).name;
+            //((ItemGunUpgrade)CustomDrones.gunUpgrade);
+            return ItemGunUpgrade.getGunUpgrade(is).name;
         }
-        if (is.func_77973_b() == DronesMod.droneSpawn)
+        if (is.getItem() == CustomDrones.droneSpawn)
         {
-            DroneInfo di = DronesMod.droneSpawn.getDroneInfo(is);
+            DroneInfo di = CustomDrones.droneSpawn.getDroneInfo(is);
             return DroneInfo.greekNumber[di.casing] + " " + DroneInfo.greekNumber[di.chip] + " " + DroneInfo.greekNumber[di.core] + " " + DroneInfo.greekNumber[di.engine];
         }
-        return is.func_82833_r();
+        return is.getDisplayName();
     }
 
     public void renderItem(ItemStack is, int i, int j)
     {
-        if ((is != null) && (is.func_77973_b() != null))
+        if ((is != null) && (is.getItem() != null))
         {
             GL11.glPopMatrix();
-            RenderHelper.func_74520_c();
-            renderItem().func_175042_a(is, i, j);
-            renderItem().func_180453_a(this.panel.mc.field_71466_p, is, i, j, null);
-            RenderHelper.func_74518_a();
+            RenderHelper.enableGUIStandardItemLighting();
+            renderItem().renderItemIntoGUI(is, i, j);
+            renderItem().renderItemOverlayIntoGUI(this.panel.mc.fontRendererObj, is, i, j, null);
+            RenderHelper.disableStandardItemLighting();
             GL11.glPushMatrix();
         }
     }
 
     public RenderItem renderItem()
     {
-        return this.panel.mc.func_175599_af();
+        return this.panel.mc.getRenderItem();
     }
 
     public void renderTooltip(ItemStack stack, int x, int y)
     {
-        List<String> list = stack.func_82840_a(this.panel.mc.field_71439_g, this.panel.mc.field_71474_y.field_82882_x);
+        List<String> list = stack.getTooltip(this.panel.mc.thePlayer, this.panel.mc.gameSettings.advancedItemTooltips);
         for (int i = 0; i < list.size(); i++) {
             if (i == 0) {
-                list.set(i, stack.func_77953_t().field_77937_e + (String)list.get(i));
+                list.set(i, stack.getRarity().rarityColor + (String)list.get(i));
             } else {
                 list.set(i, TextFormatting.GRAY + (String)list.get(i));
             }
         }
-        FontRenderer font = stack.func_77973_b().getFontRenderer(stack);
-        DrawHelper.drawHoveringText(list, x, y, font == null ? this.panel.mc.field_71466_p : font, this.panel.mc.field_71443_c, y);
+        FontRenderer font = stack.getItem().getFontRenderer(stack);
+        DrawHelper.drawHoveringText(list, x, y, font == null ? this.panel.mc.fontRendererObj : font, this.panel.mc.displayWidth, y);
     }
 }

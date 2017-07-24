@@ -14,15 +14,15 @@ public class RegHelperClient
 {
     public static void registerItemRenderer(Item item)
     {
-        Minecraft.func_71410_x().func_175599_af().func_175037_a().func_178086_a(item, 0, new ModelResourceLocation("drones:" + item
-                .func_77658_a().substring(5), "inventory"));
+        Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, new ModelResourceLocation("drones:" + item
+                .getUnlocalizedName().substring(5), "inventory"));
     }
 
     public static void registerBlockRenderer(Block block)
     {
-        Item item = Item.func_150898_a(block);
-        Minecraft.func_71410_x().func_175599_af().func_175037_a().func_178086_a(item, 0, new ModelResourceLocation("drones:" + item
-                .func_77658_a().substring(5), "inventory"));
+        Item item = Item.getItemFromBlock(block);
+        Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, new ModelResourceLocation("drones:" + item
+                .getUnlocalizedName().substring(5), "inventory"));
     }
 
     public static void registerEntityRenderer(Class<? extends Entity> entityClass)
