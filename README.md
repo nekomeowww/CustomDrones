@@ -51,4 +51,4 @@ If you are interested in building a new Wiki Page project, we may need to discus
 ### Translation
 
 #### 繁體中文 Traditional Chinese
-- @AileRozy
+- [@AileRozy](https://github.com/AileRozy)
