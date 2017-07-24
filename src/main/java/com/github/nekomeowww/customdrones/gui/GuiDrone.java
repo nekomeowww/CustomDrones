@@ -37,53 +37,53 @@ public class GuiDrone
 
     public GuiDrone(EntityPlayer p, EntityDrone d)
     {
-        super(new ContainerDrone(p.field_71071_by, d.droneInfo.inventory), d);
+        super(new ContainerDrone(p.inventory, d.droneInfo.inventory), d);
         this.player = p;
         this.drone = d;
     }
 
-    public void func_73866_w_()
+    public void initGui()
     {
-        super.func_73866_w_();
-        this.renameField = new GuiTextField(0, this.field_146289_q, this.field_146294_l / 2 + 81, this.field_146295_m / 2 - 95, 107, 20);
-        this.renameField.func_146180_a(this.drone.droneInfo.getDisplayName());
-        this.renameField.func_146203_f(20);
-        this.field_146292_n.add(new GuiButton(0, this.field_146294_l / 2 + 27, this.field_146295_m / 2 - 95, 50, 20, "Rename"));
-        this.field_146292_n.add(this.itemApplyButton = new GuiButton(1, this.field_146294_l / 2 - 75, this.field_146295_m / 2 - 38, 65, 20, "Put item ->"));
-        this.field_146292_n.add(new GuiButton(2, this.field_146294_l / 2 - 200, this.field_146295_m / 2 + 80, 50, 20, "Itemize"));
-        this.itemApplyButton.field_146124_l = false;
+        super.initGui();
+        this.renameField = new GuiTextField(0, this.fontRendererObj, this.width / 2 + 81, this.height / 2 - 95, 107, 20);
+        this.renameField.setText(this.drone.droneInfo.getDisplayName());
+        this.renameField.setMaxStringLength(20);
+        this.buttonList.add(new GuiButton(0, this.width / 2 + 27, this.height / 2 - 95, 50, 20, "Rename"));
+        this.buttonList.add(this.itemApplyButton = new GuiButton(1, this.width / 2 - 75, this.height / 2 - 38, 65, 20, "Put item ->"));
+        this.buttonList.add(new GuiButton(2, this.width / 2 - 200, this.height / 2 + 80, 50, 20, "Itemize"));
+        this.itemApplyButton.enabled = false;
         for (int a = 0; a < this.drone.droneInfo.getMaxModSlots(); a++) {
             this.moduleSlots.add(new SlotModule(a, -46 + a % 4 * 36, 122 + (int)Math.floor(a / 4.0D) * 28, 24, this.drone, a));
         }
     }
 
-    protected void func_73869_a(char typedChar, int keyCode)
+    protected void keyTyped(char typedChar, int keyCode)
             throws IOException
     {
-        if (!this.renameField.func_146201_a(typedChar, keyCode)) {
-            super.func_73869_a(typedChar, keyCode);
+        if (!this.renameField.textboxKeyTyped(typedChar, keyCode)) {
+            super.keyTyped(typedChar, keyCode);
         }
     }
 
-    protected void func_73864_a(int mouseX, int mouseY, int mouseButton)
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
             throws IOException
     {
-        super.func_73864_a(mouseX, mouseY, mouseButton);
-        this.renameField.func_146192_a(mouseX, mouseY, mouseButton);
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        this.renameField.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
-    protected void func_146284_a(GuiButton button)
+    protected void actionPerformed(GuiButton button)
             throws IOException
     {
-        super.func_146284_a(button);
+        super.actionPerformed(button);
         if (button == this.itemApplyButton)
         {
             this.itemApplyStatus = "";
-            Slot applySlot = this.field_147002_h.func_75147_a(((ContainerDrone)this.field_147002_h).module, 0);
-            if (applySlot.func_75216_d())
+            Slot applySlot = this.inventorySlots.getSlotFromInventory(((ContainerDrone)this.inventorySlots).module, 0);
+            if (applySlot.getHasStack())
             {
-                ItemStack is = applySlot.func_75211_c();
-                Item item = is.func_77973_b();
+                ItemStack is = applySlot.getStack();
+                Item item = is.getItem();
                 DroneInfo.ApplyResult addItemEntry = this.drone.droneInfo.canApplyStack(is);
                 if (addItemEntry.type != DroneInfo.ApplyType.NONE)
                 {
@@ -92,58 +92,58 @@ public class GuiDrone
                     if (addable)
                     {
                         PacketDispatcher.sendToServer(new PacketDroneGuiApplyItem(this.drone));
-                        applySlot.func_75215_d(null);
+                        applySlot.putStack(null);
                     }
                 }
             }
         }
-        else if ((button.field_146127_k == 0) && (!this.renameField.func_146179_b().isEmpty()))
+        else if ((button.id == 0) && (!this.renameField.getText().isEmpty()))
         {
-            PacketDispatcher.sendToServer(new PacketDroneRename(this.drone, this.renameField.func_146179_b()));
+            PacketDispatcher.sendToServer(new PacketDroneRename(this.drone, this.renameField.getText()));
         }
-        else if (button.field_146127_k == 2)
+        else if (button.id == 2)
         {
             PacketDispatcher.sendToServer(new PacketDroneItemize(this.drone));
-            this.field_146297_k.func_147108_a(null);
+            this.mc.displayGuiScreen(null);
         }
     }
 
-    public void func_73876_c()
+    public void updateScreen()
     {
-        Slot applySlot = this.field_147002_h.func_75147_a(((ContainerDrone)this.field_147002_h).module, 0);
-        if (!applySlot.func_75216_d())
+        Slot applySlot = this.inventorySlots.getSlotFromInventory(((ContainerDrone)this.inventorySlots).module, 0);
+        if (!applySlot.getHasStack())
         {
-            this.itemApplyButton.field_146124_l = false;
-            this.itemApplyButton.field_146126_j = "Put item ->";
+            this.itemApplyButton.enabled = false;
+            this.itemApplyButton.displayString = "Put item ->";
         }
         else
         {
-            ItemStack is = applySlot.func_75211_c();
-            Item item = is.func_77973_b();
-            if (item == DronesMod.droneModule)
+            ItemStack is = applySlot.getStack();
+            Item item = is.getItem();
+            if (item == CustomDrones.droneModule)
             {
-                this.itemApplyButton.field_146124_l = true;
-                this.itemApplyButton.field_146126_j = "Install mod";
+                this.itemApplyButton.enabled = true;
+                this.itemApplyButton.displayString = "Install mod";
             }
             else if (this.drone.droneInfo.canApplyStack(is).type != DroneInfo.ApplyType.NONE)
             {
-                this.itemApplyButton.field_146124_l = true;
-                this.itemApplyButton.field_146126_j = "Apply item";
+                this.itemApplyButton.enabled = true;
+                this.itemApplyButton.displayString = "Apply item";
             }
             else
             {
-                this.itemApplyButton.field_146124_l = false;
-                this.itemApplyButton.field_146126_j = "No use";
+                this.itemApplyButton.enabled = false;
+                this.itemApplyButton.displayString = "No use";
             }
         }
         for (int a = 0; a < this.moduleSlots.size(); a++)
         {
             SlotModule slot = (SlotModule)this.moduleSlots.get(a);
             slot.overlayColor = -1;
-            if (applySlot.func_75216_d()) {
-                if (applySlot.func_75211_c().func_77973_b() == DronesMod.droneModule)
+            if (applySlot.getHasStack()) {
+                if (applySlot.getStack().getItem() == CustomDrones.droneModule)
                 {
-                    Module installingModule = ItemDroneModule.getModule(applySlot.func_75211_c());
+                    Module installingModule = ItemDroneModule.getModule(applySlot.getStack());
                     Module thisModule = ((SlotModule)this.moduleSlots.get(a)).module;
                     if (thisModule != null) {
                         if (thisModule.canFunctionAs(installingModule)) {
@@ -155,39 +155,39 @@ public class GuiDrone
                 }
             }
         }
-        super.func_73876_c();
+        super.updateScreen();
     }
 
-    public void func_146281_b()
+    public void onGuiClosed()
     {
-        super.func_146281_b();
+        super.onGuiClosed();
     }
 
     public static ResourceLocation texture = new ResourceLocation("drones", "textures/guis/drone.png");
 
-    public void func_146278_c(int tint) {}
+    public void drawBackground(int tint) {}
 
-    public void func_146276_q_() {}
+    public void drawDefaultBackground() {}
 
-    protected void func_146976_a(float partialTicks, int mouseX, int mouseY) {}
+    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {}
 
-    public void func_73863_a(int mouseX, int mouseY, float partialTicks)
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        ScaledResolution sr = new ScaledResolution(this.field_146297_k);
-        int sclW = sr.func_78326_a();
-        int sclH = sr.func_78328_b();
-        this.field_146297_k.func_110434_K().func_110577_a(texture);
-        func_146110_a(sclW / 2 - 200, sclH / 2 - 100, 0.0F, 0.0F, 400, 200, 400.0F, 200.0F);
-        this.renameField.func_146194_f();
+        ScaledResolution sr = new ScaledResolution(this.mc);
+        int sclW = sr.getScaledWidth();
+        int sclH = sr.getScaledHeight();
+        this.mc.getTextureManager().bindTexture(texture);
+        drawModalRectWithCustomSizedTexture(sclW / 2 - 200, sclH / 2 - 100, 0.0F, 0.0F, 400, 200, 400.0F, 200.0F);
+        this.renameField.drawTextBox();
 
         DroneInfo di = this.drone.droneInfo;
 
-        func_73734_a(sclW / 2 + 27, sclH / 2 - 73 + di.getInvSize() * 2, sclW / 2 + 189, sclH / 2 - 1, -3750202);
+        drawRect(sclW / 2 + 27, sclH / 2 - 73 + di.getInvSize() * 2, sclW / 2 + 189, sclH / 2 - 1, -3750202);
 
-        this.field_146289_q.func_78276_b("Drone " + TextFormatting.BOLD + di.getDisplayName(), sclW / 2 - 185, sclH / 2 - 90, 0);
+        this.fontRendererObj.drawString("Drone " + TextFormatting.BOLD + di.getDisplayName(), sclW / 2 - 185, sclH / 2 - 90, 0);
 
-        this.field_146289_q.func_78276_b("Drone's", sclW / 2 + 27, sclH / 2 - 71 + di.getInvSize() * 2, 4473924);
-        this.field_146289_q.func_78276_b("Player's", sclW / 2 + 147, sclH / 2 + 8, 4473924);
+        this.fontRendererObj.drawString("Drone's", sclW / 2 + 27, sclH / 2 - 71 + di.getInvSize() * 2, 4473924);
+        this.fontRendererObj.drawString("Player's", sclW / 2 + 147, sclH / 2 + 8, 4473924);
 
         String line1 = TextFormatting.AQUA + "Casing: " + DroneInfo.greekNumber[di.casing];
         line1 = line1 + TextFormatting.WHITE + " - ";
@@ -202,25 +202,25 @@ public class GuiDrone
         line1 = line1 + TextFormatting.YELLOW + "Mode: " + this.drone.getFlyingModeString();
         line1 = line1 + TextFormatting.WHITE + " - ";
         line1 = line1 + TextFormatting.YELLOW + "Est. fly time: " + di.getEstimatedFlyTimeString(this.drone);
-        List<String> splitLine1 = this.field_146289_q.func_78271_c(line1, 200);
+        List<String> splitLine1 = this.fontRendererObj.listFormattedStringToWidth(line1, 200);
         for (int a = 0; a < splitLine1.size(); a++) {
-            this.field_146289_q.func_78276_b((String)splitLine1.get(a), sclW / 2 - 186, sclH / 2 - 77 + a * 10, 16777215);
+            this.fontRendererObj.drawString((String)splitLine1.get(a), sclW / 2 - 186, sclH / 2 - 77 + a * 10, 16777215);
         }
         String line2 = "Mods: " + TextFormatting.GREEN + di.mods.size() + "/" + di.getMaxModSlots();
-        this.field_146289_q.func_78276_b(line2, sclW / 2 - 185, sclH / 2 - 35, 16777215);
+        this.fontRendererObj.drawString(line2, sclW / 2 - 185, sclH / 2 - 35, 16777215);
         line2 = "Max mod rank: " + TextFormatting.GREEN + di.getMaxModLevel();
-        this.field_146289_q.func_78276_b(line2, sclW / 2 - 185, sclH / 2 - 25, 16777215);
+        this.fontRendererObj.drawString(line2, sclW / 2 - 185, sclH / 2 - 25, 16777215);
         line2 = "Max speed: " + TextFormatting.GREEN + Math.round(di.getMaxSpeed() * di.getEngineLevel()) + "m/s";
-        this.field_146289_q.func_78276_b(line2, sclW / 2 - 185, sclH / 2 - 15, 16777215);
+        this.fontRendererObj.drawString(line2, sclW / 2 - 185, sclH / 2 - 15, 16777215);
         line2 = "Health: " + TextFormatting.GREEN + di.getDamage(true) + "/" + di.getMaxDamage(this.drone);
-        this.field_146289_q.func_78276_b(line2, sclW / 2 - 185, sclH / 2 - 5, 16777215);
+        this.fontRendererObj.drawString(line2, sclW / 2 - 185, sclH / 2 - 5, 16777215);
         line2 = "Battery: " + TextFormatting.GREEN + di.getBattery(true) + "/" + di.getMaxBattery();
-        this.field_146289_q.func_78279_b(line2, sclW / 2 - 185, sclH / 2 + 5, 105, 16777215);
+        this.fontRendererObj.drawSplitString(line2, sclW / 2 - 185, sclH / 2 + 5, 105, 16777215);
 
-        this.field_146289_q.func_78276_b("Modules", sclW / 2 - 180, sclH / 2 + 60, 0);
+        this.fontRendererObj.drawString("Modules", sclW / 2 - 180, sclH / 2 + 60, 0);
         if (!this.itemApplyStatus.isEmpty()) {
-            this.field_146289_q.func_78279_b(this.itemApplyStatus, sclW / 2 - 73, sclH / 2 - 8, 80, 4473924);
+            this.fontRendererObj.drawSplitString(this.itemApplyStatus, sclW / 2 - 73, sclH / 2 - 8, 80, 4473924);
         }
-        super.func_73863_a(mouseX, mouseY, partialTicks);
+        super.drawScreen(mouseX, mouseY, partialTicks);
     }
 }

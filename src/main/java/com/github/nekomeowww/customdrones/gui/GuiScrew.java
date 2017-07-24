@@ -38,13 +38,13 @@ public class GuiScrew
         this.drone = drone;
     }
 
-    public void func_73866_w_()
+    public void initGui()
     {
-        super.func_73866_w_();
-        this.field_146292_n.add(this.buttonApply = new GuiButton(0, this.field_146294_l / 2 + 70, this.field_146295_m / 2 + 70, 70, 20, "Apply"));
-        this.field_146292_n.add(this.buttonReset = new GuiButton(1, this.field_146294_l / 2 + 10, this.field_146295_m / 2 + 70, 55, 20, "Reset"));
+        super.initGui();
+        this.buttonList.add(this.buttonApply = new GuiButton(0, this.width / 2 + 70, this.height / 2 + 70, 70, 20, "Apply"));
+        this.buttonList.add(this.buttonReset = new GuiButton(1, this.width / 2 + 10, this.height / 2 + 70, 55, 20, "Reset"));
 
-        this.panelModels = new Panel(this, this.field_146294_l / 2 - 137, this.field_146295_m / 2 - 63, 60, 150);
+        this.panelModels = new Panel(this, this.width / 2 - 137, this.height / 2 - 63, 60, 150);
         for (int a = 0; a < DroneModels.instance.models.size(); a++)
         {
             DroneModels.ModelProp mp = (DroneModels.ModelProp)DroneModels.instance.models.get(a);
@@ -59,18 +59,18 @@ public class GuiScrew
         this.panels.add(this.panelModels);
     }
 
-    protected void func_146284_a(GuiButton button)
+    protected void actionPerformed(GuiButton button)
             throws IOException
     {
-        super.func_146284_a(button);
+        super.actionPerformed(button);
         int newModel = -1;
-        if (button.field_146127_k == 0)
+        if (button.id == 0)
         {
             if (this.panelModels.getFirstSelectedItem() != null) {
                 newModel = this.panelModels.getFirstSelectedItem().id;
             }
         }
-        else if (button.field_146127_k == 1) {
+        else if (button.id == 1) {
             newModel = 0;
         }
         if ((newModel != -1) && (newModel != this.drone.droneInfo.appearance.modelID))
@@ -80,22 +80,22 @@ public class GuiScrew
         }
     }
 
-    public void func_73863_a(int mouseX, int mouseY, float partialTicks)
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        ScaledResolution sr = new ScaledResolution(this.field_146297_k);
-        int sclW = sr.func_78326_a();
-        int sclH = sr.func_78328_b();
-        this.field_146297_k.func_110434_K().func_110577_a(texture);
-        func_146110_a(sclW / 2 - 150, sclH / 2 - 100, 0.0F, 0.0F, 300, 200, 300.0F, 200.0F);
+        ScaledResolution sr = new ScaledResolution(this.mc);
+        int sclW = sr.getScaledWidth();
+        int sclH = sr.getScaledHeight();
+        this.mc.getTextureManager().bindTexture(texture);
+        drawModalRectWithCustomSizedTexture(sclW / 2 - 150, sclH / 2 - 100, 0.0F, 0.0F, 300, 200, 300.0F, 200.0F);
 
-        func_73732_a(this.field_146289_q, TextFormatting.RESET + "Remodel drone " + TextFormatting.BOLD + this.drone.droneInfo
+        drawCenteredString(this.fontRendererObj, TextFormatting.RESET + "Remodel drone " + TextFormatting.BOLD + this.drone.droneInfo
                 .getDisplayName(), sclW / 2, sclH / 2 - 90, 16777215);
 
-        func_73732_a(this.field_146289_q, "Models", sclW / 2 - 108, sclH / 2 - 75, 16777215);
-        func_73732_a(this.field_146289_q, "Current", sclW / 2 - 30, sclH / 2 - 50, 16777215);
-        func_73732_a(this.field_146289_q, "model", sclW / 2 - 30, sclH / 2 - 40, 16777215);
-        func_73732_a(this.field_146289_q, "Selected", sclW / 2 - 30, sclH / 2 + 20, 16777215);
-        func_73732_a(this.field_146289_q, "model", sclW / 2 - 30, sclH / 2 + 30, 16777215);
+        drawCenteredString(this.fontRendererObj, "Models", sclW / 2 - 108, sclH / 2 - 75, 16777215);
+        drawCenteredString(this.fontRendererObj, "Current", sclW / 2 - 30, sclH / 2 - 50, 16777215);
+        drawCenteredString(this.fontRendererObj, "model", sclW / 2 - 30, sclH / 2 - 40, 16777215);
+        drawCenteredString(this.fontRendererObj, "Selected", sclW / 2 - 30, sclH / 2 + 20, 16777215);
+        drawCenteredString(this.fontRendererObj, "model", sclW / 2 - 30, sclH / 2 + 30, 16777215);
         DrawHelper.drawRect(sclW / 2 - 0, sclH / 2 - 70, sclW / 2 + 140, sclH / 2 - 10, -12237499L);
         DrawHelper.drawRect(sclW / 2 - 0, sclH / 2 - 0, sclW / 2 + 140, sclH / 2 + 60, -12237499L);
 
@@ -110,7 +110,7 @@ public class GuiScrew
                 renderDrone(cm1, sclW / 2 + 70, sclH / 2 + 40);
             }
         }
-        super.func_73863_a(mouseX, mouseY, partialTicks);
+        super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     public void renderDrone(ModelDrone cm, double x, double y)

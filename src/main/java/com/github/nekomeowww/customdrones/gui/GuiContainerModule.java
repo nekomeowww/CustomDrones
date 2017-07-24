@@ -25,10 +25,10 @@ public class GuiContainerModule
         this.drone = drone;
     }
 
-    protected void func_73864_a(int mouseX, int mouseY, int mouseButton)
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
             throws IOException
     {
-        super.func_73864_a(mouseX, mouseY, mouseButton);
+        super.mouseClicked(mouseX, mouseY, mouseButton);
         for (int a = 0; a < this.moduleSlots.size(); a++)
         {
             SlotModule slot = (SlotModule)this.moduleSlots.get(a);
@@ -42,9 +42,9 @@ public class GuiContainerModule
 
     public void modClicked(SlotModule slot, int mX, int mY, int mB) {}
 
-    public void func_73876_c()
+    public void updateScreen()
     {
-        super.func_73876_c();
+        super.updateScreen();
         if (this.drone.getWatchedDIChanged()) {
             PacketDispatcher.sendToServer(new PacketDroneRequireUpdate(this.drone));
         }
@@ -55,23 +55,23 @@ public class GuiContainerModule
         }
     }
 
-    public void func_73863_a(int mouseX, int mouseY, float partialTicks)
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        super.func_73863_a(mouseX, mouseY, partialTicks);
-        GlStateManager.func_179094_E();
-        GlStateManager.func_179131_c(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glTranslated(this.field_147003_i, this.field_147009_r, 0.0D);
-        GlStateManager.func_179091_B();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        GlStateManager.pushMatrix();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glTranslated(this.guiLeft, this.guiTop, 0.0D);
+        GlStateManager.enableRescaleNormal();
         for (int i1 = 0; i1 < this.moduleSlots.size(); i1++)
         {
             SlotModule slot = (SlotModule)this.moduleSlots.get(i1);
             slot.drawModule();
         }
-        GlStateManager.func_179121_F();
-        GlStateManager.func_179145_e();
-        GlStateManager.func_179126_j();
-        RenderHelper.func_74519_b();
-        super.func_73863_a(mouseX, mouseY, partialTicks);
+        GlStateManager.popMatrix();
+        GlStateManager.enableLighting();
+        GlStateManager.enableDepth();
+        RenderHelper.enableStandardItemLighting();
+        super.drawScreen(mouseX, mouseY, partialTicks);
         for (int i1 = 0; i1 < this.moduleSlots.size(); i1++)
         {
             SlotModule slot = (SlotModule)this.moduleSlots.get(i1);
@@ -89,11 +89,11 @@ public class GuiContainerModule
 
     public boolean isMouseOverSlot(SlotModule slotIn, int mouseX, int mouseY)
     {
-        return func_146978_c(slotIn.posX, slotIn.posY, slotIn.sizeX, slotIn.sizeY, mouseX, mouseY);
+        return isPointInRegion(slotIn.posX, slotIn.posY, slotIn.sizeX, slotIn.sizeY, mouseX, mouseY);
     }
 
     protected void renderToolTip(Module mod, int x, int y)
     {
-        drawHoveringText(mod.getTooltip(), x, y, this.field_146289_q);
+        drawHoveringText(mod.getTooltip(), x, y, this.fontRendererObj);
     }
 }
