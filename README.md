@@ -22,7 +22,7 @@ This is the CustomDrones mod of Minecraft that @WilliamEz has made before.
 ## Progress Update
 
 ##### 2017-07-25
-- Started to translate Traditional Chinese to ```zh_TW.lang```
+- Started the translation of Traditional Chinese into file: ```zh_TW.lang```
 - Committed to 129 files changes. [Find them here](https://github.com/nekomeowww/CustomDrones/commits/dev-1.10.2)
 - File decompiling error fixed. Committed to changes.
 - Finished the ```func``` and ```field``` correction. __A mini tool used, credit to my friend Neko Matryoshika__
