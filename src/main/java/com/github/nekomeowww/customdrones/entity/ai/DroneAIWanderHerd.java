@@ -6,8 +6,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import williamle.drones.api.Filters.FilterAccepts;
-import williamle.drones.entity.EntityDroneMob;
+import com.github.nekomeowww.customdrones.api.Filters.FilterAccepts;
+import com.github.nekomeowww.customdrones.api.Filters;
+import com.github.nekomeowww.customdrones.entity.EntityDroneMob;
 
 public class DroneAIWanderHerd
         extends DroneAIWander
@@ -35,7 +36,7 @@ public class DroneAIWanderHerd
             double yWander = this.drone.posY + (this.rnd.nextDouble() - 0.5D) * range;
             yWander = Math.min(Math.max(yWander, 2.0D), this.drone.getBelowSurfaceY() + 8.0D);
             Vec3d vec = new Vec3d(xWander, yWander, zWander);
-            List<Entity> herdFriends = this.drone.world.getEntitiesInAABBexcluding(this.drone, this.drone
+            List<Entity> herdFriends = this.drone.getEntityWorld().getEntitiesInAABBexcluding(this.drone, this.drone
                     .getEntityBoundingBox().expandXyz(this.herdRange), this.herdClass);
             double thisWeight = getWeight(herdFriends);
             if ((thisWander == null) || (weight == 0.0D) || (thisWeight > weight))

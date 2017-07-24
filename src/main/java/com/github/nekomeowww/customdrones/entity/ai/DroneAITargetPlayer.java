@@ -25,7 +25,7 @@ public class DroneAITargetPlayer
     public void updateTask()
     {
         super.updateTask();
-        EntityPlayer p = this.drone.world.getNearestPlayerNotCreative(this.drone, this.range);
+        EntityPlayer p = this.drone.getEntityWorld().getNearestPlayerNotCreative(this.drone, this.range);
         if (p != null) {
             this.drone.setDroneAttackTarget(p, true);
         }

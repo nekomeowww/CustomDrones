@@ -28,13 +28,13 @@ public class DroneAIFlyToNearest
 
     public boolean shouldExecute()
     {
-        return this.drone.world.findNearestEntityWithinAABB(this.clazz, this.drone.getEntityBoundingBox().expandXyz(this.range), this.drone) != null;
+        return this.drone.getEntityWorld().findNearestEntityWithinAABB(this.clazz, this.drone.getEntityBoundingBox().expandXyz(this.range), this.drone) != null;
     }
 
     public void updateTask()
     {
         super.updateTask();
-        Entity e = this.drone.world.findNearestEntityWithinAABB(this.clazz, this.drone.getEntityBoundingBox().expandXyz(this.range), this.drone);
+        Entity e = this.drone.getEntityWorld().findNearestEntityWithinAABB(this.clazz, this.drone.getEntityBoundingBox().expandXyz(this.range), this.drone);
 
         this.drone.flyTo(EntityHelper.getEyeVec(e), 0.2D, this.speed);
     }

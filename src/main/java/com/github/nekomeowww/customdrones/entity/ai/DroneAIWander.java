@@ -25,7 +25,7 @@ public class DroneAIWander
 
     public boolean shouldExecute()
     {
-        return (this.drone.getDroneAttackTarget() == null) && (!this.drone.world.isRemote);
+        return (this.drone.getDroneAttackTarget() == null) && (!this.drone.getEntityWorld().isRemote);
     }
 
     public void resetTask()
