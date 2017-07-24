@@ -437,6 +437,11 @@ public class EntityDrone
         pushOutOfBlocks(this.posX, this.posY, this.posZ);
     }
 
+    private void move(double motionX, double motionY, double motionZ)
+    {
+
+    }
+
     public void updateRotation()
     {
         double maxYawChange = 6.0D;
@@ -1036,7 +1041,7 @@ public class EntityDrone
         {
             Entity entity = (Entity)world.loadedEntityList.get(a);
             if ((entity != null) && (entityType.isAssignableFrom(entity.getClass())) && ((filter == null) ||
-                    (filter.apply(entity)))) {
+                    (filter.apply(entity)))) { //entity is object
                 list.add(entity);
             }
         }

@@ -1,5 +1,6 @@
 package com.github.nekomeowww.customdrones.entity;
 
+import com.github.nekomeowww.customdrones.api.Filters;
 import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Random;
@@ -178,7 +179,7 @@ public class EntityPlasmaShot
                 this.getEntityWorld().createExplosion(this.shooter != null ? this.shooter : this, this.posX, this.posY, this.posZ,
                         (float)Math.abs(this.damage / 3.0D), true);
             }
-            if ((upgrades.contains(ItemGunUpgrade.GunUpgrade.scatter)) && (!this.world.isRemote))
+            if ((upgrades.contains(ItemGunUpgrade.GunUpgrade.scatter)) && (!this.getEntityWorld().isRemote))
             {
                 Filters.FilterExcepts filter = new Filters.FilterExcepts(new Object[] { this.shooter, EntityXPOrb.class, EntityItem.class, EntityHomingBox.class, IProjectile.class });
 
@@ -203,7 +204,7 @@ public class EntityPlasmaShot
                     babyShot.motionX = velocity.xCoord;
                     babyShot.motionY = velocity.yCoord;
                     babyShot.motionZ = velocity.zCoord;
-                    this.getEntityWorld().spawnEntity(babyShot);
+                    this.getEntityWorld().spawnEntityInWorld(babyShot);
                 }
             }
         }

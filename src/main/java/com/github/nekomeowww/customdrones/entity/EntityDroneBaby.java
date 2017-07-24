@@ -79,7 +79,7 @@ public class EntityDroneBaby
 
     public void callNearbyBabiesToAttack(Entity e, double range)
     {
-        List<EntityDroneBaby> mobs = this.world.getEntitiesWithinAABB(EntityDroneBaby.class,
+        List<EntityDroneBaby> mobs = this.getEntityWorld().getEntitiesWithinAABB(EntityDroneBaby.class,
                 getEntityBoundingBox().expandXyz(range));
         mobs.remove(this);
         for (EntityDroneBaby mob : mobs) {
