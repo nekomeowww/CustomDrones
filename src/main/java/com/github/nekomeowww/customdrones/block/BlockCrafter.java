@@ -16,12 +16,12 @@ public class BlockCrafter
 {
     public BlockCrafter()
     {
-        super(Material.field_151575_d);
+        super(Material.WOOD);
     }
 
-    public boolean func_180639_a(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        playerIn.openGui(DronesMod.instance, 3, worldIn, pos.func_177958_n(), pos.func_177956_o(), pos.func_177952_p());
+        playerIn.openGui(CustomDrones.instance, 3, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
 }
