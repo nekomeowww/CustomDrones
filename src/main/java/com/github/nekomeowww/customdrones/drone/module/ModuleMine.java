@@ -331,9 +331,9 @@ public class ModuleMine
     {
         GuiTextField[] textFields = new GuiTextField[6];
 
-        public ModuleMineGui(T gui)
+        public ModuleMineGui(GuiDroneStatus gui, T mod)
         {
-            super(mod);
+            super(gui, mod);
         }
 
         public void initGui()
@@ -399,7 +399,9 @@ public class ModuleMine
             super.buttonClickedOnEnabledGui(button);
             Integer[] ints;
             int a;
+            int b;
             String s;
+            GuiTextField[] txtfieldList;
             if (button.id == 1)
             {
                 ints = new Integer[6];
@@ -418,8 +420,7 @@ public class ModuleMine
                 }
                 if (ints != null)
                 {
-                    PacketDispatcher.sendToServer(new PacketDroneSetMineLimits(this.parent.drone, false, ints[0].intValue(), ints[1].intValue(), ints[2]
-                            .intValue(), ints[3].intValue(), ints[4].intValue(), ints[5].intValue()));
+                    PacketDispatcher.sendToServer(new PacketDroneSetMineLimits(this.parent.drone, false, ints[0].intValue(), ints[1].intValue(), ints[2].intValue(), ints[3].intValue(), ints[4].intValue(), ints[5].intValue()));
                     ((ModuleMine)this.mod).setLimits(this.parent.drone.droneInfo, ints[0].intValue(), ints[1].intValue(), ints[2].intValue(), ints[3].intValue(), ints[4].intValue(), ints[5].intValue());
                     setLimitTexts();
                 }
@@ -427,15 +428,29 @@ public class ModuleMine
             else if (button.id == 2)
             {
                 PacketDispatcher.sendToServer(new PacketDroneSetMineLimits(this.parent.drone, true, 0, 0, 0, 0, 0, 0));
-                ((ModuleMine)this.mod).removeLimits(this.parent.drone.droneInfo);
-                ints = this.textFields;a = ints.length;
-                for (s = 0; s < a; s++)
+                ((ModuleMine)this.mod).removeLimits((this.parent.drone.droneInfo));
+                txtfieldList = this.textFields; a = txtfieldList.length;
+                for (b = 0; b < a; b++)
                 {
-                    GuiTextField txtf = ints[s];
+                    GuiTextField txtf = txtfieldList[b];
 
                     txtf.setText("");
                 }
             }
+            /*
+            else if (button.id == 2)
+            {
+                PacketDispatcher.sendToServer(new PacketDroneSetMineLimits(this.parent.drone, true, 0, 0, 0, 0, 0, 0));
+                ((ModuleMine)this.mod).removeLimits(this.parent.drone.droneInfo);
+                ints = this.textFields;a = ints.length;
+                for (b = 0; b < a; b++)
+                {
+                    GuiTextField txtf = ints[b];
+
+                    txtf.setText("");
+                }
+            }
+            */
             else if (button.id == 3)
             {
                 int limitRange = ModuleMine.this.getRange(this.parent.drone);
