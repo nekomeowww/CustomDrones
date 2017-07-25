@@ -1,6 +1,6 @@
 [
 {
-  "modid": "CustomDrones",
+  "modid": "drones",
   "name": "CustomDrones",
   "description": "This mod aims to add fully functioning drones to aid the lovely players (that's you) with all kinds of stuffs.",
   "version": "${version}",
@@ -8,7 +8,7 @@
   "url": "https://github.com/nekomeowww/CustomDrones/",
   "updateUrl": "https://github.com/nekomeowww/CustomDrones/releases",
   "authorList": ["nekomeowww","WilliamEz"],
-  "credits": "FML-Dev, NekoMeowww, WilliamEz",
+  "credits": "FML-Dev, NekoMeowww, Neko Matryoshika, WilliamEz",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
