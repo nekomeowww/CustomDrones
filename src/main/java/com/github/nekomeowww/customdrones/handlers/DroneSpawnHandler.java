@@ -155,7 +155,7 @@ public class DroneSpawnHandler
 
         public SpawnDroneEntry(Class<? extends EntityDroneMob> entityclassIn, int weight, int groupCountMin, int groupCountMax)
         {
-            super(weight, groupCountMin, groupCountMax);
+            super(entityclassIn, weight, groupCountMin, groupCountMax);
             this.droneClass = entityclassIn;
             this.entityClass = entityclassIn;
         }
