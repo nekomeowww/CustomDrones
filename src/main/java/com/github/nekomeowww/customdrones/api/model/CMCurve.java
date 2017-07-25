@@ -113,7 +113,9 @@ public class CMCurve
     public double getTotalLength(boolean arched)
     {
         double length = 0.0D;
+        //
         int a;
+        CMArch[] b;
         Vec3d thisVec;
         Vec3d nextVec;
         if (!arched)
@@ -125,16 +127,18 @@ public class CMCurve
                 length += fromTo(thisVec, nextVec).lengthVector();
             }
         }
+        /*
         else
         {
-            a = this.arches;thisVec = a.length;
+            b = this.arches;thisVec = b.length;
             for (nextVec = 0; nextVec < thisVec; nextVec++)
             {
-                CMArch arch = a[nextVec];
+                CMArch arch = b[nextVec];
 
                 length += arch.totalSegmentLength();
             }
         }
+        */
         return length;
     }
 
