@@ -2,24 +2,19 @@ package com.github.nekomeowww.customdrones.gui;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.ResourceLocation;
 import com.github.nekomeowww.customdrones.CustomDrones;
-import com.github.nekomeowww.customdrones.CustomDrones.RecipeType;
 import com.github.nekomeowww.customdrones.api.gui.GuiContainerPanel;
 import com.github.nekomeowww.customdrones.api.gui.PI;
 import com.github.nekomeowww.customdrones.api.gui.PIItemStack;
@@ -32,7 +27,7 @@ import com.github.nekomeowww.customdrones.network.server.PacketCrafter;
 public class GuiCrafter
         extends GuiContainerPanel
 {
-    public LinkedHashMap<ItemStack, LinkedList<ItemStack>> currentRecipes = new LinkedHashMap();
+    public LinkedHashMap<ItemStack, LinkedList<ItemStack>> currentRecipes = new LinkedHashMap<>();
     public InventoryPlayer invp;
     public Panel panelTypes;
     public Panel panelOutputs;
@@ -144,10 +139,10 @@ public class GuiCrafter
             if (comeout != null)
             {
                 comeout.stackSize *= count;
-                List<ItemStack> requirements = new ArrayList();
-                for (Iterator localIterator = this.panelRecipes.items.iterator(); localIterator.hasNext();)
+                List<ItemStack> requirements = new ArrayList<>();
+                for (Iterator<PI> localIterator = this.panelRecipes.items.iterator(); localIterator.hasNext();)
                 {
-                    pi = (PI)localIterator.next();
+                    pi = localIterator.next();
                     if ((pi instanceof PIItemStackRequirement))
                     {
                         ItemStack isr = ((PIItemStackRequirement)pi).is.copy();
@@ -155,7 +150,7 @@ public class GuiCrafter
                         requirements.add(isr);
                     }
                 }
-                Object decreaseIndexes = new ArrayList();
+                List<Entry<Byte, Byte>> decreaseIndexes = new ArrayList<Entry<Byte, Byte>>();
                 for (ItemStack decrease : requirements)
                 {
                     int decreaseLeft = decrease.stackSize;
@@ -168,21 +163,20 @@ public class GuiCrafter
                             int canDecrease = invItemStack.stackSize;
                             int hereDecrease = Math.min(decreaseLeft, canDecrease);
                             decreaseLeft -= hereDecrease;
-                            ((List)decreaseIndexes)
-                                    .add(new AbstractMap.SimpleEntry(Byte.valueOf((byte)a), Byte.valueOf((byte)hereDecrease)));
+                            (decreaseIndexes)
+                                    .add(new AbstractMap.SimpleEntry<>(Byte.valueOf((byte)a), Byte.valueOf((byte)hereDecrease)));
                             if (decreaseLeft <= 0) {
-                                break;
                             }
                         }
                     }
                 }
                 if (!this.invp.player.capabilities.isCreativeMode) {
-                    for (Map.Entry<Byte, Byte> entry : (List)decreaseIndexes) {
+                    for (Map.Entry<Byte, Byte> entry : decreaseIndexes) {
                         this.invp.decrStackSize(((Byte)entry.getKey()).byteValue(), ((Byte)entry.getValue()).byteValue());
                     }
                 }
                 EntityHelper.addItemStackToInv(this.invp, comeout.copy());
-                PacketDispatcher.sendToServer(new PacketCrafter(comeout, (List)decreaseIndexes));
+                PacketDispatcher.sendToServer(new PacketCrafter(comeout, decreaseIndexes));
             }
         }
     }
@@ -242,7 +236,7 @@ public class GuiCrafter
             this.panelRecipes.items.clear();
             this.panelRecipes.scroll = 0;
             ItemStack is = ((PIItemStack)pi).is;
-            LinkedList<ItemStack> recipesList = (LinkedList)this.currentRecipes.get(is);
+            LinkedList<ItemStack> recipesList = (LinkedList<ItemStack>)this.currentRecipes.get(is);
             for (ItemStack recipeIS : recipesList)
             {
                 PIItemStackRequirement piRecipe = new PIItemStackRequirement(this.panelRecipes, this.invp, recipeIS, recipeIS.stackSize);
@@ -267,12 +261,12 @@ public class GuiCrafter
     public void loadRecipesWithType(CustomDrones.RecipeType type)
     {
         this.currentRecipes.clear();
-        List<IRecipe> recipesList = (List)CustomDrones.recipes.get(type);
+        List<IRecipe> recipesList = (List<IRecipe>)CustomDrones.recipes.get(type);
         for (int a = 0; a < recipesList.size(); a++)
         {
             IRecipe ir = (IRecipe)recipesList.get(a);
             ItemStack is = ir.getRecipeOutput();
-            LinkedList<ItemStack> requireStacks = new LinkedList();
+            LinkedList<ItemStack> requireStacks = new LinkedList<>();
             if ((ir instanceof ShapedRecipes))
             {
                 ItemStack[] recipeISArray = ((ShapedRecipes)ir).recipeItems;
