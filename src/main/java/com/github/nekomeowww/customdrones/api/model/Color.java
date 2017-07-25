@@ -105,7 +105,7 @@ public class Color
 
     public long toLong()
     {
-        return (this.alpha * 255.0D) << 24 | (this.red * 255.0D) << 16 | (this.green * 255.0D) << 8 | (this.blue * 255.0D);
+        return (long)(this.alpha * 255.0D) << 24 | (long)(this.red * 255.0D) << 16 | (long)(this.green * 255.0D) << 8 | (long)(this.blue * 255.0D);
     }
 
     public int toInt()
