@@ -36,6 +36,7 @@ public class ModuleShooting
         double range = getShootingRange(drone);
         EntityPlayer p = drone.getControllingPlayer();
         List<EntityLivingBase> targets;
+        List<Entity> targets1;
         if (p != null)
         {
             Entity lae = p.getLastAttacker();
@@ -73,9 +74,11 @@ public class ModuleShooting
         }
         if (drone.getDroneAttackTarget() == null)
         {
-            List<Entity> targets = drone.getEntityWorld().getEntitiesInAABBexcluding(drone.getRider(), drone
+            //List<Entity> targets = drone.getEntityWorld().getEntitiesInAABBexcluding(drone.getRider(), drone
+            //        .getEntityBoundingBox().expand(range, range, range), IMob.MOB_SELECTOR);
+            targets1 = drone.getEntityWorld().getEntitiesInAABBexcluding(drone.getRider(), drone
                     .getEntityBoundingBox().expand(range, range, range), IMob.MOB_SELECTOR);
-            for (Entity e : targets) {
+            for (Entity e : targets1) {
                 drone.setDroneAttackTarget(e, false);
             }
         }
@@ -218,9 +221,9 @@ public class ModuleShooting
     public class ModuleShootingGui<T extends Module>
             extends Module.ModuleGui<T>
     {
-        public ModuleShootingGui(T gui)
+        public ModuleShootingGui(GuiDroneStatus gui, T mod)
         {
-            super(mod);
+            super(gui, mod);
         }
 
         public void addDescText(List<String> l)
