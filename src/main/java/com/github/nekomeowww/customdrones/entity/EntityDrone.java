@@ -1039,9 +1039,9 @@ public class EntityDrone
         List<T> list = Lists.newArrayList();
         for (int a = 0; a < world.loadedEntityList.size(); a++)
         {
-            Entity entity = (Entity)world.loadedEntityList.get(a);
-            if ((entity != null) && (entityType.isAssignableFrom(entity.getClass())) && ((filter == null) ||
-                    (filter.apply(entity)))) { //entity is object
+            T entity = (T)world.loadedEntityList.get(a);
+            if ((entity != null) && (entityType.isAssignableFrom(entity.getClass())) && ((filter == null) || (filter.apply(entity))))
+            {
                 list.add(entity);
             }
         }
