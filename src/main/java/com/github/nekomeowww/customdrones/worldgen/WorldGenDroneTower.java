@@ -76,7 +76,7 @@ public class WorldGenDroneTower
                     {
                         world.setBlockState(bp(tminX + 1, tY, tminZ + 1),
                                 Blocks.TORCH.getStateForPlacement(world, bp(tminX + 1, tY, tminZ + 1), EnumFacing.UP, 0.0F, 0.0F, 0.0F, 0, null, null));
-                                //需要:                           World,BlockPos,                             EnumFacing,         float,     float,      float,int,   EntityLivingBase,ItemStack
+                                //Require:                           World,BlockPos,                             EnumFacing,         float,     float,      float,int,   EntityLivingBase,ItemStack
                         world.setBlockState(bp(tmaxX - 1, tY, tminZ + 1),
                                 Blocks.TORCH.getStateForPlacement(world, bp(tmaxX - 1, tY, tminZ + 1), EnumFacing.UP, 0.0F, 0.0F, 0.0F, 0, null, null));
                         world.setBlockState(bp(tmaxX - 1, tY, tmaxZ - 1),
