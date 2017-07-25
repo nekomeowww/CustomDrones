@@ -12,6 +12,7 @@ import com.github.nekomeowww.customdrones.entity.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLiving.SpawnPlacementType;
+import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandom;
@@ -38,7 +39,11 @@ public class DroneSpawnHandler
 
     public static void registerSpawns()
     {
-        addDroneSpawn(null, 100, 1, 1, allBiomes);
+        //1.10.2 2221 Testing 1.6.0-alpha.a1 Output:
+        //java.lang.NullPointerException
+        //at com.github.nekomeowww.customdrones.handlers.DroneSpawnHandler.registerSpawns(DroneSpawnHandler.java:41)
+
+        addDroneSpawn(EntityDroneBaby.class, 100, 1, 1, allBiomes);
         spawnEntryBaby = addDroneSpawn(EntityDroneBaby.class, 100, 1, 8, allBiomes);
         spawnEntryBigBaby = addDroneSpawn(EntityDroneBabyBig.class, 20, 1, 1, allBiomes);
         spawnEntryWildItem = addDroneSpawn(EntityDroneWildItem.class, 80, 1, 5, allBiomes);
@@ -121,8 +126,12 @@ public class DroneSpawnHandler
 
     public static SpawnDroneEntry addDroneSpawn(Class<? extends EntityDroneMob> entityClass, int weightedProb, int min, int max, Biome... biomes)
     {
-        SpawnDroneEntry entry0 = new SpawnDroneEntry(entityClass, weightedProb, min, max);
-        for (Biome biome : biomes)
+        //1.10.2 2221 Testing 1.6.0-alpha.a1 Output:
+        //java.lang.NullPointerException
+        //at com.github.nekomeowww.customdrones.handlers.DroneSpawnHandler.addDroneSpawn(DroneSpawnHandler.java:124)
+
+        SpawnDroneEntry entry0 = new SpawnDroneEntry(entityClass, weightedProb, min, max); //Create a new object "entry0" using SpawnDroneEntry Class
+        for (Biome biome : biomes) //Loop the element biome in biomes list
         {
             if (!droneSpawnList.containsKey(biome)) {
                 droneSpawnList.put(biome, new ArrayList());
@@ -155,6 +164,10 @@ public class DroneSpawnHandler
 
         public SpawnDroneEntry(Class<? extends EntityDroneMob> entityclassIn, int weight, int groupCountMin, int groupCountMax)
         {
+            //1.10.2 2221 Testing 1.6.0-alpha.a1 Output:
+            //java.lang.NullPointerException
+            //at com.github.nekomeowww.customdrones.handlers.DroneSpawnHandler$SpawnDroneEntry.<init>(DroneSpawnHandler.java:158)
+
             super(entityclassIn, weight, groupCountMin, groupCountMax);
             this.droneClass = entityclassIn;
             this.entityClass = entityclassIn;
