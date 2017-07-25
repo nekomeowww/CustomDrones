@@ -73,7 +73,7 @@ public class ClientProxy
         RegHelperClient.registerEntityRenderer(EntityDrone.class);
         RegHelperClient.registerEntityRenderer(EntityDroneBaby.class);
         RegHelperClient.registerEntityRenderer(EntityDroneBabyBig.class);
-        RegHelperClient.registerEntityRenderer(EntityPlasmaShot.class);
+        //RegHelperClient.registerEntityRenderer(EntityPlasmaShot.class);
         RegHelperClient.registerEntityRenderer(EntityHomingBox.class);
         RegHelperClient.registerEntityRenderer(EntityDroneWildItem.class);
     }

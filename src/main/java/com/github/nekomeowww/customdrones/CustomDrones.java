@@ -155,10 +155,10 @@ public class CustomDrones
   public static ItemDroneModule droneModule = (ItemDroneModule)new ItemDroneModule().setCreativeTab(droneTab).setUnlocalizedName("droneModule");
   public static Block crafter = new BlockCrafter().setCreativeTab(droneTab).setUnlocalizedName("crafter");
 
-  //public static Item plasmaGun = new ItemPlasmaGun(false).setCreativeTab(droneTab).setUnlocalizedName("plasmaGun");
-  //public static Item plasmaGunHoming = new ItemPlasmaGun(true).setCreativeTab(droneTab)
-  //.setUnlocalizedName("plasmaGunHoming");
-  //public static Item gunUpgrade = new ItemGunUpgrade().setCreativeTab(droneTab).setUnlocalizedName("gunUpgrade");
+  public static Item plasmaGun = new ItemPlasmaGun(false).setCreativeTab(droneTab).setUnlocalizedName("plasmaGun");
+  public static Item plasmaGunHoming = new ItemPlasmaGun(true).setCreativeTab(droneTab)
+    .setUnlocalizedName("plasmaGunHoming");
+  public static Item gunUpgrade = new ItemGunUpgrade().setCreativeTab(droneTab).setUnlocalizedName("gunUpgrade");
 
   public void registerEntities()
   {
@@ -200,9 +200,9 @@ public class CustomDrones
     RegHelper.registerItem(droneModule);
     RegHelper.registerBlock(crafter);
 
-    //RegHelper.registerItem(plasmaGun);
-    //RegHelper.registerItem(plasmaGunHoming);
-    //RegHelper.registerItem(gunUpgrade);
+    RegHelper.registerItem(plasmaGun);
+    RegHelper.registerItem(plasmaGunHoming);
+    RegHelper.registerItem(gunUpgrade);
   }
 
   public void registerRecipes()
@@ -237,11 +237,11 @@ public class CustomDrones
     addShapeless(new ItemStack(droneScrew), new Object[] { Items.IRON_INGOT, Items.GOLD_INGOT, Items.REDSTONE, cfPlate1 });
     addShapeless(new ItemStack(crafter), new Object[] { Blocks.CRAFTING_TABLE, chip1, case1 });
 
-    //临时禁用Plasma Gun，有尚未解决的技术问题
-    //addRecipe(new ItemStack(plasmaGun), new Object[] { "COE", "  H", Character.valueOf('C'), case1, Character.valueOf('O'), core1, Character.valueOf('E'), droneBit, Character.valueOf('H'), chip1 });
-    //addRecipe(new ItemStack(plasmaGunHoming), new Object[] { "COE", "  H", Character.valueOf('C'), case1, Character.valueOf('O'), core1, Character.valueOf('E'), new ItemStack(droneBit, 1, 1),
-    //Character.valueOf('H'), chip1 });
-    //addShapeless(new ItemStack(plasmaGunHoming), new Object[] { plasmaGun, new ItemStack(droneBit, 1, 1) });
+    //Temporarily disabled the Plasma Gun and Gun Upgrade
+    addRecipe(new ItemStack(plasmaGun), new Object[] { "COE", "  H", Character.valueOf('C'), case1, Character.valueOf('O'), core1, Character.valueOf('E'), droneBit, Character.valueOf('H'), chip1 });
+    addRecipe(new ItemStack(plasmaGunHoming), new Object[] { "COE", "  H", Character.valueOf('C'), case1, Character.valueOf('O'), core1, Character.valueOf('E'), new ItemStack(droneBit, 1, 1),
+    Character.valueOf('H'), chip1 });
+    addShapeless(new ItemStack(plasmaGunHoming), new Object[] { plasmaGun, new ItemStack(droneBit, 1, 1) });
   }
 
   public void registerModuleRecipes()
