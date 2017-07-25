@@ -78,13 +78,13 @@ public class DroneWeightedLists
 
         public WeightedItemStack(ItemStack i)
         {
-            super();
+            super(0);
             this.is = i;
         }
 
         public WeightedItemStack(ItemStack i, int itemWeightIn)
         {
-            super();
+            super(itemWeightIn);
             this.is = i;
         }
 
