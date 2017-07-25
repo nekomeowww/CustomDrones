@@ -20,6 +20,7 @@ import com.github.nekomeowww.customdrones.drone.DroneWeightedLists;
 import com.github.nekomeowww.customdrones.drone.DroneWeightedLists.WeightedItemStack;
 import com.github.nekomeowww.customdrones.entity.EntityDroneBaby;
 import com.github.nekomeowww.customdrones.entity.EntityDroneBabyBig;
+import com.github.nekomeowww.customdrones.worldgen.WorldGen;
 
 public class WorldGenDroneTower
         extends WorldGen
@@ -74,13 +75,14 @@ public class WorldGenDroneTower
                     if (bulge == maxBulge)
                     {
                         world.setBlockState(bp(tminX + 1, tY, tminZ + 1),
-                                Blocks.TORCH.getStateForPlacement(world, bp(tminX + 1, tY, tminZ + 1), EnumFacing.UP, 0.0F, 0.0F, 0.0F, 0, null));
+                                Blocks.TORCH.getStateForPlacement(world, bp(tminX + 1, tY, tminZ + 1), EnumFacing.UP, 0.0F, 0.0F, 0.0F, 0, null, null));
+                                //需要:                           World,BlockPos,                             EnumFacing,         float,     float,      float,int,   EntityLivingBase,ItemStack
                         world.setBlockState(bp(tmaxX - 1, tY, tminZ + 1),
-                                Blocks.TORCH.getStateForPlacement(world, bp(tmaxX - 1, tY, tminZ + 1), EnumFacing.UP, 0.0F, 0.0F, 0.0F, 0, null));
+                                Blocks.TORCH.getStateForPlacement(world, bp(tmaxX - 1, tY, tminZ + 1), EnumFacing.UP, 0.0F, 0.0F, 0.0F, 0, null, null));
                         world.setBlockState(bp(tmaxX - 1, tY, tmaxZ - 1),
-                                Blocks.TORCH.getStateForPlacement(world, bp(tmaxX - 1, tY, tmaxZ - 1), EnumFacing.UP, 0.0F, 0.0F, 0.0F, 0, null));
+                                Blocks.TORCH.getStateForPlacement(world, bp(tmaxX - 1, tY, tmaxZ - 1), EnumFacing.UP, 0.0F, 0.0F, 0.0F, 0, null, null));
                         world.setBlockState(bp(tminX + 1, tY, tmaxZ - 1),
-                                Blocks.TORCH.getStateForPlacement(world, bp(tminX + 1, tY, tmaxZ - 1), EnumFacing.UP, 0.0F, 0.0F, 0.0F, 0, null));
+                                Blocks.TORCH.getStateForPlacement(world, bp(tminX + 1, tY, tmaxZ - 1), EnumFacing.UP, 0.0F, 0.0F, 0.0F, 0, null, null));
                     }
                 }
                 genBox(world, bp(minX, fminY, minZ), bp(maxX, fminY, maxZ), blocks.secondary, new Filters.FilterReplaceable(true));
