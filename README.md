@@ -11,18 +11,24 @@ This is the CustomDrones mod of Minecraft that @WilliamEz has made before.
 4. Open you IDE and code!
 
 ## Todo List
+- [x] Release for 1.10.2
 - [x] ```func``` and ```field``` to actuall func name and field name
 - [x] Code migration for com.github.nekomeowww.\*   
 - [x] Re-organize the ```williamez-src``` branch
 - [x] Code correction
 - [x] Project Organized
 - [ ] Wiki translation
-- [ ] Plan for 1.11.\*
-- [ ] Plan for 1.12.\*
+- [x] Plan for 1.11.\*
+- [x] Plan for 1.12.\*
 
 ## Progress Update
 
 ##### 2017-07-26
+- Thanks to AileRozy and Neko Matryoshika.
+- Released the [1.6.1-beta](https://github.com/nekomeowww/CustomDrones/releases/tag/1.6.1-beta)
+- Test Passed.
+- Preparing for Test on 1.6.1-alpha
+- Test Failure.
 - Preparing for Test on 1.6.0-alpha.a2
 - Code correction completed.
 - Second Stage of code correction started.
