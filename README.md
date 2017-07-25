@@ -25,13 +25,18 @@ The development branch has the highest priority of updating info, and code; if y
 
 ### Plan
 
-The current plan was make this work on ```forge-1.10.2-12.18.3.2221``` runtime environment. Even support up to ```forge-1.12 - 14.21.1.2387```. I may transfer this repo to a organization which called "CustomDrones".
-As for the future plan, I would like to consider to contact the original creator.
+Preparing for 1.11 and 1.12.
+And fix the bugs.
+
+~The current plan was make this work on ```forge-1.10.2-12.18.3.2221``` runtime environment. Even support up to ```forge-1.12 - 14.21.1.2387```. I may transfer this repo to a organization which called "CustomDrones".
+As for the future plan, I would like to consider to contact the original creator.~
 
 ### Progress
 
-I am now trying to take notes on the source code which I just pushed [here](https://github.com/nekomeowww/CustomDrones/commit/2816a9458a14c2ad9f0d45bfde1becbde07ef37d).
-In order to migrate all the code from his source and pack it with my code style, this may take upto a week or less (if my current plan is right).
+Decompiling and code correction has finished a few hours ago, and the Beta release is finally here.
+
+~I am now trying to take notes on the source code which I just pushed [here](https://github.com/nekomeowww/CustomDrones/commit/2816a9458a14c2ad9f0d45bfde1becbde07ef37d).
+In order to migrate all the code from his source and pack it with my code style, this may take upto a week or less (if my current plan is right).~
 
 ## Translation of Wiki
 
@@ -52,3 +57,8 @@ If you are interested in building a new Wiki Page project, we may need to discus
 
 #### 繁體中文 Traditional Chinese
 - [@AileRozy](https://github.com/AileRozy)
+
+### Code
+
+#### Code Correction
+- [@NekoMatryMatryoshika]()
