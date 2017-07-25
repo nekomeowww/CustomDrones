@@ -22,6 +22,8 @@ import com.github.nekomeowww.customdrones.drone.DroneInfo;
 import com.github.nekomeowww.customdrones.entity.EntityDrone;
 import com.github.nekomeowww.customdrones.gui.GuiDroneStatus;
 
+import javax.annotation.Nullable;
+
 public class ModuleDe
         extends Module
 {
@@ -42,14 +44,14 @@ public class ModuleDe
         double strength;
         if (projectile)
         {
-            List<Entity> projectiles = drone.getEntityWorld().getEntitiesWithinAABB(Entity.class, drone
-                    .getEntityBoundingBox().expandXyz(range), new Predicate()
+            List<Entity> projectiles = drone.getEntityWorld().getEntitiesWithinAABB(Entity.class, drone.getEntityBoundingBox().expandXyz(range), new Predicate<Entity>()
             {
                 public boolean apply(Entity input)
                 {
-                    return input instanceof IProjectile;
+                    return  input instanceof IProjectile;
                 }
             });
+
             deflectMid = EntityHelper.getCenterVec(drone.getControllingPlayer() != null ? drone.getControllingPlayer() : drone);
             strength = getStrength(drone);
             for (Entity e : projectiles)
@@ -167,9 +169,9 @@ public class ModuleDe
         boolean fire;
         boolean explosion;
 
-        public ModuleDeGui(T gui)
+        public ModuleDeGui(GuiDroneStatus gui, T mod)
         {
-            super(mod);
+            super(gui, mod);
             this.projectile = mod.canFunctionAs(Module.deflect);
             this.fire = mod.canFunctionAs(Module.deflame);
             this.explosion = mod.canFunctionAs(Module.deexplosion);
