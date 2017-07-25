@@ -24,7 +24,7 @@ This is the CustomDrones mod of Minecraft that @WilliamEz has made before.
 ## Progress Update
 
 ##### 2017-07-26
-- Thanks to AileRozy and Neko Matryoshika.
+- Thanks to AileRozy and Neko Matryoshka.
 - Released the [1.6.1-beta](https://github.com/nekomeowww/CustomDrones/releases/tag/1.6.1-beta)
 - Test Passed.
 - Preparing for Test on 1.6.1-alpha
@@ -37,13 +37,13 @@ This is the CustomDrones mod of Minecraft that @WilliamEz has made before.
 ##### 2017-07-25
 - Preparing for Test - Stage: alpha test.
 - Few changed files commited to GitHub, [find them here](https://github.com/nekomeowww/CustomDrones/commits/dev-1.10.2).
-- Finished the whole project code correction. Credit to __Neko Matryoshika__.
+- Finished the whole project code correction. Credit to __Neko Matryoshka__.
 - Finished the translation of Traditional Chinese and Merged the [pull request](https://github.com/nekomeowww/CustomDrones/pull/1).
 - Traditional Chinese Translation credit to [@AileRozy](https://github.com/AileRozy)
 - Started the translation of Traditional Chinese into file: ```zh_TW.lang```
 - Committed to 129 files changes. [Find them here](https://github.com/nekomeowww/CustomDrones/commits/dev-1.10.2)
 - File decompiling error fixed. Committed to changes.
-- Finished the ```func``` and ```field``` correction. A mini tool used, credit to my friend __Neko Matryoshika__
+- Finished the ```func``` and ```field``` correction. A mini tool used, credit to my friend __Neko Matryoshka__
 
 ##### 2017-07-24
 - Committed to 276 files changes. [Find them here](https://github.com/nekomeowww/CustomDrones/commits/dev-1.10.2)
