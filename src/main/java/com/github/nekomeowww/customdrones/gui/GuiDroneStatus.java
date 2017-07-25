@@ -36,7 +36,7 @@ public class GuiDroneStatus
     {
         super.initGui();
         this.buttonList.add(new GuiButton(0, this.width / 2 - 90, this.height / 2 - 115, 90, 20, "Flyer screen"));
-        GuiButton b = new GuiButton(1, this.width / 2 - 0, this.height / 2 - 115, 90, 20, "Remote screen");
+        GuiButton b = new GuiButton(1, this.width / 2, this.height / 2 - 115, 90, 20, "Remote screen");
         b.enabled = false;
         this.buttonList.add(b);
 
