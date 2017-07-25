@@ -48,12 +48,12 @@ import com.github.nekomeowww.customdrones.item.ItemGunUpgrade.GunUpgrade;
 import com.github.nekomeowww.customdrones.item.ItemPlasmaGun;
 import com.github.nekomeowww.customdrones.network.PacketDispatcher;
 
-@Mod(name="Custom Drones", modid="drones", version="1.10.2-1.5.0", guiFactory="com.github.nekomeowww.customdrones.GuiFactory", acceptedMinecraftVersions="[1.10.2]")
+@Mod(name="Custom Drones", modid="drones", version="1.6.1-beta", guiFactory="com.github.nekomeowww.customdrones.GuiFactory", acceptedMinecraftVersions="[1.10.2]")
 public class CustomDrones
 {
   public static final String MODNAME = "Custom Drones";
   public static final String MODID = "drones";
-  public static final String VERSION = "1.10.2-1.5.0";
+  public static final String VERSION = "1.6.1-beta";
   @Mod.Instance("drones")
   public static CustomDrones instance;
   @SidedProxy(clientSide="com.github.nekomeowww.customdrones.ClientProxy", serverSide="com.github.nekomeowww.customdrones.CommonProxy")
