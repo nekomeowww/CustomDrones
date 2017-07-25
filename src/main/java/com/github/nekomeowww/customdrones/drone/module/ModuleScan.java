@@ -61,9 +61,9 @@ public class ModuleScan
         Map<String, Integer> entitiesScan = new HashMap();
         Map<String, Integer> oresScan = new HashMap();
 
-        public ModuleScanGui(T gui)
+        public ModuleScanGui(GuiDroneStatus gui, T mod)
         {
-            super(mod);
+            super(gui, mod);
             this.mob = mod.canFunctionAs(Module.mobScan1);
             this.ore = mod.canFunctionAs(Module.oreScan);
             this.range = ((this.parent.drone.droneInfo.chip + mod.level) * 2);

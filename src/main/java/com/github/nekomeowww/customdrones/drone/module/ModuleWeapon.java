@@ -42,9 +42,9 @@ public class ModuleWeapon
     public class ModuleWeaponGui<T extends Module>
             extends Module.ModuleGui<T>
     {
-        public ModuleWeaponGui(T gui)
+        public ModuleWeaponGui(GuiDroneStatus gui, T mod)
         {
-            super(mod);
+            super(gui, mod);
         }
 
         public void addDescText(List<String> l)

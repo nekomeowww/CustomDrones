@@ -114,9 +114,9 @@ public class ModuleCollect
     {
         public GuiButton buttonTransfer;
 
-        public ModuleCollectGui(T gui)
+        public ModuleCollectGui(GuiDroneStatus gui, T mod)
         {
-            super(mod);
+            super(gui, mod);
         }
 
         public void initGui()

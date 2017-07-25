@@ -52,9 +52,9 @@ public class ModuleBatterySave
         double prevCost;
         double saved;
 
-        public ModuleBatterySaveGui(T gui)
+        public ModuleBatterySaveGui(GuiDroneStatus gui, T mod)
         {
-            super(mod);
+            super(gui, mod);
         }
 
         public void addDescText(List<String> l)

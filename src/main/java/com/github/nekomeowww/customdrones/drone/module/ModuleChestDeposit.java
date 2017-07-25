@@ -107,7 +107,7 @@ public class ModuleChestDeposit
     {
         public ModuleChestDepositGui(GuiDroneStatus gui, Module mod)
         {
-            super(mod);
+            super(gui, mod);
         }
     }
 }

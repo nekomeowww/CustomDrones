@@ -165,9 +165,9 @@ public class ModuleMovement
     public class ModuleMovementGui<T extends Module>
             extends Module.ModuleGui<T>
     {
-        public ModuleMovementGui(T gui)
+        public ModuleMovementGui(GuiDroneStatus gui, T mod)
         {
-            super(mod);
+            super(gui, mod);
         }
 
         public void addDescText(List<String> l)

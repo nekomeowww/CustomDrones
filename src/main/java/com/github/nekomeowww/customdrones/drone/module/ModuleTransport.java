@@ -89,9 +89,9 @@ public class ModuleTransport
     {
         boolean transportEntity;
 
-        public ModuleTransportGui(T gui)
+        public ModuleTransportGui(GuiDroneStatus gui, T mod)
         {
-            super(mod);
+            super(gui, mod);
             this.transportEntity = ((mod == Module.nplayerTransport) || (mod == Module.playerTransport) || (mod == Module.multiTransport));
         }
 

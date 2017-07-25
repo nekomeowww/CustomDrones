@@ -109,9 +109,9 @@ public class ModuleRecharge
     public class ModuleRechargeGui<T extends Module>
             extends Module.ModuleGui<T>
     {
-        public ModuleRechargeGui(T gui)
+        public ModuleRechargeGui(GuiDroneStatus gui, T mod)
         {
-            super(mod);
+            super(gui, mod);
         }
 
         public void addDescText(List<String> l)

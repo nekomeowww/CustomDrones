@@ -33,9 +33,9 @@ public class ModuleCamera
     public class ModuleCameraGui<T extends Module>
             extends Module.ModuleGui<T>
     {
-        public ModuleCameraGui(T gui)
+        public ModuleCameraGui(GuiDroneStatus gui, T mod)
         {
-            super(mod);
+            super(gui, mod);
         }
 
         public void initGui()

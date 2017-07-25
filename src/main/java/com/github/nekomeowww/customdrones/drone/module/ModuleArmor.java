@@ -7,6 +7,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import com.github.nekomeowww.customdrones.drone.DroneInfo;
 import com.github.nekomeowww.customdrones.entity.EntityDrone;
 import com.github.nekomeowww.customdrones.gui.GuiDroneStatus;
+import com.github.nekomeowww.customdrones.drone.module.Module;
 
 public class ModuleArmor
         extends Module
@@ -39,9 +40,9 @@ public class ModuleArmor
     public class ModuleArmorGui<T extends Module>
             extends Module.ModuleGui<T>
     {
-        public ModuleArmorGui(T gui)
+        public ModuleArmorGui(GuiDroneStatus gui, T mod)
         {
-            super(mod);
+            super(gui, mod);
         }
 
         public void addDescText(List<String> l)

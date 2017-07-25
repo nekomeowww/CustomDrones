@@ -156,9 +156,9 @@ public class ModuleReturn
     public class ModuleReturnGui<T extends Module>
             extends Module.ModuleGui<T>
     {
-        public ModuleReturnGui(T gui)
+        public ModuleReturnGui(GuiDroneStatus gui, T mod)
         {
-            super(mod);
+            super(gui, mod);
         }
 
         public void initGui()
