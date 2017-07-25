@@ -1,6 +1,8 @@
 package com.github.nekomeowww.customdrones.api.helpers;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -9,8 +11,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.ITextComponent;
 
 public class EntityHelper
 {
@@ -18,7 +18,7 @@ public class EntityHelper
     public static void addChat(EntityPlayer p, int worldSide, String chat)
     {
         if ((worldSide == 0) || ((worldSide == 1) && ((p instanceof EntityPlayerMP))) || ((worldSide == 2) && ((p instanceof EntityPlayerMP)))) {
-            p.sendStatusMessage(new TextComponentString(chat));
+            p.addChatComponentMessage(new TextComponentString(chat));
         }
     }
 
