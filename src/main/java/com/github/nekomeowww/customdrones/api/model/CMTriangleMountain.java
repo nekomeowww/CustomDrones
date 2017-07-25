@@ -1,14 +1,14 @@
 package com.github.nekomeowww.customdrones.api.model;
 
 import java.util.*;
-import java.util.Map.Entry;
+
 import net.minecraft.util.math.Vec3d;
 import com.github.nekomeowww.customdrones.api.helpers.VecHelper;
 
 public class CMTriangleMountain
         extends CMBase
 {
-    public List<List<CMTriangle>> trianglesLayers = new ArrayList();
+    public List<List<CMTriangle>> trianglesLayers = new ArrayList<>();
     public CMPolygon topCap;
     public CMPolygon bottomCap;
 
@@ -59,10 +59,10 @@ public class CMTriangleMountain
 
     public List<CMTriangle> makeTriangles(List<Vec3d> moreLayer, List<Vec3d> lessLayer)
     {
-        List<CMTriangle> triangles = new ArrayList();
+        List<CMTriangle> triangles = new ArrayList<>();
         Vec3d innerPoint = VecHelper.getMidList(moreLayer);
-        LinkedHashMap<Integer, List<Integer>> moreToLess = new LinkedHashMap();
-        LinkedHashMap<Integer, List<Integer>> lessToMore = new LinkedHashMap();
+        LinkedHashMap<Integer, List<Integer>> moreToLess = new LinkedHashMap<>();
+        LinkedHashMap<Integer, List<Integer>> lessToMore = new LinkedHashMap<>();
         for (int a = 0; a < lessLayer.size(); a++)
         {
             Vec3d v1InLess = (Vec3d)lessLayer.get(a);
@@ -78,14 +78,14 @@ public class CMTriangleMountain
             lessv1ToMore.add(closestMoreIndex);
             lessToMore.put(Integer.valueOf(a), lessv1ToMore);
         }
-        List<Integer> firstMoresConnectedToLess = new ArrayList(moreToLess.keySet());
-        List<Integer> firstLessConnectedToMore = new ArrayList(lessToMore.keySet());
+        List<Integer> firstMoresConnectedToLess = new ArrayList<>(moreToLess.keySet());
+        List<Integer> firstLessConnectedToMore = new ArrayList<>(lessToMore.keySet());
         for (int a = 0; a < firstMoresConnectedToLess.size(); a++)
         {
             Integer thisMoreHasConnection = (Integer)firstMoresConnectedToLess.get(a);
-            List<Integer> thisMoreConnections = (List)moreToLess.get(thisMoreHasConnection);
+            List<Integer> thisMoreConnections = (List<Integer>)moreToLess.get(thisMoreHasConnection);
             Integer nextMoreHasConnection = (Integer)firstMoresConnectedToLess.get((a + 1) % firstMoresConnectedToLess.size());
-            List<Integer> nextMoreConnections = (List)moreToLess.get(nextMoreHasConnection);
+            List<Integer> nextMoreConnections = (List<Integer>)moreToLess.get(nextMoreHasConnection);
             if ((nextMoreHasConnection.intValue() - thisMoreHasConnection.intValue() <= 1) ||
                     (thisMoreHasConnection.intValue() - nextMoreHasConnection.intValue() == moreLayer.size() - 1))
             {
@@ -106,9 +106,9 @@ public class CMTriangleMountain
                 for (int b = 0; b < firstLessConnectedToMore.size(); b++)
                 {
                     Integer thisLessHasConnection = (Integer)firstLessConnectedToMore.get(b);
-                    List<Integer> thisLessConnections = (List)lessToMore.get(thisLessHasConnection);
+                    List<Integer> thisLessConnections = (List<Integer>)lessToMore.get(thisLessHasConnection);
                     Integer nextLessHasConnection = (Integer)firstLessConnectedToMore.get((b + 1) % firstLessConnectedToMore.size());
-                    List<Integer> nextLessConnections = (List)lessToMore.get(nextLessHasConnection);
+                    List<Integer> nextLessConnections = (List<Integer>)lessToMore.get(nextLessHasConnection);
                     if ((thisLessConnections.contains(thisMoreHasConnection)) &&
                             (nextLessConnections.contains(nextMoreHasConnection)))
                     {
@@ -127,17 +127,17 @@ public class CMTriangleMountain
                         int amidMore = amidMoreUnlocal >= moreLayer.size() ? amidMoreUnlocal % moreLayer.size() : amidMoreUnlocal;
                         if ((amidIndex > 0) && (amidIndex < amidMaxIndex))
                         {
-                            List<Integer> newSet = new ArrayList();
+                            List<Integer> newSet = new ArrayList<>();
                             if (amidIndex <= amidMaxIndex / 2)
                             {
                                 newSet.add(lessConnectedToThisMore);
-                                List<Integer> theList = (List)lessToMore.get(lessConnectedToThisMore);
+                                List<Integer> theList = (List<Integer>)lessToMore.get(lessConnectedToThisMore);
                                 theList.add(Integer.valueOf(amidMore));
                             }
                             if (amidIndex >= amidMaxIndex / 2)
                             {
                                 newSet.add(lessConnectedToNextMore);
-                                List<Integer> theList = (List)lessToMore.get(lessConnectedToNextMore);
+                                List<Integer> theList = (List<Integer>)lessToMore.get(lessConnectedToNextMore);
                                 theList.add(Integer.valueOf(amidMore));
                             }
                             moreToLess.put(Integer.valueOf(amidMore), newSet);
@@ -148,7 +148,7 @@ public class CMTriangleMountain
 
                             theSet.add(lessConnectedToThisMore);
                             moreToLess.put(Integer.valueOf(amidMore), theSet);
-                            List<Integer> theList = (List)lessToMore.get(lessConnectedToThisMore);
+                            List<Integer> theList = (List<Integer>)lessToMore.get(lessConnectedToThisMore);
                             theList.add(Integer.valueOf(amidMore));
                         }
                         amidIndex++;
@@ -160,7 +160,7 @@ public class CMTriangleMountain
         {
             Integer moreIndex = (Integer)moreToLessEntry.getKey();
             Vec3d moreVertex = (Vec3d)moreLayer.get(moreIndex.intValue());
-            List<Integer> lessList = (List)moreToLessEntry.getValue();
+            List<Integer> lessList = (List<Integer>)moreToLessEntry.getValue();
             for (int a = 0; a < lessList.size() - 1; a++)
             {
                 Vec3d lessVertex1 = (Vec3d)lessLayer.get(((Integer)lessList.get(a)).intValue());
@@ -173,7 +173,7 @@ public class CMTriangleMountain
         {
             Integer lessIndex = (Integer)lessToMoreEntry.getKey();
             Vec3d lessVertex = (Vec3d)lessLayer.get(lessIndex.intValue());
-            List<Integer> moreList = (List)lessToMoreEntry.getValue();
+            List<Integer> moreList = (List<Integer>)lessToMoreEntry.getValue();
             for (int a = 0; a < moreList.size() - 1; a++)
             {
                 Vec3d moreVertex1 = (Vec3d)moreLayer.get(((Integer)moreList.get(a)).intValue());
@@ -187,6 +187,7 @@ public class CMTriangleMountain
 
     public void setPaletteIndexColor(String s, Color c, boolean setFull)
     {
+        CMTriangle triangle;
         List<String> pIndexes = getPaletteIndexes();
         for (int a = 0; a < pIndexes.size(); a++)
         {
@@ -196,18 +197,17 @@ public class CMTriangleMountain
                 if ((a == 0) && (this.bottomCap != null)) {
                     this.bottomCap.setColor(c);
                 }
-                Iterator localIterator;
+                Iterator<CMTriangle> localIterator;
                 if (a < this.trianglesLayers.size())
                 {
-                    List<CMTriangle> triangles = (List)this.trianglesLayers.get(a);
+                    List<CMTriangle> triangles = (List<CMTriangle>)this.trianglesLayers.get(a);
                     for (localIterator = triangles.iterator(); localIterator.hasNext();)
                     {
-                        triangle = (CMTriangle)localIterator.next();
+                        triangle = localIterator.next();
 
                         triangle.setColor(c);
                     }
                 }
-                CMTriangle triangle;
                 if (a == pIndexes.size() - 1)
                 {
                     if (this.topCap != null) {
@@ -215,9 +215,9 @@ public class CMTriangleMountain
                     }
                     for (int b = a + 1; b < this.trianglesLayers.size(); b++)
                     {
-                        Object triangles = (List)this.trianglesLayers.get(b);
-                        for (CMTriangle triangle : (List)triangles) {
-                            triangle.setColor(c);
+                        Object triangles = (List<CMTriangle>)this.trianglesLayers.get(b);
+                        for (CMTriangle triangleTarget : (List<CMTriangle>)triangles) {
+                            triangleTarget.setColor(c);
                         }
                     }
                 }
@@ -230,7 +230,7 @@ public class CMTriangleMountain
         super.render();
         for (int a = 0; a < this.trianglesLayers.size(); a++)
         {
-            List<CMTriangle> triangles = (List)this.trianglesLayers.get(a);
+            List<CMTriangle> triangles = (List<CMTriangle>)this.trianglesLayers.get(a);
             for (CMTriangle triangle : triangles) {
                 triangle.fullRender();
             }
