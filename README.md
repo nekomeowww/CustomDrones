@@ -11,13 +11,14 @@ This is the CustomDrones mod of Minecraft that @WilliamEz has made before.
 4. Open you IDE and code!
 
 ## Todo List
+- [ ] Fix [issue#2](https://github.com/nekomeowww/CustomDrones/issues/2)
+- [ ] Wiki translation to zh_TW and zh_CN
 - [x] Release for 1.10.2
 - [x] ```func``` and ```field``` to actuall func name and field name
 - [x] Code migration for com.github.nekomeowww.\*   
 - [x] Re-organize the ```williamez-src``` branch
 - [x] Code correction
 - [x] Project Organized
-- [ ] Wiki translation
 - [x] Plan for 1.11.\*
 - [x] Plan for 1.12.\*
 
