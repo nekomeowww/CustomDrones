@@ -24,7 +24,7 @@ This is the CustomDrones mod of Minecraft that @WilliamEz has made before.
 ## Progress Update
 
 ##### 2017-07-26
-- 1.6.1 Beta B3 has client error, recorded to issue#2.
+- 1.6.1 Beta B3 has client error, recorded to [issue#2](https://github.com/nekomeowww/CustomDrones/issues/2).
 - Client crash when loading into world in Singleplayer mode for ```1.6.1-beta.b3``` and ```1.6.1-beta.c2```.
 - 1.6.1 Beta Release to B3
 - Fixed the crash on commit [94a6afd](https://github.com/nekomeowww/CustomDrones/commit/94a6afd7df13ada007441aae6bedf44600f24264), releaseing new beta version
