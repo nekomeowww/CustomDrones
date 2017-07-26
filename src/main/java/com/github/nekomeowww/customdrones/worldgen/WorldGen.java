@@ -68,6 +68,8 @@ public class WorldGen
 
     public void generate(Random rnd, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider)
     {
+        //Debug
+        //System.out.println("Generator is ok");
         int posX = chunkX * 16 + rnd.nextInt(16);
         int posZ = chunkZ * 16 + rnd.nextInt(16);
         if (((chunkGenerator instanceof ChunkProviderOverworld)) || ((chunkGenerator instanceof ChunkProviderHell))) {
