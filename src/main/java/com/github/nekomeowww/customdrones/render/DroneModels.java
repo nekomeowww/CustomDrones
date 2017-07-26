@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderManager;
 import com.github.nekomeowww.customdrones.drone.DroneAppearance;
 import com.github.nekomeowww.customdrones.drone.DroneInfo;
@@ -55,9 +57,18 @@ public class DroneModels
 
     public static void init(RenderManager rm)
     {
+        if(instance == null){
+            return;
+        }
         if ((instance == null) || (instance.rm != rm)) {
             instance = new DroneModels(rm);
         }
+    }
+
+    static
+    {
+        //init();
+        init(Minecraft.getMinecraft().getRenderManager());
     }
 
     public static class ModelProp
