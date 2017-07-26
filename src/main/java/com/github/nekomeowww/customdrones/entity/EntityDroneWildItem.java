@@ -58,6 +58,14 @@ public class EntityDroneWildItem
 
     public void initSpawnSetAppearance()
     {
+        //Debug
+        /*
+        if(DroneModels.instance == null)
+        {
+            System.out.println("Instance Error");
+            return;
+        }
+        */
         this.droneInfo.appearance.modelID = DroneModels.instance.wildItem.id;
         super.initSpawnSetAppearance();
     }
