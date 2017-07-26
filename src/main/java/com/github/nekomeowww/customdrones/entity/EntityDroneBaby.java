@@ -40,7 +40,8 @@ public class EntityDroneBaby
 
     public void initDroneInfo()
     {
-        if ((this.droneInfo.casing == 1) && (this.droneInfo.chip == 1) && (this.droneInfo.core == 1) && (this.droneInfo.engine == 1)) {
+        if ((this.droneInfo.casing == 1) && (this.droneInfo.chip == 1) && (this.droneInfo.core == 1) && (this.droneInfo.engine == 1))
+        {
             randomizeDroneParts();
         }
         super.initDroneInfo();
