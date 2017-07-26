@@ -158,7 +158,7 @@ public class EntityPlasmaShot
             this.motionY = dir.yCoord;
             this.motionZ = dir.zCoord;
         }
-        //(this.motionX, this.motionY, this.motionZ);
+        //move(this.motionX, this.motionY, this.motionZ);
         collideWithNearbyEntities();
         if (((this.onGround) || (!this.isCollided)) ||
 
