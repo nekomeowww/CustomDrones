@@ -59,9 +59,6 @@ public class DroneModels
 
     public static void init(RenderManager rm)
     {
-        //if(instance == null){
-        //    return;
-        //}
         if ((instance == null) || (instance.rm != rm)) {
             instance = new DroneModels(rm);
         }
@@ -70,7 +67,6 @@ public class DroneModels
 
     static
     {
-        //init();
         init(Minecraft.getMinecraft().getRenderManager());
     }
 
