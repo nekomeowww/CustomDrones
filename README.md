@@ -25,6 +25,8 @@ This is the CustomDrones mod of Minecraft that @WilliamEz has made before.
 ## Progress Update
 
 ##### 2017-07-26
+- 1.6.1 Beta Release to F1
+- zh_CN as 简体中文 Simplified Chinese added.
 - 1.6.1 Beta Release to D1
 - Crash fixed for 1.6.1 Beta B3 on commit [cc69588](https://github.com/nekomeowww/CustomDrones/commit/cc6958882d3d2566ee61f7672d5aff5988c3ffd9), issue closed.
 - 1.6.1 Beta B3 has client error, recorded to [issue#2](https://github.com/nekomeowww/CustomDrones/issues/2).
