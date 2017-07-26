@@ -62,8 +62,7 @@ public class WorldGenDroneTower
                     int tmaxX = maxX + bulge;
                     int tminZ = minZ - bulge;
                     int tmaxZ = maxZ + bulge;
-                    genBoxMargin(world, bp(tminX, tY, tminZ), bp(tmaxX, tY, tmaxZ), blocks.primary, Blocks.AIR
-                            .getDefaultState(), 1, 0, 1, null, null);
+                    genBoxMargin(world, bp(tminX, tY, tminZ), bp(tmaxX, tY, tmaxZ), blocks.primary, Blocks.AIR.getDefaultState(), 1, 0, 1, null, null);
                     world.setBlockState(bp(tminX, tY, tminZ), blocks.decor1);
                     world.setBlockState(bp(tmaxX, tY, tminZ), blocks.decor1);
                     world.setBlockState(bp(tmaxX, tY, tmaxZ), blocks.decor1);
