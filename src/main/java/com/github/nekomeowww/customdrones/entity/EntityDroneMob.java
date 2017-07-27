@@ -54,8 +54,6 @@ public abstract class EntityDroneMob
     {
         super(worldIn);
         this.modelScale = 1.0D;
-        //1.6.1-beta server error
-        //NullPointerException
         /*
         this.droneTasks = new EntityAITasks((worldIn != null) && (worldIn.theProfiler != null) ? worldIn.theProfiler : null);
         */

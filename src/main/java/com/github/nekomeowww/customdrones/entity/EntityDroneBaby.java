@@ -2,13 +2,15 @@ package com.github.nekomeowww.customdrones.entity;
 
 import java.util.List;
 import java.util.Random;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.EntityAITasks;
+//import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.AxisAlignedBB;
+//import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import com.github.nekomeowww.customdrones.CustomDrones;
 import com.github.nekomeowww.customdrones.drone.DroneInfo;
@@ -17,7 +19,7 @@ import com.github.nekomeowww.customdrones.entity.ai.DroneAIAttackMelee;
 import com.github.nekomeowww.customdrones.entity.ai.DroneAITargetPlayer;
 import com.github.nekomeowww.customdrones.entity.ai.DroneAIWanderHerd;
 import com.github.nekomeowww.customdrones.render.DroneModels;
-import com.github.nekomeowww.customdrones.render.DroneModels.ModelProp;
+//import com.github.nekomeowww.customdrones.render.DroneModels.ModelProp;
 
 public class EntityDroneBaby
         extends EntityDroneMob
@@ -49,7 +51,9 @@ public class EntityDroneBaby
 
     public void initSpawnSetAppearance()
     {
-        this.droneInfo.appearance.modelID = DroneModels.instance.baby.id;
+        //Debug
+        //DroneModels.init(Minecraft.getMinecraft().getRenderManager());
+        this.droneInfo.appearance.modelID = 1;//DroneModels.instance.baby.id;
         super.initSpawnSetAppearance();
     }
 

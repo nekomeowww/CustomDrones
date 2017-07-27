@@ -57,6 +57,11 @@ public class DroneModels
         return getModelOrDefault(drone.droneInfo.appearance.modelID);
     }
 
+    //Investigation on issue#3 NoClassDefFound
+    //1. classpath error
+    //2. folder structure issue
+    //3. ref the class issue
+
     public static void init(RenderManager rm)
     {
         if ((instance == null) || (instance.rm != rm)) {
@@ -64,12 +69,12 @@ public class DroneModels
         }
     }
 
-
+    /*
     static
     {
         init(Minecraft.getMinecraft().getRenderManager());
     }
-
+    */
 
     public static class ModelProp
     {
