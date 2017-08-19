@@ -40,7 +40,7 @@ In order to migrate all the code from his source and pack it with my code style,
 
 ## Translation of Wiki
 
-I am Chinese, I did started to work on the Wiki translation before I finally decided to work the repo.
+I am Chinese, I did start to work on the Wiki translation before I finally decided to re-work the repo.
 So the current Wiki page on the [CustomDrones-Wiki](https://github.com/nekomeowww/CustomDrones-Wiki) declared that the language is Chinese. If you are Chinese and wish to help translate everything (include item names, the description, the block, etc.), leave an issue [here](https://github.com/nekomeowww/CustomDrones-Wiki/issues).    
 For the other languages, leave an issue in the [Issue](https://github.com/nekomeowww/CustomDrones-Wiki/issues) tab and mark your language like this:     
 __[Your Language (Must be English)] Wiki(Two options, Wiki or Project) Localization__.     
