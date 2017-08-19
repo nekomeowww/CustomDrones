@@ -18,7 +18,7 @@ The development branch is [dev-1.10.2](https://github.com/nekomeowww/CustomDrone
 #Use Git Clone to create a git repo on your local device.
 git clone -b dev-1.10.2 https://github.com/nekomeowww/CustomDrones.git
 ```
-The development branch has the highest priority of updating info, and code; if you wish to check the progress out, just you ahead to the [dev branch](https://github.com/nekomeowww/CustomDrones/tree/dev-1.10.2).
+The development branch has the highest priority of updating info, and code; if you wish to check the progress out, you just need to ahead to the [dev branch](https://github.com/nekomeowww/CustomDrones/tree/dev-1.10.2).
 
 
 ## Plan and Progress
