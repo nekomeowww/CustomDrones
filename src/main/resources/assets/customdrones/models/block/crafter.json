@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+    "textures": {
+        "particle": "drones:blocks/crafter_side",
+        "down": "drones:blocks/crafter_bottom",
+        "up": "drones:blocks/crafter_top",
+        "north": "drones:blocks/crafter_side",
+        "east": "drones:blocks/crafter_side",
+        "south": "drones:blocks/crafter_side",
+        "west": "drones:blocks/crafter_side"
+    }
+}
