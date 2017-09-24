@@ -113,6 +113,7 @@ public abstract class EntityDroneMob
     public void setAppearanceBasedOnBiome()
     {
         Biome biome = this.getEntityWorld().getBiomeForCoordsBody(getPosition());
+
         if (((biome instanceof BiomeSnow)) || (this.getEntityWorld().canSnowAtBody(getPosition(), false))) {
             this.droneInfo.appearance.palette.setPalette(DroneAppearance.getPalette("Ice glacier"));
         } else if (((biome instanceof BiomeHell)) || ((biome instanceof BiomeMesa))) {
@@ -124,6 +125,7 @@ public abstract class EntityDroneMob
         } else if (((biome instanceof BiomeForest)) || ((biome instanceof BiomeHills)) || ((biome instanceof BiomeJungle)) || ((biome instanceof BiomePlains)) || ((biome instanceof BiomeTaiga)) || ((biome instanceof BiomeSwamp)) || ((biome instanceof BiomeSavanna))) {
             this.droneInfo.appearance.palette.setPalette(DroneAppearance.getPalette("Grass roots"));
         } else {
+
             setDefaultAppearance();
         }
         Color c = new Color(0.8D, 0.8D, 0.8D, 1.0D);
